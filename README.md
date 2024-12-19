@@ -27,10 +27,6 @@
 - **npm** & **Yarn** (依赖管理)
 - **Docker** (容器化部署)
 - **Postman** (接口测试)
-
-## 开源项目
-
-- [我的GitHub](https://github.com/yourusername) — 这里展示了我参与的开源项目，欢迎贡献！
   
 ## 学习与分享
 
@@ -39,9 +35,6 @@
 
 ## 联系我
 
-- 📧 邮箱：[your-email@example.com](mailto:your-email@example.com)
-- 🌐 个人网站：[your-website.com](http://your-website.com)
-- 💼 LinkedIn：[你的LinkedIn](https://www.linkedin.com/in/yourprofile)
-- 🐦 Twitter：[你的Twitter](https://twitter.com/yourprofile)
+- 📧 邮箱：[s_shizhenxing@163.com](mailto:s_shizhenxing@163.com)
 
 感谢您的访问！如果有任何问题，欢迎随时联系我！👨‍💻
