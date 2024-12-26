@@ -1,0 +1,14 @@
+my-vue-app/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── router/
+│   ├── stores/
+│   ├── views/
+│   ├── App.vue
+│   └── main.js
+├── .gitignore
+├── index.html
+├── package.json
+└── vite.config.js 
