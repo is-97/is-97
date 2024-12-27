@@ -3,16 +3,16 @@ import { defineStore } from 'pinia'
 import { themes } from '../styles/themes'
 
 export const useThemeStore = defineStore('theme', () => {
-  const currentTheme = ref(localStorage.getItem('theme') || 'cyberpunk')
+  const currentTheme = ref(localStorage.getItem('theme') || 'dark')
 
-  function setTheme(theme) {
+  function setTheme (theme) {
     if (!themes[theme]) return
     currentTheme.value = theme
     localStorage.setItem('theme', theme)
     applyTheme(theme)
   }
 
-  function applyTheme(theme) {
+  function applyTheme (theme) {
     const root = document.documentElement
     const colors = themes[theme].colors
 

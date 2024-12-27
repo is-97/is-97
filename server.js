@@ -12,50 +12,11 @@ app.use(express.json());
 
 const PORT = 3000;
 const DEFAULT_API_KEY = process.env.QIANWEN_API_KEY;
-const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY;
 
 // 添加调试日志中间件
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
   next();
-});
-
-// AI 聊天路由
-app.post('/api/chat', async (req, res) => {
-  try {
-    const { message } = req.body;
-    
-    console.log('收到 AI 聊天请求:', { message });
-    
-    // 调用通义千问 API
-    const response = await fetch('https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${DASHSCOPE_API_KEY}`,
-        'Content-Type': 'application/json',
-        'X-DashScope-SSE': 'enable',
-      },
-      body: JSON.stringify({
-        model: "qwen-max",
-        input: {
-          messages: [
-            { role: "user", content: message }
-          ]
-        }
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error('AI API 响应错误');
-    }
-
-    const data = await response.json();
-    console.log('AI API 响应:', data);
-    res.json({ response: data.output.text });
-  } catch (error) {
-    console.error('处理 AI 请求时发生错误:', error);
-    res.status(500).json({ error: '服务器错误' });
-  }
 });
 
 app.post('/api/chat/qianwen', async (req, res) => {
@@ -128,5 +89,4 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`服务器启动于 http://localhost:${PORT}`);
   console.log('API Key 配置状态:', DEFAULT_API_KEY ? '已配置' : '未配置');
-  console.log('DashScope API Key 配置状态:', DASHSCOPE_API_KEY ? '已配置' : '未配置');
 });
