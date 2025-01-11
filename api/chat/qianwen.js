@@ -13,14 +13,14 @@ export default async function handler (req, res) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer YOUR_API_KEY`
+          Authorization: `Bearer ${process.env.QIANWEN_API_KEY}`, // 使用环境变量
         },
         body: JSON.stringify({
           model: 'qwen-turbo',
           messages: [{ role: 'user', content: message }],
           max_tokens: 1500,
-          temperature: 0.7
-        })
+          temperature: 0.7,
+        }),
       });
 
       const data = await response.json();
