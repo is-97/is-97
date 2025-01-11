@@ -2,6 +2,10 @@
   "version": 2,
   "routes": [
     {
+      "src": "/api/chat/qianwen",
+      "dest": "/api/chat/qianwen.js"
+    },
+    {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
     },
