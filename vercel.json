@@ -4,6 +4,20 @@
     {
       "src": "api/chat/qianwen.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "src/index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/.*",
+      "dest": "/api/chat/qianwen.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/src/index.html"
     }
   ]
 }
