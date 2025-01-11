@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import 'dotenv/config'; // 确保加载 dotenv
 
 export default async function handler (req, res) {
   if (req.method === 'POST') {
@@ -9,6 +10,8 @@ export default async function handler (req, res) {
     }
 
     try {
+      console.log('API Key:', process.env.QIANWEN_API_KEY); // 调试日志
+
       const response = await fetch('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', {
         method: 'POST',
         headers: {
