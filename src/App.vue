@@ -184,6 +184,11 @@ nav {
     width: calc(100% - 60px);
     margin-left: 60px;
   }
+
+  .theme-switcher-fixed,
+  #waifu {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
