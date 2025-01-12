@@ -48,14 +48,14 @@
 
 ### 技术详情
 
-| 领域 | 技术栈 |
-|------|---------|
-| **前端框架** | Vue 3 (Composition API), React (Hooks), Next.js |
-| **样式解决方案** | Sass, LESS, CSS Modules, Tailwind CSS |
-| **状态管理** | Vuex, Pinia, Redux, React Context |
-| **构建工具** | Webpack, Vite, Rollup |
-| **测试工具** | Jest, Vitest, Cypress |
-| **CI/CD** | GitHub Actions, Jenkins |
+| 领域           | 技术栈                                                                 |
+|----------------|------------------------------------------------------------------------|
+| **前端框架**   | Vue 3 (Composition API), React (Hooks), Next.js                        |
+| **样式解决方案** | Sass, LESS, CSS Modules, Tailwind CSS                                 |
+| **状态管理**   | Vuex, Pinia, Redux, React Context                                      |
+| **构建工具**   | Webpack, Vite, Rollup                                                  |
+| **测试工具**   | Jest, Vitest, Cypress                                                  |
+| **CI/CD**      | GitHub Actions, Jenkins                                                |
 
 ## 💼 项目经验
 
