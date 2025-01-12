@@ -4,7 +4,7 @@
   
 [![前端工程师](https://img.shields.io/badge/职业-前端工程师-blue?style=for-the-badge&logo=frontendmentor)](https://is-97.vercel.app/)
 [![个人网站](https://img.shields.io/badge/主页-个人作品集-brightgreen?style=for-the-badge&logo=vercel)](https://is-97.vercel.app/)
-[![GitHub](https://img.shields.io/badge/GitHub-个人主页-181717?style=for-the-badge&logo=github)](https://github.com/yourusername)
+[![GitHub](https://img.shields.io/badge/GitHub-个人主页-181717?style=for-the-badge&logo=github)](https://github.com/is-97/)
 
 </div>
 
@@ -80,8 +80,7 @@
 
 <div align="center">
 
-[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:youremail@example.com)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yourusername)
+[![邮箱](https://img.shields.io/badge/邮箱-s__shizhenxing@163.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:s_shizhenxing@163.com)
 
 </div>
 
