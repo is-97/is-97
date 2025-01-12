@@ -50,7 +50,5 @@ Postman (接口测试) <img src="https://img.shields.io/badge/Postman-FF6C37?sty
 联系我 📧
 邮箱：s_shizhenxing@163.com
 
-GitHub：https://github.com/yourusername
-
 <p align="center"> <img src="https://github-readme-stats.vercel.app/api?username=yourusername&show_icons=true&theme=radical" alt="GitHub Stats" /> </p>
 感谢您的访问！如果有任何问题，欢迎随时联系我！👨‍💻
