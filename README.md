@@ -2,9 +2,9 @@
 
 <div align="center">
   
-[![Frontend Engineer](https://img.shields.io/badge/Job-Frontend%20Engineer-blue?style=for-the-badge&logo=frontendmentor)](https://is--97.vercel.app/)
-[![Website](https://img.shields.io/badge/Website-Portfolio-brightgreen?style=for-the-badge&logo=vercel)](https://is--97.vercel.app/)
-[![GitHub](https://img.shields.io/badge/GitHub-Profile-181717?style=for-the-badge&logo=github)](https://github.com/yourusername)
+[![前端工程师](https://img.shields.io/badge/职业-前端工程师-blue?style=for-the-badge&logo=frontendmentor)](https://is-97.vercel.app/)
+[![个人网站](https://img.shields.io/badge/主页-个人作品集-brightgreen?style=for-the-badge&logo=vercel)](https://is-97.vercel.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-个人主页-181717?style=for-the-badge&logo=github)](https://github.com/yourusername)
 
 </div>
 
