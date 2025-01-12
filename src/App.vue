@@ -2,10 +2,22 @@
   <div class="app">
     <nav>
       <div class="nav-links">
-        <router-link to="/">个人简介</router-link>
-        <router-link to="/experience">工作经历</router-link>
-        <router-link to="/projects">项目经验</router-link>
-        <router-link to="/chat">AI 助手</router-link>
+        <router-link to="/">
+          <i class="fas fa-user"></i>
+          <span class="nav-text">个人简介</span>
+        </router-link>
+        <router-link to="/experience">
+          <i class="fas fa-briefcase"></i>
+          <span class="nav-text">工作经历</span>
+        </router-link>
+        <router-link to="/projects">
+          <i class="fas fa-project-diagram"></i>
+          <span class="nav-text">项目经验</span>
+        </router-link>
+        <router-link to="/chat">
+          <i class="fas fa-robot"></i>
+          <span class="nav-text">AI 助手</span>
+        </router-link>
       </div>
     </nav>
     <div class="content-area">
@@ -85,6 +97,7 @@ nav {
   flex-direction: column;
   gap: 2rem;
   z-index: var(--z-index-nav);
+  transition: width 0.3s ease;
 }
 
 .nav-links {
@@ -95,6 +108,9 @@ nav {
 }
 
 .nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   color: var(--text-primary);
   text-decoration: none;
   font-weight: 500;
@@ -103,10 +119,13 @@ nav {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  white-space: nowrap;
 }
 
-.nav-links a:hover {
-  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+.nav-links a i {
+  font-size: 1.2rem;
+  min-width: 1.5rem;
+  text-align: center;
 }
 
 .nav-links a.router-link-active {
@@ -138,19 +157,32 @@ nav {
   justify-content: center;
   padding: 2rem;
   width: calc(100% - 200px);
+  margin-left: 200px;
   box-sizing: border-box;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .content-area > * {
-  width: 1000px;
+  width: min(1000px, 100%);
   max-width: 100%;
 }
 
-@media (max-width: 1200px) {
-  .content-area > * {
-    width: 100%;
+@media (max-width: 1400px) {
+  nav {
+    width: 60px;
+  }
+
+  .nav-links a {
+    padding: 0.8rem;
+    justify-content: center;
+  }
+
+  .nav-text {
+    display: none;
+  }
+
+  .content-area {
+    width: calc(100% - 60px);
+    margin-left: 60px;
   }
 }
 
@@ -174,11 +206,20 @@ nav {
     flex-direction: row;
     padding: 0;
     gap: 1rem;
+    width: 100%;
+    justify-content: space-around;
   }
 
   .nav-links a {
-    padding: 0.5rem 1rem;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.5rem;
     font-size: 0.9rem;
+  }
+
+  .nav-text {
+    display: block;
+    font-size: 0.8rem;
   }
 
   .nav-links a.router-link-active::before {
@@ -195,10 +236,6 @@ nav {
     width: 100%;
     padding: 1rem;
     padding-bottom: 5rem;
-  }
-
-  .content-area > * {
-    width: 100%;
   }
 }
 

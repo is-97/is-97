@@ -673,54 +673,77 @@ const coreStrengths = [
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+@media screen and (max-width: 1200px) {
   .home {
     padding: 1rem;
   }
-
-  .profile-card,
-  .intro-card,
-  .skills-card {
-    padding: 1.5rem;
-  }
-
-  .card-header {
+  
+  .profile-card {
     flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-
-  .intro-text {
+    align-items: center;
     text-align: center;
   }
 
-  .stats-grid {
+  .avatar {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .strengths-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .home {
+    padding: 0.5rem;
+  }
+
+  .skills-content {
+    flex-direction: column;
+  }
+
+  .skills-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .skill-tab {
+    white-space: nowrap;
+  }
+
+  .skill-grid {
+    grid-template-columns: 1fr;
   }
 
   .strengths-grid {
     grid-template-columns: 1fr;
   }
 
-  .skills-nav {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    margin: 0 -1.5rem;
-    padding: 0 1.5rem 1rem;
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact {
+    flex-direction: column;
+    align-items: center;
   }
 
   .skill-header {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   .mastery-meter {
     width: 100%;
-    justify-content: space-between;
-  }
-
-  .skill-grid {
-    grid-template-columns: 1fr;
   }
 }
 </style>
