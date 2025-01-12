@@ -1,5 +1,94 @@
 <script setup>
+import { ref } from 'vue'
 import avatarImg from '../assets/007eWV7mly8hi0swmrl3oj30u00u0gpf.jpg'
+
+const skills = [
+  {
+    category: '前端开发',
+    icon: 'fas fa-code',
+    color: '#3498db',
+    mastery: 95,
+    description: '精通现代前端开发技术栈，构建高性能的用户界面',
+    items: [
+      { name: 'HTML5/CSS3', level: 95 },
+      { name: 'JavaScript/ES6+', level: 95 },
+      { name: 'TypeScript', level: 90 },
+      { name: 'Less/Sass', level: 90 },
+      { name: 'WebComponents', level: 85 }
+    ]
+  },
+  {
+    category: '框架技术',
+    icon: 'fas fa-layer-group',
+    color: '#2ecc71',
+    mastery: 90,
+    description: '精通主流前端框架，了解MVC&MVVM设计模式',
+    items: [
+      { name: 'Vue.js 2/3', level: 95 },
+      { name: 'React.js', level: 85 },
+      { name: 'Angular.js', level: 80 },
+      { name: 'TypeScript', level: 90 },
+      { name: 'Node.js', level: 85 }
+    ]
+  },
+  {
+    category: '可视化开发',
+    icon: 'fas fa-chart-bar',
+    color: '#e74c3c',
+    mastery: 85,
+    description: '擅长数据可视化和3D开发，构建复杂的数据展示界面',
+    items: [
+      { name: 'Three.js', level: 85 },
+      { name: 'WebGL', level: 80 },
+      { name: 'Echarts', level: 90 },
+      { name: 'AntV-G2', level: 85 },
+      { name: 'D3.js', level: 80 }
+    ]
+  },
+  {
+    category: '工程化工具',
+    icon: 'fas fa-tools',
+    color: '#9b59b6',
+    mastery: 90,
+    description: '熟练使用现代前端工程化工具，确保高效开发',
+    items: [
+      { name: 'Webpack', level: 90 },
+      { name: 'Vite', level: 90 },
+      { name: 'Git/SVN', level: 95 },
+      { name: 'CI/CD', level: 85 },
+      { name: 'Docker', level: 80 }
+    ]
+  }
+]
+
+const activeSkill = ref(skills[0])
+
+const coreStrengths = [
+  { 
+    title: '全栈开发能力', 
+    description: '前后端全栈开发经验，能独立完成完整项目开发', 
+    icon: 'fas fa-code-branch',
+    color: '#3498db'
+  },
+  { 
+    title: '工程化思维', 
+    description: '注重代码质量和开发效率，熟练使用现代化工具链', 
+    icon: 'fas fa-tools',
+    color: '#2ecc71'
+  },
+  { 
+    title: '技术视野广阔', 
+    description: '持续学习新技术，涵盖Web、移动、游戏、AI等领域', 
+    icon: 'fas fa-brain',
+    color: '#e74c3c'
+  },
+  { 
+    title: '项目经验丰富', 
+    description: '参与过多个大型项目，具备出色的问题解决能力', 
+    icon: 'fas fa-project-diagram',
+    color: '#9b59b6'
+  }
+]
 </script>
 
 <template>
@@ -23,259 +112,102 @@ import avatarImg from '../assets/007eWV7mly8hi0swmrl3oj30u00u0gpf.jpg'
         </div>
       </div>
     </div>
-    
-    <div class="summary-card">
-      <h2>个人简介</h2>
-      <div class="summary-content">
-        <div class="summary-text">
-          👋 Hi there! 我是 <strong>史振兴</strong>，一位充满激情的前端工程师，专注于构建优秀的用户体验。
-          在过去7年的职业生涯中，我深度参与了多个大型企业级应用的开发，运用 <strong>Vue</strong> 和 <strong>React</strong> 生态系统打造高性能的现代化 Web 应用。
-          我在微前端架构设计、性能优化、跨平台开发等领域积累了丰富的实战经验，并成功帮助多个团队解决技术难题。
-          作为一名技术爱好者，我持续关注前端领域的创新技术，并积极将这些技术应用到实际项目中。
-          同时，我也是开源社区的积极贡献者，热衷于分享技术经验和最佳实践。
+
+    <!-- 个人简介卡片 -->
+    <div class="intro-card">
+      <div class="card-header">
+        <h2><i class="fas fa-user-circle"></i>个人简介</h2>
+        <div class="experience-badge">
+          <span class="badge-number">7</span>
+          <span class="badge-text">年前端开发经验</span>
         </div>
-        <div class="summary-points">
-          <div class="point">
-            <i class="fas fa-laptop-code"></i>
-            <div class="point-text">
-              <h4>全栈开发</h4>
-              <p>前端开发为主，具备后端开发能力，能独立完成完整项目开发</p>
-            </div>
+      </div>
+
+      <div class="intro-content">
+        <div class="intro-text">
+          <h3>全栈开发工程师</h3>
+          <p>专注于构建高性能的现代化 Web 应用</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number">50<span>+</span></div>
+            <div class="stat-label">项目经验</div>
           </div>
-          <div class="point">
-            <i class="fas fa-mobile-alt"></i>
-            <div class="point-text">
-              <h4>跨端开发</h4>
-              <p>熟悉多端开发技术，可开发Web、移动端、小程序等多平台应用</p>
-            </div>
+          <div class="stat-item">
+            <div class="stat-number">10<span>+</span></div>
+            <div class="stat-label">技术领域</div>
           </div>
-          <div class="point">
-            <i class="fas fa-chart-line"></i>
-            <div class="point-text">
-              <h4>数据可视化</h4>
-              <p>擅长数据可视化和3D开发，能构建复杂的数据展示界面</p>
+          <div class="stat-item">
+            <div class="stat-number">20<span>+</span></div>
+            <div class="stat-label">技术栈</div>
+          </div>
+        </div>
+
+        <div class="strengths-grid">
+          <div v-for="(strength, index) in coreStrengths" 
+               :key="index"
+               class="strength-card"
+               :style="{ '--card-color': strength.color }">
+            <div class="strength-icon">
+              <i :class="strength.icon"></i>
+            </div>
+            <div class="strength-content">
+              <h4>{{ strength.title }}</h4>
+              <p>{{ strength.description }}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="detail-cards">
-      <div class="detail-card skills-section">
-        <h2><i class="fas fa-code"></i> 专业技能</h2>
-        <div class="skills-container">
-          <div class="skill-category">
-            <h3>前端开发</h3>
-            <p class="skill-description">熟练运用HTML5、CSS3、JavaScript、ES6，以及前端开发技术，包括Less和Sass预编译语言</p>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>HTML5 / CSS3</span>
-                  <span class="skill-level">95%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 95%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>JavaScript / ES6</span>
-                  <span class="skill-level">95%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 95%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Less / Sass</span>
-                  <span class="skill-level">90%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 90%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="skill-category">
-            <h3>框架技术</h3>
-            <p class="skill-description">掌握Vue2.0、Vue3.0、Angular.js、React.js等主流框架，了解MVC&MVVM设计模式和模块化开发流程</p>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Vue2.0 / Vue3.0</span>
-                  <span class="skill-level">95%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 95%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>React.js</span>
-                  <span class="skill-level">90%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 90%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Angular.js</span>
-                  <span class="skill-level">85%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 85%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="skill-category">
-            <h3>可视化开发</h3>
-            <p class="skill-description">熟悉Three.js、WebGL、Echarts、AntV-G2等技术，绘制图形和构建统计图表；了解并使用过Cocos Creator和LayaAir等游戏引擎</p>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Three.js / WebGL</span>
-                  <span class="skill-level">90%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 90%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Echarts / AntV-G2</span>
-                  <span class="skill-level">90%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 90%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Cocos / LayaAir</span>
-                  <span class="skill-level">80%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 80%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="skill-category">
-            <h3>工程化工具</h3>
-            <p class="skill-description">熟练使用Webpack、Gulp、Vite等前端打包构建工具，并完成Nginx的配置；使用GIT和SVN版本控制工具，促进团队高效开发</p>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Webpack / Vite</span>
-                  <span class="skill-level">90%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 90%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Git / SVN</span>
-                  <span class="skill-level">90%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 90%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Nginx</span>
-                  <span class="skill-level">85%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 85%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="skill-category">
-            <h3>跨端开发</h3>
-            <p class="skill-description">熟悉uni-app、React Native、Flutter等移动端混合开发技术</p>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>uni-app</span>
-                  <span class="skill-level">90%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 90%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>React Native</span>
-                  <span class="skill-level">85%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 85%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Flutter</span>
-                  <span class="skill-level">80%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 80%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="skill-category">
-            <h3>后端技能</h3>
-            <p class="skill-description">熟悉Node.js和Java，能够设计MySQL和Oracle数据库业务表，实现基本后端业务</p>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Node.js</span>
-                  <span class="skill-level">85%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 85%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>Java</span>
-                  <span class="skill-level">80%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 80%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-header">
-                  <span>MySQL / Oracle</span>
-                  <span class="skill-level">80%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-progress" style="width: 80%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- 技能展示卡片 -->
+    <div class="skills-card">
+      <div class="card-header">
+        <h2><i class="fas fa-code"></i>专业技能</h2>
       </div>
 
-      <div class="detail-card">
-        <h2>教育背景</h2>
-        <div class="education-item">
-          <h3>河南工业大学</h3>
-          <p class="period">2014 - 2018</p>
-          <p class="major">计算机科学与技术 | 本科</p>
+      <div class="skills-content">
+        <div class="skills-nav">
+          <button v-for="skill in skills"
+                  :key="skill.category"
+                  :class="['skill-tab', { active: skill === activeSkill }]"
+                  :style="{ '--tab-color': skill.color }"
+                  @click="activeSkill = skill">
+            <i :class="skill.icon"></i>
+            <span>{{ skill.category }}</span>
+          </button>
+        </div>
+
+        <div class="skill-details">
+          <div class="skill-header">
+            <div class="skill-title">
+              <h3>{{ activeSkill.category }}</h3>
+              <p>{{ activeSkill.description }}</p>
+            </div>
+            <div class="mastery-meter">
+              <span class="mastery-label">掌握程度</span>
+              <div class="mastery-bar">
+                <div class="mastery-fill" :style="{ width: activeSkill.mastery + '%' }"></div>
+              </div>
+              <span class="mastery-value">{{ activeSkill.mastery }}%</span>
+            </div>
+          </div>
+
+          <div class="skill-grid">
+            <div v-for="(item, index) in activeSkill.items"
+                 :key="index"
+                 class="skill-item"
+                 :style="{ '--item-color': activeSkill.color }">
+              <div class="skill-info">
+                <span class="skill-name">{{ item.name }}</span>
+                <span class="skill-level">{{ item.level }}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" :style="{ width: item.level + '%' }"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -288,19 +220,6 @@ import avatarImg from '../assets/007eWV7mly8hi0swmrl3oj30u00u0gpf.jpg'
   max-width: 1200px;
   margin: 2rem auto;
   padding: 0 2rem;
-}
-
-/* 卡片基础样式 */
-.profile-card,
-.summary-card,
-.detail-card {
-  background: var(--surface-color);
-  backdrop-filter: blur(10px);
-  border-radius: 24px;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* 个人信息区域 */
@@ -443,214 +362,314 @@ import avatarImg from '../assets/007eWV7mly8hi0swmrl3oj30u00u0gpf.jpg'
   }
 }
 
-/* 个人简介 */
-.summary-card h2,
-.detail-card h2 {
-  font-size: 2rem;
-  margin: 0 0 2rem;
-  color: var(--text-primary);
+/* 卡片基础样式 */
+.profile-card,
+.intro-card,
+.skills-card {
+  background: var(--surface-color);
+  border-radius: 24px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 卡片头部样式 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-header h2 {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--text-primary);
 }
 
-.summary-content {
-  display: grid;
+.card-header h2 i {
+  color: var(--primary-color);
+}
+
+/* 个人简介样式 */
+.intro-content {
+  display: flex;
+  flex-direction: column;
   gap: 2.5rem;
 }
 
-.summary-text {
-  font-size: 1.1rem;
-  line-height: 1.8;
+.intro-text h3 {
+  font-size: 2rem;
+  margin: 0 0 0.5rem;
+  color: var(--text-primary);
+}
+
+.intro-text p {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.experience-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.badge-number {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.badge-text {
   color: var(--text-secondary);
 }
 
-.summary-text strong {
-  color: var(--primary-color);
-  font-weight: 600;
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
 }
 
-.summary-points {
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.stat-number span {
+  font-size: 1.8rem;
+  opacity: 0.8;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+}
+
+/* 核心优势样式 */
+.strengths-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
 }
 
-.point {
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.02)
-  );
-  border-radius: 20px;
+.strength-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
   padding: 1.5rem;
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.point:hover {
-  transform: translateY(-5px);
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.08),
-    rgba(255, 255, 255, 0.03)
-  );
+.strength-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--card-color);
 }
 
-.point i {
-  font-size: 2rem;
-  color: var(--primary-color);
-  opacity: 0.9;
-}
-
-.point-text h4 {
-  color: var(--text-primary);
+.strength-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
   font-size: 1.2rem;
-  margin: 0 0 0.8rem;
+  color: var(--card-color);
+  flex-shrink: 0;
 }
 
-.point-text p {
+.strength-content {
+  flex: 1;
+}
+
+.strength-content h4 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem;
+}
+
+.strength-content p {
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.5;
   margin: 0;
 }
 
-/* 技能部分 */
-.skills-container {
-  display: grid;
-  gap: 2.5rem;
+/* 技能展示样式 */
+.skills-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.skill-category {
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 20px;
-  padding: 2rem;
-  animation: slideIn 0.5s ease-out forwards;
-  opacity: 0;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.skills-nav {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scrollbar-width: none;
 }
 
-.skill-category:nth-child(1) { animation-delay: 0.1s; }
-.skill-category:nth-child(2) { animation-delay: 0.2s; }
-.skill-category:nth-child(3) { animation-delay: 0.3s; }
-.skill-category:nth-child(4) { animation-delay: 0.4s; }
-
-.skill-category:hover {
-  background: rgba(255, 255, 255, 0.04);
+.skills-nav::-webkit-scrollbar {
+  display: none;
 }
 
-.skill-category h3 {
-  color: var(--text-primary);
-  font-size: 1.4rem;
-  margin: 0 0 1rem;
-}
-
-.skill-description {
+.skill-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1.2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: none;
+  border-radius: 12px;
   color: var(--text-secondary);
-  margin: 0 0 1.5rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
-.skill-items {
-  display: grid;
-  gap: 1.2rem;
+.skill-tab i {
+  font-size: 1.2rem;
+  color: var(--tab-color);
 }
 
-.skill-item {
-  animation: slideIn 0.5s ease-out forwards;
-  opacity: 0;
+.skill-tab.active {
+  background: var(--tab-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.skill-tab.active i {
+  color: white;
+}
+
+.skill-details {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 2rem;
 }
 
 .skill-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.8rem;
-  color: var(--text-secondary);
+  align-items: flex-start;
+  margin-bottom: 2rem;
 }
 
-.skill-level {
-  color: var(--primary-color);
-  font-weight: 500;
-}
-
-.skill-bar {
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.skill-progress {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  border-radius: 4px;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 教育背景 */
-.education-item {
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 20px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.education-item:hover {
-  transform: translateX(10px);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.education-item h3 {
+.skill-title h3 {
+  font-size: 1.5rem;
   color: var(--text-primary);
-  font-size: 1.3rem;
   margin: 0 0 0.5rem;
 }
 
-.education-item p {
+.skill-title p {
   color: var(--text-secondary);
   margin: 0;
-  line-height: 1.6;
+  font-size: 0.95rem;
 }
 
-.education-item .period {
+.mastery-meter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mastery-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.mastery-bar {
+  width: 150px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mastery-fill {
+  height: 100%;
+  background: var(--primary-color);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.mastery-value {
   color: var(--primary-color);
-  font-weight: 500;
-  margin-top: 0.5rem;
-  opacity: 0.9;
+  font-weight: 600;
+  min-width: 3ch;
 }
 
-.detail-cards {
+.skill-grid {
   display: grid;
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
 }
 
-/* 动画 */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.skill-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.skill-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.skill-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.skill-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.skill-level {
+  color: var(--item-color);
+  font-weight: 600;
+}
+
+.progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--item-color);
+  border-radius: 2px;
+  transition: width 0.3s ease;
 }
 
 /* 响应式设计 */
@@ -659,38 +678,49 @@ import avatarImg from '../assets/007eWV7mly8hi0swmrl3oj30u00u0gpf.jpg'
     padding: 1rem;
   }
 
-  .profile-card {
+  .profile-card,
+  .intro-card,
+  .skills-card {
+    padding: 1.5rem;
+  }
+
+  .card-header {
     flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .intro-text {
     text-align: center;
-    padding: 2rem;
-    gap: 2rem;
   }
 
-  .avatar {
-    width: 150px;
-    height: 150px;
-    margin: 0 auto;
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .info h1 {
-    font-size: 2.2rem;
-  }
-
-  .contact {
+  .strengths-grid {
     grid-template-columns: 1fr;
   }
 
-  .summary-points {
+  .skills-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem 1rem;
+  }
+
+  .skill-header {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .mastery-meter {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .skill-grid {
     grid-template-columns: 1fr;
-  }
-
-  .skill-category {
-    padding: 1.5rem;
-  }
-
-  .summary-card,
-  .detail-card {
-    padding: 1.5rem;
   }
 }
 </style>
