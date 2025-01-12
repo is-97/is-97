@@ -80,7 +80,7 @@
 
 <div align="center">
 
-[![邮箱](https://img.shields.io/badge/邮箱-s_shizhenxing@163.com-D14836?style=for-the-badge&logo=gmail&logoColor=white&label=邮箱)](mailto:s_shizhenxing@163.com)
+[![邮箱](https://img.shields.io/badge/s_shizhenxing@163.com-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:s_shizhenxing@163.com)
 
 </div>
 
