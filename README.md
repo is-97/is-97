@@ -1,117 +1,92 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/Job-Frontend%20Engineer-blue?style=flat&logo=frontend" />
-  <img src="https://img.shields.io/badge/Website-https://is--97.vercel.app/-brightgreen?style=flat&logo=vercel" />
-</p>
+# SZX - 前端开发工程师 👨‍💻
 
-## 关于我 👋
+<div align="center">
+  
+[![Frontend Engineer](https://img.shields.io/badge/Job-Frontend%20Engineer-blue?style=for-the-badge&logo=frontendmentor)](https://is--97.vercel.app/)
+[![Website](https://img.shields.io/badge/Website-Portfolio-brightgreen?style=for-the-badge&logo=vercel)](https://is--97.vercel.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-Profile-181717?style=for-the-badge&logo=github)](https://github.com/yourusername)
 
-我是 SZX，一名专注于前端开发的工程师。我热爱编码，享受通过技术来解决问题，打造出色的用户体验。我对现代前端技术充满热情，尤其擅长使用 Vue 3 和 React 构建高性能的网页应用。
+</div>
 
-- 👨‍💻 **工作**：前端开发领域，已有多年开发经验
-- 🚀 **兴趣**：持续学习，探索新技术，提升开发效率
-- 📚 **分享**：喜欢分享技术和解决方案，参与开源项目
+## 👋 关于我
 
-## 技能 🛠️
+> 热衷于用代码创造美好的用户体验
 
-### 前端技术栈
+作为一名专注于前端开发的工程师，我致力于构建高性能、用户友好的 Web 应用。擅长运用现代前端技术栈，特别是 Vue 3 和 React 生态系统，来解决复杂的技术挑战。
 
-<table>
-  <tr>
-    <th>技术</th>
-    <th>图标</th>
-  </tr>
-  <tr>
-    <td>JavaScript (ES6+)</td>
-    <td><img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black" style="vertical-align: middle;" /></td>
-  </tr>
-  <tr>
-    <td>Vue 3 (Composition API)</td>
-    <td><img src="https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vue.js&logoColor=white" style="vertical-align: middle;" /></td>
-  </tr>
-  <tr>
-    <td>React (Hooks + Function Components)</td>
-    <td><img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black" style="vertical-align: middle;" /></td>
-  </tr>
-  <tr>
-    <td>HTML5 & CSS3 (Flexbox, Grid)</td>
-    <td>
-      <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white" style="vertical-align: middle;" />
-      <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white" style="vertical-align: middle;" />
-    </td>
-  </tr>
-  <tr>
-    <td>TypeScript (静态类型，提升代码质量)</td>
-    <td><img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white" style="vertical-align: middle;" /></td>
-  </tr>
-  <tr>
-    <td>Webpack & Vite (打包工具)</td>
-    <td>
-      <img src="https://img.shields.io/badge/Webpack-8DD6F9?style=flat&logo=webpack&logoColor=black" style="vertical-align: middle;" />
-      <img src="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white" style="vertical-align: middle;" />
-    </td>
-  </tr>
-  <tr>
-    <td>CSS预处理器 (Sass, LESS)</td>
-    <td>
-      <img src="https://img.shields.io/badge/Sass-CC6699?style=flat&logo=sass&logoColor=white" style="vertical-align: middle;" />
-      <img src="https://img.shields.io/badge/LESS-1D365D?style=flat&logo=less&logoColor=white" style="vertical-align: middle;" />
-    </td>
-  </tr>
-</table>
+- 🚀 专注于前端开发，具有扎实的工程实践经验
+- 💡 持续学习新技术，热衷技术创新
+- 🤝 积极参与开源社区，乐于技术分享
+- 🎯 追求代码质量和用户体验的完美平衡
 
-### 开发工具
+## 🛠️ 技术栈
 
-<table>
-  <tr>
-    <th>工具</th>
-    <th>图标</th>
-  </tr>
-  <tr>
-    <td>VS Code (主力开发工具)</td>
-    <td><img src="https://img.shields.io/badge/VS%20Code-007ACC?style=flat&logo=visual-studio-code&logoColor=white" style="vertical-align: middle;" /></td>
-  </tr>
-  <tr>
-    <td>Git & GitHub (版本控制，团队协作)</td>
-    <td>
-      <img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white" style="vertical-align: middle;" />
-      <img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white" style="vertical-align: middle;" />
-    </td>
-  </tr>
-  <tr>
-    <td>npm & Yarn (依赖管理)</td>
-    <td>
-      <img src="https://img.shields.io/badge/npm-CB3837?style=flat&logo=npm&logoColor=white" style="vertical-align: middle;" />
-      <img src="https://img.shields.io/badge/Yarn-2C8EBB?style=flat&logo=yarn&logoColor=white" style="vertical-align: middle;" />
-    </td>
-  </tr>
-  <tr>
-    <td>Docker (容器化部署)</td>
-    <td><img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white" style="vertical-align: middle;" /></td>
-  </tr>
-  <tr>
-    <td>Postman (接口测试)</td>
-    <td><img src="https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white" style="vertical-align: middle;" /></td>
-  </tr>
-</table>
+### 核心技能
 
-## 学习与分享 📚
+<div align="center">
 
-我正在深入学习 Web 性能优化、前端架构 和 模块化设计。
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?style=flat-square&logo=vue.js&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
 
-经常参加技术讨论和分享，提升自己的前端视野，解决实际问题。
+</div>
 
-## 我的项目 📂
+### 开发工具链
 
-- **个人网站**：[https://is-97.vercel.app/](https://is-97.vercel.app/)
-  - 使用 Vue 3 和 Vite 构建，展示我的技术栈和项目经验。
-  - 支持响应式布局，适配多端设备。
+<div align="center">
 
-## 联系我 📧
+![Webpack](https://img.shields.io/badge/Webpack-8DD6F9?style=flat-square&logo=webpack&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?style=flat-square&logo=visual-studio-code&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 
-- **邮箱**：s_shizhenxing@163.com
+</div>
 
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=yourusername&show_icons=true&theme=radical" alt="GitHub Stats" />
-</p>
+### 技术详情
 
-感谢您的访问！如果有任何问题，欢迎随时联系我！👨‍💻
+| 领域 | 技术栈 |
+|------|---------|
+| **前端框架** | Vue 3 (Composition API), React (Hooks), Next.js |
+| **样式解决方案** | Sass, LESS, CSS Modules, Tailwind CSS |
+| **状态管理** | Vuex, Pinia, Redux, React Context |
+| **构建工具** | Webpack, Vite, Rollup |
+| **测试工具** | Jest, Vitest, Cypress |
+| **CI/CD** | GitHub Actions, Jenkins |
+
+## 💼 项目经验
+
+### 企业级应用开发
+- 负责大型 SPA 应用的架构设计和开发
+- 实现复杂业务逻辑和交互功能
+- 优化应用性能，提升用户体验
+
+### 技术难点攻克
+- 实现高性能的数据可视化展示
+- 开发可复用的业务组件库
+- 处理复杂的状态管理需求
+
+## 📚 持续学习
+
+目前正在深入研究：
+- 前端工程化和微前端架构
+- Web 性能优化最佳实践
+- 跨平台应用开发
+
+## 📫 联系我
+
+<div align="center">
+
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:youremail@example.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yourusername)
+
+</div>
+
+---
+
+<div align="center">
+  <sub>用热爱编码的心，创造非凡的价值 ❤️</sub>
+</div>
