@@ -15,21 +15,62 @@
 
 ### 前端技术栈
 
-- JavaScript (ES6+) <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black" style="vertical-align: middle;" />
-- Vue 3 (Composition API) <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vue.js&logoColor=white" style="vertical-align: middle;" />
-- React (Hooks + Function Components) <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black" style="vertical-align: middle;" />
-- HTML5 & CSS3 (Flexbox, Grid) <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white" style="vertical-align: middle;" /> <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white" style="vertical-align: middle;" />
-- TypeScript (静态类型，提升代码质量) <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white" style="vertical-align: middle;" />
-- Webpack & Vite (打包工具) <img src="https://img.shields.io/badge/Webpack-8DD6F9?style=flat&logo=webpack&logoColor=black" style="vertical-align: middle;" /> <img src="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white" style="vertical-align: middle;" />
-- CSS 预处理器 (Sass, LESS) <img src="https://img.shields.io/badge/Sass-CC6699?style=flat&logo=sass&logoColor=white" style="vertical-align: middle;" /> <img src="https://img.shields.io/badge/LESS-1D365D?style=flat&logo=less&logoColor=white" style="vertical-align: middle;" />
+<p>
+  <span style="vertical-align: middle;">JavaScript (ES6+)</span>
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black" style="vertical-align: middle;" />
+</p>
+<p>
+  <span style="vertical-align: middle;">Vue 3 (Composition API)</span>
+  <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vue.js&logoColor=white" style="vertical-align: middle;" />
+</p>
+<p>
+  <span style="vertical-align: middle;">React (Hooks + Function Components)</span>
+  <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black" style="vertical-align: middle;" />
+</p>
+<p>
+  <span style="vertical-align: middle;">HTML5 & CSS3 (Flexbox, Grid)</span>
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white" style="vertical-align: middle;" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white" style="vertical-align: middle;" />
+</p>
+<p>
+  <span style="vertical-align: middle;">TypeScript (静态类型，提升代码质量)</span>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white" style="vertical-align: middle;" />
+</p>
+<p>
+  <span style="vertical-align: middle;">Webpack & Vite (打包工具)</span>
+  <img src="https://img.shields.io/badge/Webpack-8DD6F9?style=flat&logo=webpack&logoColor=black" style="vertical-align: middle;" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white" style="vertical-align: middle;" />
+</p>
+<p>
+  <span style="vertical-align: middle;">CSS预处理器 (Sass, LESS)</span>
+  <img src="https://img.shields.io/badge/Sass-CC6699?style=flat&logo=sass&logoColor=white" style="vertical-align: middle;" />
+  <img src="https://img.shields.io/badge/LESS-1D365D?style=flat&logo=less&logoColor=white" style="vertical-align: middle;" />
+</p>
 
 ### 开发工具
 
-- VS Code (主力开发工具) <img src="https://img.shields.io/badge/VS%20Code-007ACC?style=flat&logo=visual-studio-code&logoColor=white" style="vertical-align: middle;" />
-- Git & GitHub (版本控制，团队协作) <img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white" style="vertical-align: middle;" /> <img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white" style="vertical-align: middle;" />
-- npm & Yarn (依赖管理) <img src="https://img.shields.io/badge/npm-CB3837?style=flat&logo=npm&logoColor=white" style="vertical-align: middle;" /> <img src="https://img.shields.io/badge/Yarn-2C8EBB?style=flat&logo=yarn&logoColor=white" style="vertical-align: middle;" />
-- Docker (容器化部署) <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white" style="vertical-align: middle;" />
-- Postman (接口测试) <img src="https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white" style="vertical-align: middle;" />
+<p>
+  <span style="vertical-align: middle;">VS Code (主力开发工具)</span>
+  <img src="https://img.shields.io/badge/VS%20Code-007ACC?style=flat&logo=visual-studio-code&logoColor=white" style="vertical-align: middle;" />
+</p>
+<p>
+  <span style="vertical-align: middle;">Git & GitHub (版本控制，团队协作)</span>
+  <img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white" style="vertical-align: middle;" />
+  <img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white" style="vertical-align: middle;" />
+</p>
+<p>
+  <span style="vertical-align: middle;">npm & Yarn (依赖管理)</span>
+  <img src="https://img.shields.io/badge/npm-CB3837?style=flat&logo=npm&logoColor=white" style="vertical-align: middle;" />
+  <img src="https://img.shields.io/badge/Yarn-2C8EBB?style=flat&logo=yarn&logoColor=white" style="vertical-align: middle;" />
+</p>
+<p>
+  <span style="vertical-align: middle;">Docker (容器化部署)</span>
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white" style="vertical-align: middle;" />
+</p>
+<p>
+  <span style="vertical-align: middle;">Postman (接口测试)</span>
+  <img src="https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white" style="vertical-align: middle;" />
+</p>
 
 ## 学习与分享 📚
 
