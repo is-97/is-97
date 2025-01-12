@@ -3,7 +3,7 @@
     <nav>
       <div class="nav-links">
         <router-link to="/">个人简介</router-link>
-        <router-link to="/experience">工作经验</router-link>
+        <router-link to="/experience">工作经历</router-link>
         <router-link to="/projects">项目经验</router-link>
         <router-link to="/chat">AI 助手</router-link>
       </div>
