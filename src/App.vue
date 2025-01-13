@@ -88,7 +88,7 @@ nav {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 200px;
+  width: 12.5rem;
   background: var(--surface-color);
   backdrop-filter: blur(10px);
   border-right: 1px solid var(--border-color);
@@ -156,8 +156,8 @@ nav {
   display: flex;
   justify-content: center;
   padding: 2rem;
-  width: calc(100% - 200px);
-  margin-left: 200px;
+  width: calc(100% - 12.5rem);
+  margin-left: 12.5rem;
   box-sizing: border-box;
 }
 

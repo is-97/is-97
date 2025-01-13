@@ -14,7 +14,17 @@ const skills = [
       { name: 'JavaScript/ES6+', level: 95 },
       { name: 'TypeScript', level: 90 },
       { name: 'Less/Sass', level: 90 },
-      { name: 'WebComponents', level: 85 }
+      { name: 'React', level: 90 },
+      { name: 'Vue.js', level: 85 },
+      { name: 'Angular', level: 80 },
+      { name: 'Webpack', level: 85 },
+      { name: 'Vite', level: 80 },
+      { name: 'Node.js', level: 85 },
+      { name: 'Express', level: 80 },
+      { name: 'NestJS', level: 75 },
+      { name: 'GitHub/GitLab', level: 85 },
+      { name: 'Docker', level: 75 },
+      { name: 'CI/CD', level: 80 }
     ]
   },
   {
@@ -64,27 +74,27 @@ const skills = [
 const activeSkill = ref(skills[0])
 
 const coreStrengths = [
-  { 
-    title: '全栈开发能力', 
-    description: '前后端全栈开发经验，能独立完成完整项目开发', 
+  {
+    title: '全栈开发能力',
+    description: '前后端全栈开发经验，能独立完成完整项目开发',
     icon: 'fas fa-code-branch',
     color: '#3498db'
   },
-  { 
-    title: '工程化思维', 
-    description: '注重代码质量和开发效率，熟练使用现代化工具链', 
+  {
+    title: '工程化思维',
+    description: '注重代码质量和开发效率，熟练使用现代化工具链',
     icon: 'fas fa-tools',
     color: '#2ecc71'
   },
-  { 
-    title: '技术视野广阔', 
-    description: '持续学习新技术，涵盖Web、移动、游戏、AI等领域', 
+  {
+    title: '技术视野广阔',
+    description: '持续学习新技术，涵盖Web、移动、游戏、AI等领域',
     icon: 'fas fa-brain',
     color: '#e74c3c'
   },
-  { 
-    title: '项目经验丰富', 
-    description: '参与过多个大型项目，具备出色的问题解决能力', 
+  {
+    title: '项目经验丰富',
+    description: '参与过多个大型项目，具备出色的问题解决能力',
     icon: 'fas fa-project-diagram',
     color: '#9b59b6'
   }
@@ -145,10 +155,8 @@ const coreStrengths = [
         </div>
 
         <div class="strengths-grid">
-          <div v-for="(strength, index) in coreStrengths" 
-               :key="index"
-               class="strength-card"
-               :style="{ '--card-color': strength.color }">
+          <div v-for="(strength, index) in coreStrengths" :key="index" class="strength-card"
+            :style="{ '--card-color': strength.color }">
             <div class="strength-icon">
               <i :class="strength.icon"></i>
             </div>
@@ -169,11 +177,8 @@ const coreStrengths = [
 
       <div class="skills-content">
         <div class="skills-nav">
-          <button v-for="skill in skills"
-                  :key="skill.category"
-                  :class="['skill-tab', { active: skill === activeSkill }]"
-                  :style="{ '--tab-color': skill.color }"
-                  @click="activeSkill = skill">
+          <button v-for="skill in skills" :key="skill.category" :class="['skill-tab', { active: skill === activeSkill }]"
+            :style="{ '--tab-color': skill.color }" @click="activeSkill = skill">
             <i :class="skill.icon"></i>
             <span>{{ skill.category }}</span>
           </button>
@@ -195,10 +200,8 @@ const coreStrengths = [
           </div>
 
           <div class="skill-grid">
-            <div v-for="(item, index) in activeSkill.items"
-                 :key="index"
-                 class="skill-item"
-                 :style="{ '--item-color': activeSkill.color }">
+            <div v-for="(item, index) in activeSkill.items" :key="index" class="skill-item"
+              :style="{ '--item-color': activeSkill.color }">
               <div class="skill-info">
                 <span class="skill-name">{{ item.name }}</span>
                 <span class="skill-level">{{ item.level }}%</span>
@@ -227,11 +230,9 @@ const coreStrengths = [
   display: flex;
   gap: 3rem;
   align-items: center;
-  background: linear-gradient(
-    145deg,
-    var(--surface-color),
-    color-mix(in srgb, var(--surface-color) 90%, var(--primary-color))
-  );
+  background: linear-gradient(145deg,
+      var(--surface-color),
+      color-mix(in srgb, var(--surface-color) 90%, var(--primary-color)));
 }
 
 .avatar {
@@ -251,6 +252,7 @@ const coreStrengths = [
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -262,7 +264,7 @@ const coreStrengths = [
   border-radius: 30px;
   object-fit: cover;
   border: 4px solid var(--surface-color);
-  box-shadow: 
+  box-shadow:
     0 10px 20px rgba(0, 0, 0, 0.1),
     0 0 0 10px rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
@@ -677,7 +679,7 @@ const coreStrengths = [
   .home {
     padding: 1rem;
   }
-  
+
   .profile-card {
     flex-direction: column;
     align-items: center;
