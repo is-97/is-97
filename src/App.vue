@@ -186,6 +186,7 @@ nav {
   }
 
   .theme-switcher-fixed,
+  .music-player,
   #waifu {
     display: none;
   }
