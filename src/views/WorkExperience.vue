@@ -2,7 +2,8 @@
   <div class="experience-card">
     <h2>工作经历</h2>
     <div class="timeline">
-      <div v-for="(item, index) in experiences" :key="index" class="experience-item" :class="{ 'fade-in': true }" :style="{ '--delay': `${index * 0.2}s` }">
+      <div v-for="(item, index) in experiences" :key="index" class="experience-item" :class="{ 'fade-in': true }"
+        :style="{ '--delay': `${index * 0.2}s` }">
         <div class="timeline-dot"></div>
         <div class="timeline-content">
           <h3 class="company-name">{{ item.company }}</h3>
@@ -28,7 +29,7 @@ const experiences = [
   {
     company: '上海意臣信息科技有限公司',
     title: '前端开发工程师',
-    period: '2022.11 - 2024.05',
+    period: '2022.11 - 2024.11',
     responsibilities: [
       '领导前端团队开发和维护公司前端项目，运用 Vue2、Vue3、React 等技术栈，结合微前端解决方案 Qiankun，打造高效稳定的前端应用。',
       '设计并搭建公司前端项目的 NPM 私有仓库，搭建公司低代码平台，提高团队的开发效率和代码一致性。',
@@ -88,10 +89,9 @@ const experiences = [
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(to bottom, 
-    var(--primary-color) 0%,
-    color-mix(in srgb, var(--primary-color) 50%, transparent) 100%
-  );
+  background: linear-gradient(to bottom,
+      var(--primary-color) 0%,
+      color-mix(in srgb, var(--primary-color) 50%, transparent) 100%);
 }
 
 .experience-item {
