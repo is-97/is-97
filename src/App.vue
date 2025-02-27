@@ -1,4 +1,5 @@
 <template>
+  <Analytics />
   <div class="app">
     <nav>
       <div class="nav-links">
@@ -29,7 +30,10 @@
       </router-view>
     </div>
     <button class="scroll-to-top" @click="scrollToTop">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
     </button>
     <Live2dWidget />
     <MusicPlayer songId="2007985391" />
@@ -40,6 +44,7 @@
 import ThemeSwitcher from './components/ThemeSwitcher.vue'
 import MusicPlayer from './components/MusicPlayer.vue'
 import Live2dWidget from './components/Live2dWidget.vue'
+import { Analytics } from '@vercel/analytics/vue';
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -161,7 +166,7 @@ nav {
   box-sizing: border-box;
 }
 
-.content-area > * {
+.content-area>* {
   width: min(1000px, 100%);
   max-width: 100%;
 }
@@ -301,7 +306,7 @@ nav {
     width: 36px;
     height: 36px;
   }
-  
+
   .scroll-to-top svg {
     width: 18px;
     height: 18px;
