@@ -19,7 +19,7 @@ export default async function handler (req, res) {
           Authorization: `Bearer ${process.env.QIANWEN_API_KEY}`, // 使用环境变量
         },
         body: JSON.stringify({
-          model: 'qwen-omni-turbo',
+          model: "qwen-turbo",
           messages: [{ role: 'user', content: message }],
           max_tokens: 1500,
           temperature: 0.7,
