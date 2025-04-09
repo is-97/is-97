@@ -1,22 +1,19 @@
 <template>
   <div class="chat-interface">
     <div class="chat-messages" ref="messagesContainer">
-      <div v-for="(message, index) in messages" 
-           :key="index" 
-           :class="['message-container', message.role]">
+      <div v-for="(message, index) in messages" :key="index" :class="['message-container', message.role]">
         <div class="message-content">
           <div class="avatar">
             <div class="avatar-icon" :class="message.role">
               <i :class="message.role === 'user' ? 'fas fa-user' : 'fas fa-robot'"></i>
             </div>
           </div>
-          <div class="message-text" 
-               :class="{ 'typing': message.isTyping, 'error': message.isError }"
-               v-html="renderMessage(message.content)">
+          <div class="message-text" :class="{ 'typing': message.isTyping, 'error': message.isError }"
+            v-html="renderMessage(message.content)">
           </div>
         </div>
       </div>
-      <div v-if="isLoading" class="message-container assistant">
+      <!-- <div v-if="isLoading" class="message-container assistant">
         <div class="message-content">
           <div class="avatar">
             <div class="avatar-icon assistant">
@@ -29,25 +26,14 @@
             <span></span>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <div class="chat-input-container">
       <div class="input-wrapper">
-        <textarea
-          ref="inputArea"
-          v-model="userInput"
-          @keydown.enter.prevent="handleSend"
-          @input="autoResize"
-          placeholder="输入消息..."
-          :disabled="isLoading"
-          rows="1"
-        ></textarea>
-        <button 
-          class="send-button" 
-          @click="handleSend"
-          :disabled="!userInput.trim() || isLoading"
-        >
+        <textarea ref="inputArea" v-model="userInput" @keydown.enter.prevent="handleSend" @input="autoResize"
+          placeholder="输入消息..." :disabled="isLoading" rows="1"></textarea>
+        <button class="send-button" @click="handleSend" :disabled="!userInput.trim() || isLoading">
           <i class="fas fa-paper-plane"></i>
         </button>
       </div>
@@ -64,7 +50,7 @@ import 'highlight.js/styles/github-dark.css'
 
 // 配置marked使用highlight.js
 marked.setOptions({
-  highlight: function(code, lang) {
+  highlight: function (code, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
         return hljs.highlight(code, { language: lang }).value
@@ -112,7 +98,7 @@ const handleSend = async () => {
   if (!userInput.value.trim() || isLoading.value) return
 
   const userMessage = userInput.value.trim()
-  
+
   // 添加用户消息
   messages.value.push({
     role: 'user',
@@ -128,16 +114,30 @@ const handleSend = async () => {
   }
 
   await scrollToBottom()
-  
+
   // 发送到 AI 并获取响应
   isLoading.value = true
   try {
-    const response = await sendToAI(userMessage)
+    // 添加一个空的 assistant 消息，用于逐步填充内容
     messages.value.push({
       role: 'assistant',
-      content: response,
+      content: '',
       isTyping: true
     })
+    await scrollToBottom() // 确保空的 assistant 消息可见
+
+    await sendToAI(userMessage, (chunk) => {
+      // 在这里逐步更新 assistant 消息的内容
+      if (messages.value.length > 0 && messages.value[messages.value.length - 1].role === 'assistant') {
+        messages.value[messages.value.length - 1].content += chunk
+      }
+    })
+
+    // 流结束后，移除 typing 指示器
+    if (messages.value.length > 0 && messages.value[messages.value.length - 1].role === 'assistant') {
+      messages.value[messages.value.length - 1].isTyping = false
+    }
+
   } catch (error) {
     messages.value.push({
       role: 'assistant',
@@ -169,6 +169,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 样式保持不变 */
 .chat-interface {
   display: flex;
   flex-direction: column;
@@ -403,9 +404,12 @@ textarea::-webkit-scrollbar-thumb {
 }
 
 @keyframes typing {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-0.5rem);
     opacity: 0.8;
@@ -421,6 +425,7 @@ textarea::-webkit-scrollbar-thumb {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -469,7 +474,8 @@ textarea::-webkit-scrollbar-thumb {
   text-decoration: underline;
 }
 
-:deep(ul), :deep(ol) {
+:deep(ul),
+:deep(ol) {
   margin: 0.5rem 0;
   padding-left: 1.5rem;
 }
