@@ -53,12 +53,10 @@ export default async function handler(req, res) {
       });
 
       response.body.on('error', (err) => {
-        console.error('通义千问响应错误:', err);
         res.end();
       });
 
     } catch (error) {
-      console.error('服务器处理出错:', error);
       res.status(500).json({
         error: '服务器处理出错',
         message: error.message

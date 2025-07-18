@@ -14,7 +14,6 @@ const PORT = 3000;
 const DEFAULT_API_KEY = process.env.QIANWEN_API_KEY;
 
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
   next();
 });
 
@@ -59,6 +58,8 @@ app.post('/api/chat/qianwen', async (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     // 通过 node stream 读取响应并转发
     response.body.on('data', (chunk) => {
@@ -70,12 +71,10 @@ app.post('/api/chat/qianwen', async (req, res) => {
     });
 
     response.body.on('error', (err) => {
-      console.error('通义千问响应错误:', err);
       res.end();
     });
 
   } catch (error) {
-    console.error('服务器处理出错:', error);
     res.status(500).json({
       error: '服务器处理出错',
       message: error.message
@@ -88,5 +87,5 @@ app.get('/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`服务器启动成功：http://localhost:${PORT}`);
+  // 服务器启动成功
 });

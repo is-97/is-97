@@ -5,7 +5,7 @@ export async function sendToAI(message, onMessageChunk) {
   const PROD_API_ENDPOINT = "/api/chat/qianwen"; // 生产环境通过 Vercel 路由代理
   const endpoint = isDevelopment ? DEV_API_ENDPOINT : PROD_API_ENDPOINT;
 
-  console.log(`发送消息到 ${isDevelopment ? '本地服务器' : '通义千问'}`, message);
+
 
   try {
     const response = await fetch(endpoint, {
@@ -47,17 +47,15 @@ export async function sendToAI(message, onMessageChunk) {
             const parsed = JSON.parse(jsonStr);
             const delta = parsed.choices?.[0]?.delta?.content || '';
             if (delta) {
-              console.log(delta)
               onMessageChunk(delta); // ✅ 每次推送一段文字
             }
           } catch (e) {
-            console.warn("JSON 解析失败:", jsonStr, e);
+            // JSON 解析失败，忽略此行
           }
         }
       }
     }
   } catch (err) {
-    console.error('AI服务错误:', err);
     throw err;
   }
 }
