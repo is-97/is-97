@@ -1,653 +1,750 @@
 <template>
-  <div class="projects-card">
-    <h2>重点项目经历</h2>
-    <div class="projects-list">
-      <div v-for="(project, index) in projects" :key="index" 
-           class="project-item" 
-           :class="{ 'fade-in': true }" 
-           :style="{ '--delay': `${index * 0.1}s` }">
-        <div class="project-content">
-          <div class="project-header">
-            <div class="project-title">
-              <h3>{{ project.name }}</h3>
-              <span class="project-period">{{ project.period }}</span>
-            </div>
-          </div>
-          <p class="project-desc">{{ project.description }}</p>
-          <div class="project-achievements">
-            <h4><i class="achievement-icon">🎯</i>主要成就</h4>
-            <ul>
-              <li v-for="(achievement, aIndex) in project.achievements" 
-                  :key="aIndex">{{ achievement }}</li>
-            </ul>
-          </div>
-          <div class="tech-stack">
-            <span v-for="(tech, tIndex) in project.techStack" 
-                  :key="tIndex">{{ tech }}</span>
-          </div>
+  <div class="holo-projects" :class="{ loaded: isLoaded }">
+    <div class="page-header">
+      <div class="header-content">
+        <div class="holo-badge">
+          <span class="badge-icon">◉</span>
+          <span class="badge-text">ACCESS GRANTED</span>
+        </div>
+        <h1 class="page-title">
+          <span class="glitch-text" data-text="PROJECT_ARCHIVE">PROJECT_ARCHIVE</span>
+        </h1>
+        <div class="header-meta">
+          <span class="meta-item">ID: USER_9527</span>
+          <span class="meta-sep">//</span>
+          <span class="meta-item">LEVEL: 5</span>
+          <span class="meta-sep">//</span>
+          <span class="meta-item">STATUS: ACTIVE</span>
         </div>
       </div>
+      <div class="header-scanner"></div>
     </div>
+
+    <!-- 瀑布流网格 -->
+    <div class="projects-grid">
+      <div v-for="(project, index) in projects" :key="index"
+           class="project-capsule"
+           @click="openProject(project)"
+           :style="{ '--delay': index * 0.1 + 's' }">
+
+        <div class="capsule-glass"></div>
+        <div class="capsule-border"></div>
+
+        <div class="capsule-content">
+          <div class="project-header">
+            <div class="header-left">
+              <span class="project-index">{{ String(index + 1).padStart(2, '0') }}</span>
+              <h2 class="project-name">{{ project.name }}</h2>
+            </div>
+          </div>
+
+          <div class="project-body">
+            <div class="project-period">
+              <span class="icon">⏱</span> {{ project.period }}
+            </div>
+            <p class="description">{{ project.description }}</p>
+            <div class="click-hint">>> CLICK TO READ DATA</div>
+          </div>
+        </div>
+
+        <!-- 装饰元素 -->
+        <div class="deco-corner tl"></div>
+        <div class="deco-corner br"></div>
+        <div class="scan-line"></div>
+      </div>
+    </div>
+
+    <!-- 全息模态框 -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="selectedProject" class="holo-modal-overlay" @click="closeProject">
+          <div class="holo-modal" @click.stop>
+          <div class="modal-glass"></div>
+          <div class="modal-border"></div>
+          <button class="close-btn" @click="closeProject">×</button>
+
+          <div class="modal-content">
+            <div class="modal-header">
+              <div class="modal-title-group">
+                <h2 class="modal-title">{{ selectedProject.name }}</h2>
+                <span class="modal-period">{{ selectedProject.period }}</span>
+              </div>
+              <div class="tech-stack-large">
+                <span v-for="(tech, i) in selectedProject.techStack" :key="i" class="tech-tag large">
+                  {{ tech }}
+                </span>
+              </div>
+            </div>
+
+            <div class="modal-body">
+              <div class="section-label">>> SYSTEM_ANALYSIS</div>
+              <p class="modal-desc">{{ selectedProject.description }}</p>
+
+              <div class="section-label">>> KEY_ACHIEVEMENTS</div>
+              <ul class="achievements-list">
+                <li v-for="(achievement, i) in selectedProject.achievements" :key="i">
+                  <span class="bullet">⟐</span>
+                  <span class="text">{{ achievement }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 模态框装饰 -->
+          <div class="modal-scanner"></div>
+        </div>
+      </div>
+    </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+
+const isLoaded = ref(false)
+const selectedProject = ref(null)
+
+onMounted(() => {
+  setTimeout(() => {
+    isLoaded.value = true
+  }, 100)
+})
+
+const openProject = (project) => {
+  selectedProject.value = project
+  document.body.style.overflow = 'hidden' // 禁止背景滚动
+}
+
+const closeProject = () => {
+  selectedProject.value = null
+  document.body.style.overflow = '' // 恢复滚动
+}
+
 const projects = [
   {
-    name: 'AI-Generated Content (AIGC) 内容生成平台',
+    name: 'AI-Generated Content Platform',
     period: '2024.09 - 2024.11',
-    description: '基于深度学习与自然语言处理技术，开发了一套 AI 生成内容（AIGC）系统，能够自动生成高质量的文本、图像及多模态内容。',
+    description: '基于深度学习的 AIGC 内容生成系统，支持多模态内容自动化生产。',
     achievements: [
-      '设计并开发响应式前端界面，支持多端（Web、移动端）访问，提升用户体验。',
-      '使用 React 构建动态交互组件，如表单输入、内容展示、生成结果预览等。',
-      '与后端团队协作，通过 RESTful API 或 WebSocket 实现前后端数据交互，确保生成内容的实时展示与更新。',
-      '优化前端性能，减少页面加载时间，提升用户操作流畅度。',
-      '实现用户权限管理、内容编辑与下载功能，满足不同用户需求。',
-      '使用可视化工具（如图表库）展示生成内容的统计数据与分析结果。'
+      '构建响应式 AI 交互界面，支持实时流式内容生成。',
+      '整合 WebSocket 实现低延迟的前后端数据传输。',
+      '设计多模态内容预览组件，优化生成结果展示体验。'
     ],
-    techStack: ['React', 'WebSocket', 'RESTful API', '性能优化', '数据可视化']
+    techStack: ['React', 'WebSocket', 'RESTful API', 'AIGC']
   },
   {
-    name: '门户报表大屏（PC）',
+    name: 'Data Visualization Dashboard',
     period: '2022.11 - 2024.11',
-    description: '综合性的数据可视化系统，旨在为用户提供全面的 KPI（关键绩效指标）监控与分析。',
+    description: '企业级 KPI 监控大屏，提供实时数据洞察与决策支持。',
     achievements: [
-      '从 0 到 1 搭建项目，完成全部功能开发，并通过 FTP 部署项目上线，确保系统稳定运行。',
-      '使用自定义 Hooks 封装公共方法，抽离公共组件，结合组件化开发和自定义指令，显著提升开发效率。',
-      '针对大量数据渲染场景，采用 Web Worker 创建多线程处理数据渲染，优化页面性能，提升用户体验。',
-      '基于 Promise 二次封装 axios 请求方法，统一管理请求拦截器和响应器，增强代码可维护性和扩展性。',
-      '实现多种数据可视化图表（如中国地图、柱状图、折线图等），支持用户动态筛选和查看 KPI 数据。'
+      '基于 Web Worker 优化海量数据计算，渲染性能提升 50%。',
+      '封装高复用性可视化组件库，支持动态配置图表类型。',
+      '实现复杂的地图下钻与多维数据联动分析功能。'
     ],
-    techStack: ['Vue3', 'Web Worker', 'Axios', '数据可视化', '性能优化']
+    techStack: ['Vue3', 'Web Worker', 'ECharts', 'Performance']
   },
   {
-    name: '数据门户（PC，H5）',
+    name: 'Enterprise Data Portal',
     period: '2022.11 - 2024.11',
-    description: '综合数据洞察、访问控制、后台管理、数据补录、数据资产及 Enmolar 数据预测的数据中后台平台。',
+    description: '集数据资产管理、访问控制与预测分析于一体的中后台平台。',
     achievements: [
-      '使用 qiankun 微前端架构，将基于 Vue2、Vue3 和 React18 技术栈的 7 个独立项目整合为一个统一的数据门户平台，提升系统可维护性和扩展性。',
-      '开发智能聊天系统，结合 WebSocket 技术和 ChatGPT，为用户提供精准的数据分析支持，提升用户体验。',
-      '重新设计黑白主题方案，封装公共组件支持动态切换 Element UI 框架主题色，满足用户个性化需求。',
-      '设计并搭建公司私有 npm UI 框架 y-ui，降低多个项目之间的耦合度，提升开发效率。',
-      '搭建公司内部低代码平台 y-render，支持自动生成 Vue2.0 和 React18 常用代码，减少重复开发工作量。'
+      '采用 Qiankun 微前端架构整合 7 个子系统，统一技术底座。',
+      '集成 ChatGPT 打造智能数据助手，实现自然语言查询数据。',
+      '搭建企业级低代码引擎，支持拖拽生成业务表单。'
     ],
-    techStack: ['Vue3', 'React18', '微前端', 'WebSocket', '低代码']
+    techStack: ['Micro-Frontend', 'Vue3', 'React', 'ChatGPT']
   },
   {
-    name: 'PMS绩效管理系统（PC，H5）',
+    name: 'PMS Performance System',
     period: '2022.11 - 2024.11',
-    description: '旨在提升企业绩效管理效率的全面解决方案，涵盖员工信息、客户信息、部门信息管理等功能。',
+    description: '全流程绩效管理系统，覆盖员工考评、工时审批与报表统计。',
     achievements: [
-      '独立封装公共组件 lazy-tree 和 lazy-table，采用虚拟列表技术解决大数据渲染卡顿问题，显著提升页面性能。',
-      '独立封装公共请求文件 request-stop，解决接口重复请求问题，优化网络请求效率。',
-      '在 Webpack 中配置 Babel 和 Loader，开启 gzip 压缩和 etag 标记等缓存优化措施，缩小压缩包体积，提升首屏加载速度。',
-      '实现员工、客户、部门、项目等信息的管理功能，支持动态配置和高效查询。',
-      '开发工时审批、绩效统计等核心模块，为企业提供全面的绩效管理解决方案。'
+      '实现虚拟滚动列表，解决万级数据表格渲染卡顿问题。',
+      '构建请求去重与缓存机制，显著降低服务器负载。',
+      '配置 Webpack 构建优化，首屏加载体积减少 40%。'
     ],
-    techStack: ['Vue3', 'Webpack', '性能优化', '虚拟列表']
+    techStack: ['Vue3', 'Virtual List', 'Webpack', 'Optimization']
   },
   {
-    name: 'OneStar（H5）',
+    name: 'OneStar Data Platform',
     period: '2022.11 - 2024.11',
-    description: '数据平台，能够实时获取、处理和分析大量数据，帮助员工查询各城市及销售区域的日常数据。',
+    description: '移动端销售数据查询平台，支持多维度业务数据实时分析。',
     achievements: [
-      '使用 Vue2 和原生 JavaScript 封装公共富文本输入框，支持多图片上传和大文本提交功能，提升用户输入体验。',
-      '通过 addRouter 实现动态路由和自定义指令，精确控制每个用户的页面权限和按钮权限，确保系统安全性。',
-      '使用 RxJS 封装传值呼机，实现项目之间数据共享，提升数据交互效率。',
-      '开发数据查询和分析模块，支持员工实时查看各城市及销售区域的日常数据，助力决策制定。',
-      '实现权限管理功能，支持根据角色动态分配权限，满足不同用户的需求。'
+      '设计动态路由权限系统，实现细粒度的页面与按钮级控制。',
+      '使用 RxJS 处理复杂的跨组件状态流转与数据共享。',
+      '封装富文本组件，支持多媒体内容的高效上传与展示。'
     ],
-    techStack: ['Vue2', 'RxJS', '权限管理', '动态路由']
+    techStack: ['Vue2', 'RxJS', 'H5', 'RBAC']
   },
   {
-    name: '元市场（H5）',
+    name: 'Meta Market NFT',
     period: '2021.04 - 2022.11',
-    description: 'NFT 数字藏品的第三方交易平台，旨在打造独特的二次元社区，支持 300 多家藏品平台的买卖家交易。',
+    description: '二次元 NFT 数字藏品交易平台，聚合 300+ 藏品源。',
     achievements: [
-      '独立完成前端所有页面的开发工作，包括首页、商品详情、交易流程、个人中心等模块。',
-      '独立负责全部页面的接口联调工作，确保前后端数据交互的准确性和实时性。',
-      '设计并实现买卖家聊天功能，集成环信 SDK，支持文字、图片和视频的发送与接收，提升用户沟通体验。',
-      '独立实现从商品发布、买家下单支付到买家收货的全流程功能，确保交易流程的完整性和用户体验的流畅性。',
-      '实现保证金缴纳、实名认证、我的收藏等附加功能，完善平台服务体系。'
+      '独立开发全站核心模块，包括交易撮合与支付结算流程。',
+      '集成 IM SDK 实现买卖家实时沟通与多媒体消息发送。',
+      '优化高并发下的抢购体验，确保交易数据的一致性。'
     ],
-    techStack: ['Vue', 'WebSocket', '即时通讯', 'NFT']
+    techStack: ['Vue', 'Web3', 'IM SDK', 'Payment']
   },
   {
-    name: '小它宠物（小程序）',
+    name: 'Pet Care Mini Program',
     period: '2022.10 - 2022.10',
-    description: '综合性宠物服务小程序，提供商品购买、预约洗护、会员服务等功能，支持分享和推广。',
+    description: '一站式宠物服务小程序，涵盖电商、预约与会员管理。',
     achievements: [
-      '使用 vant-weapp 组件库开发小程序前端页面，实现动态会员码功能和抽奖功能，提升用户活跃度。',
-      '实现在线下单、购物车管理、洗护预约等核心功能，并开发“我的订单”和“商城订单”模块，完善用户交易体验。',
-      '开发小程序海报组件，支持生成朋友圈分享海报并保存为图片，助力社交传播与用户增长。',
-      '使用 mp-html 渲染 HTML 内容，结合 Apache ECharts 实现数据可视化，提升页面交互性与数据展示效果。',
-      '基于微信云开发和云托管技术，快速搭建业务逻辑，提高开发效率并降低运维成本。'
+      '基于微信云开发构建全栈业务，大幅缩短开发周期。',
+      '开发动态海报生成组件，利用 Canvas 实现个性化分享。',
+      '集成会员积分与抽奖系统，提升用户留存与活跃度。'
     ],
-    techStack: ['小程序', 'Vant Weapp', '云开发', '电商系统']
+    techStack: ['Mini Program', 'Vant Weapp', 'Cloud Base']
   },
   {
-    name: '联合宇宙（H5）',
+    name: 'Metaverse Portal',
     period: '2021.04 - 2022.10',
-    description: '集数字艺术创新、元宇宙空间打造及内容生态社区创建于一体的元宇宙门户网站。',
+    description: '基于区块链的元宇宙内容社区，支持数字资产铸造与展示。',
     achievements: [
-      '独立完成公司手机 App 的详细设计、代码开发与测试，高质量交付项目，搭建产品架构并实现核心功能。',
-      '攻克技术难题，持续优化产品技术体验，负责项目全流程实施（开发、打包、上架及优化）。',
-      '使用 Vue3、Vant 3 组件库和 Vite 构建工具进行移动端开发，采用 uniapp 套壳模式实现安卓端适配，并与 iOS 端实现传参、支付、截屏、下载等交互功能。',
-      '实现数字多媒体铸造、NFT 盲盒、私人藏品室等核心功能，支持用户上传与展示 3D 作品、数字音乐等内容。',
-      '基于百度超级链底层技术，搭建联盟区块链+内容+社区的元宇宙空间，提供跨域转赠和开放 API 接口，支持第三方应用接入。'
+      '使用 UniApp 实现多端适配，并进行原生插件开发与桥接。',
+      '集成 3D 渲染引擎展示数字藏品，优化移动端渲染性能。',
+      '对接百度超级链，实现数字资产的链上确权与流转。'
     ],
-    techStack: ['Vue3', 'Vant', 'Vite', 'uniapp', '元宇宙']
+    techStack: ['UniApp', 'Vite', 'Blockchain', '3D']
   },
   {
-    name: '口令红包（H5）',
-    period: '2021.04 - 2022.10',
-    description: '基于 H5 的红包领取应用，用户通过输入特定兑换口令即可领取红包。',
-    achievements: [
-      '使用 Vue3、Vant 3 和 Vite 搭建项目结构，实现高效开发和快速构建。',
-      '独立完成前端页面开发与后端接口联调，确保数据交互的准确性和实时性。',
-      '实现通过 URL Scheme 从打卡 App 唤醒 H5 页面并完成跳转和回调领奖功能，提升用户体验。',
-      '配合 App 内置打卡功能，持续优化页面 UI 和交互设计，针对用户体验和性能进行大量改进，包括加载速度、动画流畅度等。',
-      '通过加密和混淆技术保障口令安全，有效防止恶意猜解和攻击，提升系统安全性。'
-    ],
-    techStack: ['Vue3', 'Vant', 'Vite', 'H5', '加密技术']
-  },
-  {
-    name: '简赚宝（H5）',
-    period: '2021.04 - 2022.10',
-    description: '网赚类 H5 应用平台，用户通过完成签到、分享推广等简单任务即可获取收益。',
-    achievements: [
-      '负责 PC 端和移动端前端页面的开发与适配，确保多端兼容性和响应式布局。',
-      '完成前端与后端数据的联调，实现任务发布、收益计算、红包领取等核心功能。',
-      '优化用户体验，引入图片懒加载、静态资源 CDN 加速、页面动画效果及骨架屏技术，提升页面加载速度和交互流畅度。',
-      '使用 uniapp 进行多渠道打包，支持快速发布至不同平台，并集成 gtag.js（谷歌监控）和友盟 SDK，实现数据监控与分析。',
-      '通过性能优化和功能迭代，提升用户留存率和平台活跃度，使项目成为公司主要收入来源之一。'
-    ],
-    techStack: ['Vue3', 'uniapp', 'CDN', '性能优化', '数据监控']
-  },
-  {
-    name: 'ASO榜单提升系统（H5）',
-    period: '2021.04 - 2022.10',
-    description: '专注于提升 APP 在应用商店排行榜和搜索结果排名的平台。',
-    achievements: [
-      '搭建基于 Vue3 的项目脚手架，集成全家桶框架（Vuex、Vue Router 等），优化首屏性能并引入性能监控工具，提升页面加载速度和用户体验。',
-      '主导技术选型与架构设计，设计异步加载业务组件和动态路由方案，显著提升系统性能和用户交互流畅度。',
-      '使用 Uniapp 实现安卓和 iOS 套壳应用，封装 H5 与原生 Android/iOS 的互调方法，支持跨平台功能扩展。',
-      '在安卓端实现无感更新和强制更新功能，提高应用稳定性和安全性，确保用户始终使用最新版本。',
-      '实现数据分析模块，利用专业工具对用户搜索行为、点击行为等数据进行深度分析，提供实质性优化建议。'
-    ],
-    techStack: ['Vue3', 'Uniapp', '性能优化', '动态路由', '数据分析']
-  },
-  {
-    name: '超清桌面壁纸 (React Native)',
-    period: '2021.08 - 2021.09',
-    description: '基于 React Native 的超清桌面壁纸应用，支持用户浏览、下载和设置高清壁纸。',
-    achievements: [
-      '使用 React Native 开发跨平台移动应用，兼容 iOS 和 Android，实现壁纸浏览、下载和设置功能。',
-      '设计并实现壁纸分类、搜索功能，支持用户按关键词、颜色、风格等筛选壁纸，提升用户体验。',
-      '集成图片懒加载和缓存机制，优化壁纸加载速度，减少用户等待时间，提升应用性能。',
-      '实现用户收藏、历史记录功能，支持个性化壁纸推荐，提高用户留存率。',
-      '通过 Redux 管理应用状态，确保数据流清晰、逻辑可维护，提升开发效率。'
-    ],
-    techStack: ['React Native', 'Redux', '图片懒加载', '缓存机制']
-  },
-  {
-    name: '3DVR 全景平台（PC）',
+    name: '3DVR Panorama Platform',
     period: '2018.04 - 2021.03',
-    description: '基于 Three.js 和 Canvas 的 3DVR 全景平台，支持用户创建、管理和交互式浏览全景项目。',
+    description: '基于 WebGL 的全景漫游创作平台，支持可视化场景编辑。',
     achievements: [
-      '独立开发基于 Three.js 和 Canvas 的 3DVR 全景平台，实现 3D 场景渲染与动态效果制作，提供沉浸式交互体验。',
-      '使用 React 和 MobX 搭建前端架构，结合 Ant Design 设计用户界面，确保界面美观且交互流畅。',
-      '实现用户菜单和路由权限系统，支持自定义菜单、按钮及多种项目类型创建，新增时间轴、场景对比等功能，提升用户操作体验和内容管理效率。',
-      '完成平台注册、登录、项目创建、场景管理等核心功能开发，并实现充值、支付等业务逻辑，确保平台商业化功能的完整性和用户体验。',
-      '通过代码优化和资源加载策略，提升 3D 场景渲染性能，设计响应式布局兼容多端设备，最终交付功能完善的 3DVR 全景平台。'
+      '基于 Three.js 独立开发全景渲染引擎，支持热点交互与场景切换。',
+      '设计可视化编辑器架构，实现拖拽式场景搭建与配置。',
+      '优化全景图加载策略，采用分块加载提升大图浏览体验。'
     ],
-    techStack: ['Three.js', 'React', 'MobX', '3D渲染', '权限管理']
+    techStack: ['Three.js', 'React', 'WebGL', 'Editor']
   }
-];
+]
 </script>
 
-
-
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap');
 
-.projects-card {
-
-  background: var(--surface-color);
-
-  backdrop-filter: blur(10px);
-
-  border-radius: 20px;
-
-  padding: 2rem;
-
-  box-shadow: 0 8px 32px var(--shadow-color);
-
-  border: 1px solid var(--border-color);
-
-  width: 100%;
-
-  max-width: 900px;
-
+.holo-projects {
+  font-family: 'Rajdhani', sans-serif;
+  color: #fff;
+  padding: 2rem 0;
+  max-width: 1200px;
   margin: 0 auto;
-
-  position: relative;
-
-}
-
-
-
-.projects-card h2 {
-
-  font-size: 1.8rem;
-
-  margin-bottom: 2rem;
-
-  text-align: center;
-
-  background: linear-gradient(120deg, var(--primary-color), color-mix(in srgb, var(--primary-color) 70%, transparent));
-
-  -webkit-background-clip: text;
-
-  -webkit-text-fill-color: transparent;
-
-}
-
-
-
-.projects-list {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 1.5rem;
-
-}
-
-
-
-.project-item {
-
   opacity: 0;
-
   transform: translateY(20px);
-
-  animation: fadeInUp 0.5s ease-out forwards;
-
-  animation-delay: var(--delay);
-
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+.holo-projects.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-
-.project-content {
-
-  background: color-mix(in srgb, var(--surface-color) 95%, transparent);
-
-  border: 1px solid var(--border-color);
-
-  border-radius: 16px;
-
-  padding: 1.8rem;
-
-  transition: all 0.3s ease;
-
+/* 标题区域 */
+.page-header {
+  margin-bottom: 5rem;
   position: relative;
-
+  padding: 3rem;
+  background: rgba(0, 240, 255, 0.02);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  border-radius: 4px;
   overflow: hidden;
-
 }
 
-
-
-.project-content:hover {
-
-  transform: translateY(-4px);
-
-  box-shadow: 0 8px 24px var(--shadow-color);
-
-  border-color: var(--primary-color);
-
+.page-header::before,
+.page-header::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 240, 255, 0.5);
+  transition: all 0.3s;
 }
 
+.page-header::before { top: 0; left: 0; border-right: none; border-bottom: none; }
+.page-header::after { bottom: 0; right: 0; border-left: none; border-top: none; }
 
+.header-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.holo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 20px;
+  margin-bottom: 1.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.badge-icon {
+  animation: blink 2s infinite;
+}
+
+.page-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 4rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.glitch-text {
+  position: relative;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.glitch-text::before {
+  color: #00f0ff;
+  z-index: -1;
+  animation: glitch-effect 3s infinite;
+}
+
+.glitch-text::after {
+  color: #ff0055;
+  z-index: -2;
+  animation: glitch-effect 2s infinite reverse;
+}
+
+.header-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.meta-sep {
+  color: #00f0ff;
+  opacity: 0.5;
+}
+
+.header-scanner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #00f0ff;
+  box-shadow: 0 0 10px #00f0ff;
+  opacity: 0.5;
+  animation: scan-vertical 4s infinite linear;
+}
+
+@keyframes scan-vertical {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes glitch-effect {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* 瀑布流布局 */
+.projects-grid {
+  column-count: 3;
+  column-gap: 2rem;
+  padding: 0 1rem;
+}
+
+/* 全息胶囊卡片 */
+.project-capsule {
+  position: relative;
+  background: rgba(10, 20, 30, 0.4);
+  border-radius: 20px;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  animation: slideUp 0.6s ease forwards;
+  animation-delay: var(--delay);
+  opacity: 0;
+  transform: translateY(30px);
+  display: flex;
+  flex-direction: column;
+  break-inside: avoid;
+  margin-bottom: 2rem;
+  backface-visibility: hidden;
+  cursor: pointer;
+}
+
+@keyframes slideUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.capsule-glass {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  z-index: 0;
+}
+
+.capsule-border {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.project-capsule:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.project-capsule:hover .capsule-border {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+.capsule-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 
 .project-header {
-
-  margin-bottom: 1.2rem;
-
+  margin-bottom: 1rem;
 }
 
-
-
-.project-title {
-
+.header-left {
   display: flex;
-
-  align-items: center;
-
-  gap: 1rem;
-
-  flex-wrap: wrap;
-
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
+.project-index {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 3rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.1);
+  line-height: 1;
+  transition: color 0.3s;
+}
 
+.project-capsule:hover .project-index {
+  color: rgba(0, 240, 255, 0.2);
+}
 
-.project-title h3 {
-
-  color: var(--text-primary);
-
+.project-name {
   font-size: 1.4rem;
-
+  font-weight: 700;
   margin: 0;
-
-  font-weight: 600;
-
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-
+.project-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
 .project-period {
-
-  color: var(--primary-color);
-
-  font-size: 0.9rem;
-
-  padding: 0.4rem 1rem;
-
-  background: color-mix(in srgb, var(--primary-color) 8%, transparent);
-
-  border-radius: 20px;
-
-  border: 1px solid color-mix(in srgb, var(--primary-color) 20%, transparent);
-
-  transition: all 0.3s ease;
-
-}
-
-
-
-.project-desc {
-
-  color: var(--text-secondary);
-
-  font-size: 1rem;
-
-  line-height: 1.6;
-
-  margin: 1rem 0;
-
-  padding: 1.2rem;
-
-  background: color-mix(in srgb, var(--surface-color) 50%, transparent);
-
-  border-radius: 12px;
-
-  border: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
-
-}
-
-
-
-.project-achievements {
-
-  margin: 1.5rem 0;
-
-}
-
-
-
-.project-achievements h4 {
-
-  color: var(--text-primary);
-
-  font-size: 1.1rem;
-
-  margin: 0 0 1rem;
-
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
   display: flex;
-
   align-items: center;
-
-  gap: 0.5rem;
-
+  gap: 6px;
 }
 
-
-
-.achievement-icon {
-
-  font-style: normal;
-
-  font-size: 1.2rem;
-
-}
-
-
-
-.project-achievements ul {
-
-  list-style: none;
-
-  padding: 0;
-
-  margin: 0;
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 0.8rem;
-
-}
-
-
-
-.project-achievements li {
-
-  color: var(--text-secondary);
-
-  padding: 1rem 1rem 1rem 2rem;
-
+.description {
   font-size: 0.95rem;
-
-  position: relative;
-
-  background: color-mix(in srgb, var(--surface-color) 50%, transparent);
-
-  border-radius: 8px;
-
-  border: 1px solid color-mix(in srgb, var(--border-color) 30%, transparent);
-
-  transition: all 0.3s ease;
-
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
 }
 
-
-
-.project-achievements li:hover {
-
-  background: color-mix(in srgb, var(--primary-color) 5%, var(--surface-color));
-
-  border-color: color-mix(in srgb, var(--primary-color) 30%, transparent);
-
-  transform: translateX(4px);
-
+.click-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #00f0ff;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s;
+  margin-top: auto;
 }
 
+.project-capsule:hover .click-hint {
+  opacity: 1;
+  transform: translateX(0);
+}
 
-
-.project-achievements li::before {
-
-  content: '▹';
-
+/* 装饰元素 */
+.deco-corner {
   position: absolute;
-
-  left: 0.8rem;
-
-  color: var(--primary-color);
-
-  font-size: 1.1rem;
-
+  width: 10px;
+  height: 10px;
+  border: 2px solid #00f0ff;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 3;
 }
 
+.project-capsule:hover .deco-corner {
+  opacity: 1;
+}
 
+.deco-corner.tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+.deco-corner.br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
 
-.tech-stack {
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.1), transparent);
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
 
+.project-capsule:hover .scan-line {
+  animation: cardScan 2s infinite;
+  opacity: 1;
+}
+
+@keyframes cardScan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* --- 全息模态框 --- */
+.holo-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 5, 10, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
 
+.holo-modal {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  background: rgba(10, 20, 30, 0.9);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-glass {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  z-index: 0;
+}
+
+.modal-border {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 20px;
+  z-index: 1;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+  pointer-events: none;
+}
+
+.close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s;
+}
+
+.close-btn:hover {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: #00f0ff;
+  transform: rotate(90deg);
+}
+
+.modal-content {
+  position: relative;
+  z-index: 2;
+  padding: 3rem;
+  overflow-y: auto;
+}
+
+.modal-header {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.modal-period {
+  font-family: 'JetBrains Mono', monospace;
+  color: #00f0ff;
+}
+
+.tech-stack-large {
+  display: flex;
   flex-wrap: wrap;
-
   gap: 0.8rem;
-
   margin-top: 1.5rem;
-
-  padding-top: 1.2rem;
-
-  border-top: 1px solid color-mix(in srgb, var(--border-color) 50%, transparent);
-
 }
 
-
-
-.tech-stack span {
-
-  background: color-mix(in srgb, var(--primary-color) 8%, transparent);
-
-  color: var(--primary-color);
-
-  padding: 0.4rem 1rem;
-
-  border-radius: 16px;
-
+.tech-tag.large {
+  padding: 0.5rem 1.2rem;
   font-size: 0.9rem;
-
-  border: 1px solid color-mix(in srgb, var(--primary-color) 20%, transparent);
-
-  transition: all 0.3s ease;
-
-  cursor: default;
-
+  border-radius: 20px;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #fff;
+  background: rgba(0, 240, 255, 0.1);
 }
 
-
-
-.tech-stack span:hover {
-
-  background: color-mix(in srgb, var(--primary-color) 15%, transparent);
-
-  transform: translateY(-2px);
-
+.modal-body {
+  color: rgba(255, 255, 255, 0.9);
 }
 
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: #00f0ff;
+  margin: 2rem 0 1rem 0;
+  letter-spacing: 0.1em;
+}
 
+.modal-desc {
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
 
-@keyframes fadeInUp {
+.achievements-list {
+  list-style: none;
+  padding: 0;
+}
 
-  to {
+.achievements-list li {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border-left: 2px solid rgba(0, 240, 255, 0.3);
+}
 
-    opacity: 1;
+.bullet {
+  color: #00f0ff;
+  font-weight: bold;
+}
 
-    transform: translateY(0);
+/* 模态框动画 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
 
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .holo-modal {
+  animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-leave-active .holo-modal {
+  animation: modalPop 0.3s ease reverse;
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* 响应式 */
+@media (max-width: 1200px) {
+  .projects-grid {
+    column-count: 2;
   }
-
 }
-
-
 
 @media (max-width: 768px) {
+  .page-title {
+    font-size: 2.5rem;
+  }
 
-  .projects-card {
+  .projects-grid {
+    column-count: 1;
+  }
 
+  .modal-content {
     padding: 1.5rem;
-
   }
 
-
-
-  .projects-card h2 {
-
-    font-size: 1.5rem;
-
-    margin-bottom: 1.5rem;
-
+  .modal-title {
+    font-size: 1.8rem;
   }
-
-
-
-  .project-content {
-
-    padding: 1.2rem;
-
-  }
-
-
-
-  .project-title {
-
-    gap: 0.8rem;
-
-  }
-
-
-
-  .project-title h3 {
-
-    font-size: 1.2rem;
-
-  }
-
-
-
-  .project-period {
-
-    font-size: 0.85rem;
-
-    padding: 0.3rem 0.8rem;
-
-  }
-
-
-
-  .project-desc {
-
-    font-size: 0.95rem;
-
-    padding: 1rem;
-
-  }
-
-
-
-  .project-achievements li {
-
-    font-size: 0.9rem;
-
-    padding: 0.8rem 0.8rem 0.8rem 1.8rem;
-
-  }
-
-
-
-  .tech-stack {
-
-    gap: 0.6rem;
-
-  }
-
-
-
-  .tech-stack span {
-
-    font-size: 0.85rem;
-
-    padding: 0.3rem 0.8rem;
-
-  }
-
 }
-
 </style>

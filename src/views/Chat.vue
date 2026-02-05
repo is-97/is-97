@@ -21,23 +21,20 @@ onUnmounted(() => {
 
 <style scoped>
 .chat-view {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: -2rem;
+  width: 100%;
+  height: 100vh;
   overflow: hidden;
+  padding: 0;
+  margin: 0;
+  position: relative; /* 保持在 content-area 内部流中，但占满空间 */
 }
 
 .chat-container {
   width: 100%;
-  max-width: 1200px;
-  height: calc(100vh - 4rem);
-  background: var(--surface-color);
-  border: 1px solid var(--border-color);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px var(--shadow-color);
-  overflow: hidden;
-  position: relative;
+  height: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 </style>

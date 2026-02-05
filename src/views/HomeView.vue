@@ -1,666 +1,519 @@
 <script setup>
-import { ref } from 'vue'
-import avatarImg from '../assets/007eWV7mly8hi0swmrl3oj30u00u0gpf.jpg'
+import { ref, onMounted } from 'vue'
+import ThreeScene from '../components/ThreeScene.vue'
+import CountUp from '../components/CountUp.vue'
+import TypeText from '../components/TypeText.vue'
+
+const isLoaded = ref(false)
+const activeSkill = ref(0)
+
+onMounted(() => {
+  setTimeout(() => {
+    isLoaded.value = true
+  }, 100)
+})
 
 const skills = [
   {
-    category: '前端开发',
-    icon: 'fas fa-code',
-    color: '#3498db',
-    mastery: 95,
-    description: '精通现代前端开发技术栈，构建高性能的用户界面',
+    category: 'Frontend',
+    icon: '⚡',
+    color: '#00f0ff',
+    description: 'Architecture & UI Engineering',
     items: [
-      { name: 'HTML5/CSS3', level: 95 },
-      { name: 'JavaScript/ES6+', level: 95 },
-      { name: 'TypeScript', level: 90 },
-      { name: 'Less/Sass', level: 90 },
-      { name: 'React', level: 90 },
-      { name: 'Vue.js', level: 85 },
-      { name: 'Angular', level: 80 },
-      { name: 'Webpack', level: 85 },
-      { name: 'Vite', level: 80 },
-      { name: 'Node.js', level: 85 },
-      { name: 'Express', level: 80 },
-      { name: 'NestJS', level: 75 },
-      { name: 'GitHub/GitLab', level: 85 },
-      { name: 'Docker', level: 75 },
-      { name: 'CI/CD', level: 80 }
+      { name: 'Vue 3 / Nuxt 3', level: 98 },
+      { name: 'React 18 / Next.js', level: 95 },
+      { name: 'TypeScript 5.x', level: 95 },
+      { name: 'Tailwind / UnoCSS', level: 92 },
+      { name: 'Vite / Turbopack', level: 90 }
     ]
   },
   {
-    category: '框架技术',
-    icon: 'fas fa-layer-group',
-    color: '#2ecc71',
-    mastery: 90,
-    description: '精通主流前端框架，了解MVC&MVVM设计模式',
+    category: 'Engineering',
+    icon: '🛠',
+    color: '#7000ff',
+    description: 'Infrastructure & Performance',
     items: [
-      { name: 'Vue.js 2/3', level: 95 },
-      { name: 'React.js', level: 85 },
-      { name: 'Angular.js', level: 80 },
-      { name: 'TypeScript', level: 90 },
-      { name: 'Node.js', level: 85 }
+      { name: 'Rust / WebAssembly', level: 85 },
+      { name: 'Docker / K8s', level: 88 },
+      { name: 'CI/CD Pipelines', level: 92 },
+      { name: 'Node.js / Bun', level: 90 },
+      { name: 'Micro-Frontend', level: 88 }
     ]
   },
   {
-    category: '可视化开发',
-    icon: 'fas fa-chart-bar',
-    color: '#e74c3c',
-    mastery: 85,
-    description: '擅长数据可视化和3D开发，构建复杂的数据展示界面',
+    category: 'Visualization',
+    icon: '🔮',
+    color: '#ff0055',
+    description: '3D Graphics & Creative Coding',
     items: [
-      { name: 'Three.js', level: 85 },
-      { name: 'WebGL', level: 80 },
-      { name: 'Echarts', level: 90 },
-      { name: 'AntV-G2', level: 85 },
-      { name: 'D3.js', level: 80 }
-    ]
-  },
-  {
-    category: '工程化工具',
-    icon: 'fas fa-tools',
-    color: '#9b59b6',
-    mastery: 90,
-    description: '熟练使用现代前端工程化工具，确保高效开发',
-    items: [
-      { name: 'Webpack', level: 90 },
-      { name: 'Vite', level: 90 },
-      { name: 'Git/SVN', level: 95 },
-      { name: 'CI/CD', level: 85 },
-      { name: 'Docker', level: 80 }
+      { name: 'Three.js / R3F', level: 95 },
+      { name: 'WebGL / GLSL', level: 90 },
+      { name: 'Blender', level: 85 },
+      { name: 'Generative Art', level: 88 },
+      { name: 'D3.js', level: 85 }
     ]
   }
 ]
 
-const activeSkill = ref(skills[0])
-
-const coreStrengths = [
-  {
-    title: '全栈开发能力',
-    description: '前后端全栈开发经验，能独立完成完整项目开发',
-    icon: 'fas fa-code-branch',
-    color: '#3498db'
-  },
-  {
-    title: '工程化思维',
-    description: '注重代码质量和开发效率，熟练使用现代化工具链',
-    icon: 'fas fa-tools',
-    color: '#2ecc71'
-  },
-  {
-    title: '技术视野广阔',
-    description: '持续学习新技术，涵盖Web、移动、游戏、AI等领域',
-    icon: 'fas fa-brain',
-    color: '#e74c3c'
-  },
-  {
-    title: '项目经验丰富',
-    description: '参与过多个大型项目，具备出色的问题解决能力',
-    icon: 'fas fa-project-diagram',
-    color: '#9b59b6'
-  }
+const stats = [
+  { value: 7, label: 'YEARS EXP', pad: 2, suffix: '' },
+  { value: 50, label: 'PROJECTS', pad: 0, suffix: '+' },
+  { value: 20, label: 'STACKS', pad: 0, suffix: '+' }
 ]
 </script>
 
 <template>
-  <div class="home">
-    <div class="profile-card">
-      <div class="avatar">
-        <img :src="avatarImg" alt="头像">
-      </div>
-      <div class="info">
-        <h1>史振兴</h1>
-        <p class="title">前端开发工程师</p>
-        <p class="motto">💭 study hard and make progress every day</p>
-        <div class="contact">
-          <p><i class="fas fa-phone"></i> 18595729506</p>
-          <p><i class="fas fa-envelope"></i> s_shizhenxing@163.com</p>
-          <p><i class="fas fa-map-marker-alt"></i> 中国上海</p>
-          <a href="https://github.com/is-97" target="_blank" class="github-link">
-            <i class="fab fa-github"></i>
-            <span>GitHub</span>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 个人简介卡片 -->
-    <div class="intro-card">
-      <div class="card-header">
-        <h2><i class="fas fa-user-circle"></i>个人简介</h2>
-        <div class="experience-badge">
-          <span class="badge-number">7</span>
-          <span class="badge-text">年前端开发经验</span>
-        </div>
-      </div>
-
-      <div class="intro-content">
-        <div class="intro-text">
-          <h3>全栈开发工程师</h3>
-          <p>专注于构建高性能的现代化 Web 应用</p>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-number">50<span>+</span></div>
-            <div class="stat-label">项目经验</div>
+  <div class="deep-home" :class="{ loaded: isLoaded }">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-layout">
+        <div class="hero-text">
+          <div class="identity-badge">FRONTEND ARCHITECT</div>
+          <h1 class="name-title" data-text="SHI ZHENXING">
+            SHI<br>ZHENXING
+          </h1>
+          <div class="bio-text">
+            <TypeText
+              text="专注于构建高性能、高交互的现代 Web 应用。&#10;追求代码的优雅与极致的用户体验。"
+              :delay="800"
+              :speed="50"
+            />
           </div>
-          <div class="stat-item">
-            <div class="stat-number">10<span>+</span></div>
-            <div class="stat-label">技术领域</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">20<span>+</span></div>
-            <div class="stat-label">技术栈</div>
+
+          <div class="action-group">
+            <a href="mailto:s_shizhenxing@163.com" class="btn-primary">
+              <span>CONTACT ME</span>
+            </a>
+            <a href="https://github.com/is-97" target="_blank" class="btn-ghost">
+              <span>GITHUB</span>
+            </a>
           </div>
         </div>
 
-        <div class="strengths-grid">
-          <div v-for="(strength, index) in coreStrengths" :key="index" class="strength-card"
-            :style="{ '--card-color': strength.color }">
-            <div class="strength-icon">
-              <i :class="strength.icon"></i>
-            </div>
-            <div class="strength-content">
-              <h4>{{ strength.title }}</h4>
-              <p>{{ strength.description }}</p>
-            </div>
-          </div>
+        <div class="hero-visual">
+          <ThreeScene />
+          <div class="visual-circle"></div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- 技能展示卡片 -->
-    <div class="skills-card">
-      <div class="card-header">
-        <h2><i class="fas fa-code"></i>专业技能</h2>
+    <!-- Stats Grid -->
+    <section class="stats-section">
+      <div v-for="(stat, index) in stats" :key="index" class="stat-item">
+        <div class="stat-value">
+          <CountUp
+            :to="stat.value"
+            :pad="stat.pad"
+            :suffix="stat.suffix"
+            :delay="index * 200 + 500"
+          />
+        </div>
+        <div class="stat-label">{{ stat.label }}</div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills-section">
+      <div class="section-header">
+        <h2>TECHNICAL<span class="text-gradient">STACK</span></h2>
       </div>
 
-      <div class="skills-content">
+      <div class="skills-layout">
+        <!-- Categories -->
         <div class="skills-nav">
-          <button v-for="skill in skills" :key="skill.category" :class="['skill-tab', { active: skill === activeSkill }]"
-            :style="{ '--tab-color': skill.color }" @click="activeSkill = skill">
-            <i :class="skill.icon"></i>
-            <span>{{ skill.category }}</span>
+          <button
+            v-for="(skill, index) in skills"
+            :key="index"
+            class="skill-tab"
+            :class="{ active: activeSkill === index }"
+            @click="activeSkill = index"
+          >
+            <span class="tab-indicator" :style="{ background: skill.color }"></span>
+            {{ skill.category }}
           </button>
         </div>
 
-        <div class="skill-details">
-          <div class="skill-header">
-            <div class="skill-title">
-              <h3>{{ activeSkill.category }}</h3>
-              <p>{{ activeSkill.description }}</p>
+        <!-- Detail Panel -->
+        <div class="skill-detail-card">
+          <div class="card-header">
+            <div class="header-icon" :style="{ color: skills[activeSkill].color }">
+              {{ skills[activeSkill].icon }}
             </div>
-            <div class="mastery-meter">
-              <span class="mastery-label">掌握程度</span>
-              <div class="mastery-bar">
-                <div class="mastery-fill" :style="{ width: activeSkill.mastery + '%' }"></div>
-              </div>
-              <span class="mastery-value">{{ activeSkill.mastery }}%</span>
+            <div class="header-info">
+              <h3>{{ skills[activeSkill].category }}</h3>
+              <p>{{ skills[activeSkill].description }}</p>
             </div>
           </div>
 
-          <div class="skill-grid">
-            <div v-for="(item, index) in activeSkill.items" :key="index" class="skill-item"
-              :style="{ '--item-color': activeSkill.color }">
-              <div class="skill-info">
-                <span class="skill-name">{{ item.name }}</span>
-                <span class="skill-level">{{ item.level }}%</span>
+          <div class="skill-list">
+            <div v-for="(item, i) in skills[activeSkill].items" :key="i" class="skill-bar-item">
+              <div class="skill-meta">
+                <span>{{ item.name }}</span>
+                <span class="skill-percent">
+                  <CountUp :to="item.level" suffix="%" :duration="1500" />
+                </span>
               </div>
-              <div class="progress-bar">
-                <div class="progress-fill" :style="{ width: item.level + '%' }"></div>
+              <div class="progress-track">
+                <div
+                  class="progress-fill"
+                  :style="{
+                    width: item.level + '%',
+                    background: skills[activeSkill].color
+                  }"
+                ></div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
-/* 基础布局 */
-.home {
+.deep-home {
   max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 2rem;
+  margin: 0 auto;
+  padding-top: 4rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* 个人信息区域 */
-.profile-card {
-  display: flex;
-  gap: 3rem;
+.deep-home.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero Section */
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
   align-items: center;
-  background: linear-gradient(145deg,
-      var(--surface-color),
-      color-mix(in srgb, var(--surface-color) 90%, var(--primary-color)));
+  gap: 4rem;
+  margin-bottom: 8rem;
 }
 
-.avatar {
+.identity-badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--primary);
+  letter-spacing: 0.2em;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  margin-bottom: 2rem;
+  background: rgba(0, 240, 255, 0.05);
+}
+
+.name-title {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  line-height: 0.9;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #fff;
   position: relative;
-  width: 180px;
-  height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  letter-spacing: -0.02em;
+  animation: titleFadeIn 1s ease-out forwards;
 }
 
-.avatar:hover {
-  animation: spin 0.5s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.avatar img {
+.name-title::before,
+.name-title::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 30px;
-  object-fit: cover;
-  border: 4px solid var(--surface-color);
-  box-shadow:
-    0 10px 20px rgba(0, 0, 0, 0.1),
-    0 0 0 10px rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  background: #0b0d14;
 }
 
-.avatar img:hover {
-  transform: scale(1.05);
-  border-radius: 50%;
+.name-title::before {
+  left: 2px;
+  text-shadow: -1px 0 #00f0ff;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
 }
 
-.info {
-  flex: 1;
+.name-title::after {
+  left: -2px;
+  text-shadow: -1px 0 #ff0055;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim2 5s infinite linear alternate-reverse;
 }
 
-.info h1 {
-  font-size: 2.8rem;
-  margin: 0;
-  background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.5px;
+@keyframes titleFadeIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
-.title {
-  font-size: 1.4rem;
-  color: var(--primary-color);
-  margin: 0.5rem 0;
-  font-weight: 600;
-  opacity: 0.9;
+@keyframes glitch-anim {
+  0% { clip: rect(30px, 9999px, 10px, 0); }
+  5% { clip: rect(68px, 9999px, 81px, 0); }
+  10% { clip: rect(7px, 9999px, 83px, 0); }
+  15% { clip: rect(24px, 9999px, 8px, 0); }
+  20% { clip: rect(93px, 9999px, 5px, 0); }
+  25% { clip: rect(23px, 9999px, 58px, 0); }
+  30% { clip: rect(59px, 9999px, 79px, 0); }
+  35% { clip: rect(40px, 9999px, 14px, 0); }
+  40% { clip: rect(36px, 9999px, 58px, 0); }
+  45% { clip: rect(55px, 9999px, 96px, 0); }
+  50% { clip: rect(11px, 9999px, 49px, 0); }
+  55% { clip: rect(66px, 9999px, 26px, 0); }
+  60% { clip: rect(10px, 9999px, 7px, 0); }
+  65% { clip: rect(20px, 9999px, 91px, 0); }
+  70% { clip: rect(78px, 9999px, 20px, 0); }
+  75% { clip: rect(22px, 9999px, 34px, 0); }
+  80% { clip: rect(43px, 9999px, 43px, 0); }
+  85% { clip: rect(65px, 9999px, 99px, 0); }
+  90% { clip: rect(16px, 9999px, 36px, 0); }
+  95% { clip: rect(20px, 9999px, 38px, 0); }
+  100% { clip: rect(64px, 9999px, 66px, 0); }
 }
 
-.motto {
-  color: var(--text-secondary);
-  font-style: italic;
-  margin: 1rem 0;
+@keyframes glitch-anim2 {
+  0% { clip: rect(28px, 9999px, 95px, 0); }
+  5% { clip: rect(62px, 9999px, 93px, 0); }
+  10% { clip: rect(48px, 9999px, 40px, 0); }
+  15% { clip: rect(100px, 9999px, 19px, 0); }
+  20% { clip: rect(95px, 9999px, 25px, 0); }
+  25% { clip: rect(67px, 9999px, 85px, 0); }
+  30% { clip: rect(87px, 9999px, 9px, 0); }
+  35% { clip: rect(32px, 9999px, 61px, 0); }
+  40% { clip: rect(8px, 9999px, 20px, 0); }
+  45% { clip: rect(65px, 9999px, 22px, 0); }
+  50% { clip: rect(63px, 9999px, 3px, 0); }
+  55% { clip: rect(15px, 9999px, 78px, 0); }
+  60% { clip: rect(30px, 9999px, 99px, 0); }
+  65% { clip: rect(54px, 9999px, 57px, 0); }
+  70% { clip: rect(39px, 9999px, 66px, 0); }
+  75% { clip: rect(70px, 9999px, 35px, 0); }
+  80% { clip: rect(25px, 9999px, 97px, 0); }
+  85% { clip: rect(17px, 9999px, 72px, 0); }
+  90% { clip: rect(96px, 9999px, 84px, 0); }
+  95% { clip: rect(49px, 9999px, 83px, 0); }
+  100% { clip: rect(16px, 9999px, 7px, 0); }
+}
+
+.bio-text {
   font-size: 1.1rem;
-  opacity: 0.8;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 3rem;
+  max-width: 500px;
+  min-height: 3.2em; /* 防止打字时高度跳动 */
 }
 
-.contact {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.contact p,
-.contact .github-link {
+.action-group {
   display: flex;
+  gap: 1.5rem;
+}
+
+.btn-primary, .btn-ghost {
+  display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
-  color: var(--text-secondary);
-  padding: 0.8rem 1.2rem;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.05);
-  margin: 0;
-  height: 45px;
-  box-sizing: border-box;
-  word-break: break-all;
+  justify-content: center;
+  padding: 0 2rem;
+  height: 50px;
+  font-family: var(--font-display);
   font-size: 0.9rem;
-}
-
-.contact p:hover,
-.contact .github-link:hover {
-  transform: translateX(5px);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.contact i {
-  color: var(--primary-color);
-  font-size: 1.2rem;
-  opacity: 0.9;
-  min-width: 24px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-.contact .github-link {
   text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  letter-spacing: 0.1em;
 }
 
-.contact .github-link:hover {
-  color: var(--primary-color);
-}
-
-.contact p span,
-.contact .github-link span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-  .contact {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* 卡片基础样式 */
-.profile-card,
-.intro-card,
-.skills-card {
-  background: var(--surface-color);
-  border-radius: 24px;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* 卡片头部样式 */
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.card-header h2 {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: 0;
-  font-size: 1.8rem;
-  color: var(--text-primary);
-}
-
-.card-header h2 i {
-  color: var(--primary-color);
-}
-
-/* 个人简介样式 */
-.intro-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-}
-
-.intro-text h3 {
-  font-size: 2rem;
-  margin: 0 0 0.5rem;
-  color: var(--text-primary);
-}
-
-.intro-text p {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-.experience-badge {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-}
-
-.badge-number {
-  font-size: 2rem;
+.btn-primary {
+  background: var(--text-main);
+  color: #000;
   font-weight: 600;
-  color: var(--primary-color);
 }
 
-.badge-text {
-  color: var(--text-secondary);
+.btn-primary:hover {
+  background: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
 }
 
-.stats-grid {
+.btn-ghost {
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+}
+
+.btn-ghost:hover {
+  border-color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.visual-circle {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* Stats Section */
+.stats-section {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 16px;
+  gap: 2rem;
+  padding: 3rem 0;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 6rem;
 }
 
 .stat-item {
   text-align: center;
 }
 
-.stat-number {
-  font-size: 2.5rem;
-  font-weight: 600;
-  color: var(--primary-color);
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--text-main);
   margin-bottom: 0.5rem;
 }
 
-.stat-number span {
-  font-size: 1.8rem;
-  opacity: 0.8;
-}
-
 .stat-label {
-  color: var(--text-secondary);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
 }
 
-/* 核心优势样式 */
-.strengths-grid {
+/* Skills Section */
+.section-header {
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--text-main);
+}
+
+.text-gradient {
+  color: var(--primary);
+  margin-left: 1rem;
+}
+
+.skills-layout {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-}
-
-.strength-card {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 16px;
-  padding: 1.5rem;
-  display: flex;
-  gap: 1rem;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.strength-card:hover {
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--card-color);
-}
-
-.strength-icon {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  font-size: 1.2rem;
-  color: var(--card-color);
-  flex-shrink: 0;
-}
-
-.strength-content {
-  flex: 1;
-}
-
-.strength-content h4 {
-  font-size: 1.1rem;
-  color: var(--text-primary);
-  margin: 0 0 0.5rem;
-}
-
-.strength-content p {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin: 0;
-}
-
-/* 技能展示样式 */
-.skills-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  grid-template-columns: 250px 1fr;
+  gap: 3rem;
 }
 
 .skills-nav {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
-  overflow-x: auto;
-  padding-bottom: 1rem;
-  scrollbar-width: none;
-}
-
-.skills-nav::-webkit-scrollbar {
-  display: none;
 }
 
 .skill-tab {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 0.8rem 1.2rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: none;
-  border-radius: 12px;
-  color: var(--text-secondary);
+  gap: 1rem;
+  padding: 1.2rem;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  font-family: var(--font-body);
   font-size: 1rem;
   cursor: pointer;
+  border-radius: 8px;
   transition: all 0.3s ease;
-  white-space: nowrap;
+  text-align: left;
 }
 
-.skill-tab i {
-  font-size: 1.2rem;
-  color: var(--tab-color);
+.skill-tab:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--text-main);
 }
 
 .skill-tab.active {
-  background: var(--tab-color);
-  color: white;
-  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-main);
+  color: var(--text-main);
 }
 
-.skill-tab.active i {
-  color: white;
+.tab-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
 }
 
-.skill-details {
-  background: rgba(255, 255, 255, 0.03);
+/* Skill Detail Card */
+.skill-detail-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 3rem;
+  backdrop-filter: blur(20px);
 }
 
-.skill-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-}
-
-.skill-title h3 {
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  margin: 0 0 0.5rem;
-}
-
-.skill-title p {
-  color: var(--text-secondary);
-  margin: 0;
-  font-size: 0.95rem;
-}
-
-.mastery-meter {
+.card-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
 }
 
-.mastery-label {
-  color: var(--text-secondary);
+.header-icon {
+  font-size: 2.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.header-info h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.header-info p {
+  color: var(--text-muted);
+}
+
+.skill-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.skill-bar-item {
+  margin-bottom: 1rem;
+}
+
+.skill-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
-.mastery-bar {
-  width: 150px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-  overflow: hidden;
+.skill-percent {
+  font-family: var(--font-mono);
+  opacity: 0.7;
 }
 
-.mastery-fill {
-  height: 100%;
-  background: var(--primary-color);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
-
-.mastery-value {
-  color: var(--primary-color);
-  font-weight: 600;
-  min-width: 3ch;
-}
-
-.skill-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-}
-
-.skill-item {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  padding: 1rem;
-  transition: all 0.3s ease;
-}
-
-.skill-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  transform: translateY(-2px);
-}
-
-.skill-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.8rem;
-}
-
-.skill-name {
-  color: var(--text-primary);
-  font-weight: 500;
-}
-
-.skill-level {
-  color: var(--item-color);
-  font-weight: 600;
-}
-
-.progress-bar {
+.progress-track {
   height: 4px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
@@ -669,83 +522,65 @@ const coreStrengths = [
 
 .progress-fill {
   height: 100%;
-  background: var(--item-color);
   border-radius: 2px;
-  transition: width 0.3s ease;
+  transition: width 1s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* 响应式设计 */
-@media screen and (max-width: 1200px) {
-  .home {
-    padding: 1rem;
-  }
-
-  .profile-card {
-    flex-direction: column;
-    align-items: center;
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero-layout {
+    grid-template-columns: 1fr;
+    gap: 3rem;
     text-align: center;
   }
 
-  .avatar {
-    margin-right: 0;
-    margin-bottom: 1rem;
-  }
-
-  .strengths-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .home {
-    padding: 0.5rem;
-  }
-
-  .skills-content {
+  .hero-text {
+    display: flex;
     flex-direction: column;
+    align-items: center;
+  }
+
+  .bio-text {
+    margin: 0 auto 2rem;
+  }
+
+  .hero-visual {
+    display: none; /* Mobile simplified */
+  }
+
+  .skills-layout {
+    grid-template-columns: 1fr;
   }
 
   .skills-nav {
     flex-direction: row;
     overflow-x: auto;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
   }
 
   .skill-tab {
     white-space: nowrap;
   }
-
-  .skill-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .strengths-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
-@media screen and (max-width: 480px) {
-  .stats-grid {
+@media (max-width: 768px) {
+  .name-title {
+    font-size: 3rem;
+  }
+
+  .stats-section {
     grid-template-columns: 1fr;
-  }
-
-  .contact {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .skill-header {
-    flex-direction: column;
     gap: 1rem;
+    border: none;
   }
 
-  .mastery-meter {
-    width: 100%;
+  .stat-item {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+
+  .skill-list {
+    grid-template-columns: 1fr;
   }
 }
 </style>
