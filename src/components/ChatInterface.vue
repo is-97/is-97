@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="holographic-interface">
     <div class="aurora-layer">
       <div class="aurora-beam"></div>
@@ -136,12 +136,35 @@ const viewportRef = ref(null)
 const inputRef = ref(null)
 const bottomAnchorRef = ref(null)
 
-const quickPrompts = [
-  '分析我的简历亮点',
+const quickPromptPool = [
   '生成一段自我介绍',
+  '帮我润色一份简历项目经历',
+  '分析我的简历亮点',
+  '模拟一段前端面试问答',
   'Vue3 核心特性是什么？',
-  '如何优化前端性能？'
+  'Vue3 和 Vue2 的主要区别有哪些？',
+  '如何优化前端性能？',
+  '讲一下浏览器缓存机制',
+  '什么是虚拟 DOM？',
+  '如何实现一个防抖和节流函数？',
+  '写一个常用的 JavaScript 工具函数合集',
+  '解释一下闭包、原型链和作用域',
+  '手写一个 Promise.all',
+  '如何设计一个聊天页面的交互体验？',
+  '帮我写一个 Vue3 组件示例',
+  '生成一个接口请求封装方案',
+  '如何排查线上白屏问题？',
+  '给我一份前端学习路线图',
+  '写一段工作日报',
+  '总结一下今天的工作内容'
 ]
+
+const quickPrompts = ref([])
+
+const refreshQuickPrompts = () => {
+  const shuffled = [...quickPromptPool].sort(() => Math.random() - 0.5)
+  quickPrompts.value = shuffled.slice(0, 6)
+}
 
 const formatTime = (ts) => {
   return new Date(ts).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
@@ -183,6 +206,7 @@ const usePrompt = (text) => {
 
 const clearChat = () => {
   messages.value = []
+  refreshQuickPrompts()
 }
 
 const handleEnter = (e) => {
@@ -237,12 +261,12 @@ const sendMessage = async () => {
       appendAssistantChunk(aiMsgIndex, chunk)
     })
   } catch (err) {
-    messages.value.push({
-      role: 'assistant',
-      content: 'System Error: 连接中断或超时，请检查网络连接。',
-      isTyping: false,
-      timestamp: Date.now()
-    })
+      messages.value.push({
+        role: 'assistant',
+        content: 'System Error: 连接中断或超时，请检查网络连接。',
+        isTyping: false,
+        timestamp: Date.now()
+      })
   } finally {
     isLoading.value = false
     const lastMsg = messages.value[messages.value.length - 1]
@@ -255,6 +279,7 @@ const sendMessage = async () => {
 }
 
 onMounted(() => {
+  refreshQuickPrompts()
   inputRef.value?.focus()
 })
 </script>
@@ -266,6 +291,7 @@ onMounted(() => {
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: 0;
   background: transparent;
   display: flex;
   flex-direction: column;
@@ -385,6 +411,7 @@ onMounted(() => {
 
 .chat-viewport {
   flex: 1;
+  min-height: 0;
   position: relative;
   z-index: 1;
   overflow-y: auto;
@@ -620,6 +647,7 @@ onMounted(() => {
 }
 
 .input-deck {
+  flex-shrink: 0;
   position: relative;
   z-index: 20;
   padding: 1.5rem 2rem;

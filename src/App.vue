@@ -141,6 +141,7 @@ body {
   background: var(--bg-deep);
   color: var(--text-main);
   min-height: 100vh;
+  min-width: 0;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -308,6 +309,7 @@ body {
 /* Content Area */
 .content-area {
   flex: 1;
+  min-height: 0;
   margin-left: var(--nav-width);
   min-height: 100vh;
   padding: 2rem;
@@ -328,14 +330,19 @@ body {
 /* 特殊处理全屏页面，如 Chat */
 .content-area:has(.chat-interface),
 .content-area:has(.chat-view) {
+  height: 100vh;
+  min-height: 100vh;
   padding: 0;
   max-width: none;
+  overflow: hidden;
 }
 
 .content-area:has(.chat-interface) > *,
 .content-area:has(.chat-view) > * {
   max-width: none;
   height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Transition */
@@ -419,6 +426,13 @@ body {
   .content-area {
     margin-left: 0;
     padding-bottom: 90px;
+  }
+
+  .content-area:has(.chat-interface),
+  .content-area:has(.chat-view) {
+    height: calc(100vh - 70px);
+    min-height: calc(100vh - 70px);
+    padding-bottom: 0;
   }
 }
 </style>

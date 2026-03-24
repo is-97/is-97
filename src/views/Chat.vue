@@ -21,8 +21,11 @@ onUnmounted(() => {
 
 <style scoped>
 .chat-view {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100vh;
+  min-height: 0;
   overflow: hidden;
   padding: 0;
   margin: 0;
@@ -30,8 +33,11 @@ onUnmounted(() => {
 }
 
 .chat-container {
+  flex: 1;
   width: 100%;
   height: 100%;
+  min-height: 0;
+  overflow: hidden;
   background: transparent;
   border: none;
   border-radius: 0;
