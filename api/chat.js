@@ -1,16 +1,6 @@
-import express from "express";
-import cors from "cors";
 import fetch from "node-fetch";
-import * as dotenv from "dotenv";
+import "dotenv/config";
 
-dotenv.config();
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-const PORT = Number(process.env.PORT || 3000);
-const DEFAULT_API_KEY = process.env.NVIDIA_API_KEY;
 const DEFAULT_BASE_URL =
   process.env.NVIDIA_API_BASE_URL ||
   "https://integrate.api.nvidia.com/v1/chat/completions";
@@ -53,14 +43,18 @@ function buildPayload(body) {
   };
 }
 
-app.post("/api/chat", async (req, res) => {
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
   const { message, apiKey, messages } = req.body;
 
   if (!message && (!Array.isArray(messages) || messages.length === 0)) {
     return res.status(400).json({ error: "message 或 messages 不能为空" });
   }
 
-  const actualApiKey = apiKey || DEFAULT_API_KEY;
+  const actualApiKey = apiKey || process.env.NVIDIA_API_KEY;
   if (!actualApiKey) {
     return res.status(400).json({ error: "未配置 NVIDIA API Key" });
   }
@@ -87,8 +81,6 @@ app.post("/api/chat", async (req, res) => {
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
     response.body.on("data", (chunk) => {
       res.write(chunk);
@@ -107,12 +99,4 @@ app.post("/api/chat", async (req, res) => {
       message: error.message,
     });
   }
-});
-
-app.get("/health", (req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
-});
+}

@@ -1,12 +1,10 @@
 <template>
   <div class="holographic-interface">
-    <!-- 极光流光背景 (仅在组件内有效，叠加在全局背景之上) -->
     <div class="aurora-layer">
       <div class="aurora-beam"></div>
       <div class="aurora-beam"></div>
     </div>
 
-    <!-- 顶部状态栏 -->
     <div class="status-bar">
       <div class="model-info">
         <div class="ai-avatar-small">
@@ -26,10 +24,8 @@
       </div>
     </div>
 
-    <!-- 聊天内容区域 -->
     <div class="chat-viewport" ref="viewportRef">
       <div class="messages-container">
-        <!-- 欢迎屏幕 -->
         <div v-if="messages.length === 0" class="welcome-screen">
           <div class="ai-core-container">
             <div class="ai-core-outer-ring"></div>
@@ -46,7 +42,6 @@
           </div>
         </div>
 
-        <!-- 消息流 -->
         <TransitionGroup name="msg">
           <div v-for="(msg, index) in messages" :key="index" class="message-row" :class="msg.role">
             <div class="message-content">
@@ -55,7 +50,7 @@
               </div>
 
               <div class="bubble-wrapper">
-                <div class="bubble" :class="{ 'typing': msg.isTyping }">
+                <div class="bubble" :class="{ typing: msg.isTyping }">
                   <div v-if="msg.role === 'user'" class="user-text">{{ msg.content }}</div>
                   <div v-else class="ai-text-container">
                     <div class="ai-text markdown-body" v-html="renderMarkdown(msg.content)"></div>
@@ -68,7 +63,6 @@
           </div>
         </TransitionGroup>
 
-        <!-- 加载状态 -->
         <div v-if="isLoading && !isTyping" class="loading-status">
           <div class="quantum-loader">
             <div class="orbit"></div>
@@ -78,10 +72,11 @@
           </div>
           <span class="loading-label">ANALYZING DATA STREAM...</span>
         </div>
+
+        <div ref="bottomAnchorRef" class="bottom-anchor"></div>
       </div>
     </div>
 
-    <!-- 底部输入胶囊 -->
     <div class="input-deck">
       <div class="glass-capsule" :class="{ focused: isFocused }">
         <div class="upload-trigger" title="Upload Data">
@@ -116,14 +111,13 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted, watch } from 'vue'
+import { ref, nextTick, onMounted } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js'
-import 'highlight.js/styles/atom-one-dark.css' // 确保安装了样式
+import 'highlight.js/styles/atom-one-dark.css'
 import { sendToAI } from '../services/aiService'
 
-// 配置 Marked
 marked.setOptions({
   highlight: function (code, lang) {
     const language = hljs.getLanguage(lang) ? lang : 'plaintext'
@@ -140,6 +134,7 @@ const isTyping = ref(false)
 const isFocused = ref(false)
 const viewportRef = ref(null)
 const inputRef = ref(null)
+const bottomAnchorRef = ref(null)
 
 const quickPrompts = [
   '分析我的简历亮点',
@@ -148,7 +143,6 @@ const quickPrompts = [
   '如何优化前端性能？'
 ]
 
-// 工具函数
 const formatTime = (ts) => {
   return new Date(ts).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
 }
@@ -159,29 +153,26 @@ const renderMarkdown = (content) => {
 
 const scrollToBottom = async () => {
   await nextTick()
-  if (viewportRef.value) {
-    viewportRef.value.scrollTop = viewportRef.value.scrollHeight
-  }
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      bottomAnchorRef.value?.scrollIntoView({
+        behavior: 'auto',
+        block: 'end'
+      })
+    })
+  })
 }
 
 const autoResize = () => {
   const el = inputRef.value
   if (el) {
     el.style.height = 'auto'
-    const lineHeight = 24 // 对应 CSS 中的 line-height: 24px
-    const padding = 20 // 对应 CSS 中的 padding-top + padding-bottom (10px + 10px)
-
-    // 计算内容高度，减去 padding
+    const lineHeight = 24
+    const padding = 20
     const contentHeight = el.scrollHeight - padding
-
-    // 计算行数（向上取整）
     const rows = Math.ceil(contentHeight / lineHeight)
-
-    // 计算新高度：行数 * 行高 + padding
-    // 限制最大高度为 120px (约 5 行)
     const newHeight = Math.min(rows * lineHeight + padding, 120)
-
-    el.style.height = newHeight + 'px'
+    el.style.height = `${newHeight}px`
   }
 }
 
@@ -200,12 +191,26 @@ const handleEnter = (e) => {
   }
 }
 
-// 核心发送逻辑
+const appendAssistantChunk = (index, chunk) => {
+  const target = messages.value[index]
+  if (!target) return
+
+  target.content += chunk
+
+  if (!viewportRef.value) return
+
+  const { scrollTop, clientHeight, scrollHeight } = viewportRef.value
+  const distanceFromBottom = scrollHeight - (scrollTop + clientHeight)
+
+  if (distanceFromBottom < 120) {
+    scrollToBottom()
+  }
+}
+
 const sendMessage = async () => {
   const content = inputMessage.value.trim()
   if (!content || isLoading.value) return
 
-  // 1. 添加用户消息
   messages.value.push({
     role: 'user',
     content,
@@ -218,7 +223,6 @@ const sendMessage = async () => {
   await scrollToBottom()
 
   try {
-    // 2. 准备 AI 消息占位
     const aiMsg = {
       role: 'assistant',
       content: '',
@@ -227,24 +231,20 @@ const sendMessage = async () => {
     }
     messages.value.push(aiMsg)
     const aiMsgIndex = messages.value.length - 1
+    await scrollToBottom()
 
-    // 3. 调用 AI 服务 (流式)
     await sendToAI(content, (chunk) => {
-      // 实时更新内容
-      messages.value[aiMsgIndex].content += chunk
-      scrollToBottom()
+      appendAssistantChunk(aiMsgIndex, chunk)
     })
-
   } catch (err) {
     messages.value.push({
       role: 'assistant',
-      content: 'System Error: 连接中断或超时。请检查网络连接。',
+      content: 'System Error: 连接中断或超时，请检查网络连接。',
       isTyping: false,
       timestamp: Date.now()
     })
   } finally {
     isLoading.value = false
-    // 结束打字动画
     const lastMsg = messages.value[messages.value.length - 1]
     if (lastMsg && lastMsg.role === 'assistant') {
       lastMsg.isTyping = false
@@ -262,12 +262,11 @@ onMounted(() => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* --- 容器与背景 --- */
 .holographic-interface {
   position: relative;
   width: 100%;
   height: 100%;
-  background: transparent; /* 透出底层 App 背景 */
+  background: transparent;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -307,7 +306,6 @@ onMounted(() => {
   to { transform: rotate(360deg); }
 }
 
-/* --- 状态栏 --- */
 .status-bar {
   position: relative;
   z-index: 10;
@@ -385,7 +383,6 @@ onMounted(() => {
   color: #fff;
 }
 
-/* --- 聊天视口 --- */
 .chat-viewport {
   flex: 1;
   position: relative;
@@ -403,7 +400,10 @@ onMounted(() => {
   flex-direction: column;
 }
 
-/* 欢迎屏幕 */
+.bottom-anchor {
+  height: 1px;
+}
+
 .welcome-screen {
   flex: 1;
   display: flex;
@@ -490,7 +490,6 @@ onMounted(() => {
   box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
 }
 
-/* 消息行 */
 .message-row {
   display: flex;
   margin-bottom: 2rem;
@@ -547,7 +546,6 @@ onMounted(() => {
   transition: all 0.3s;
 }
 
-/* 用户气泡：全息玻璃态 */
 .message-row.user .bubble {
   background: rgba(0, 240, 255, 0.1);
   border: 1px solid rgba(0, 240, 255, 0.3);
@@ -557,7 +555,6 @@ onMounted(() => {
   box-shadow: 0 4px 20px rgba(0, 240, 255, 0.1);
 }
 
-/* AI 气泡：透明+打字机 */
 .message-row.assistant .bubble {
   background: transparent;
   padding-left: 0;
@@ -565,7 +562,7 @@ onMounted(() => {
 }
 
 .ai-text {
-  font-family: 'JetBrains Mono', monospace; /* 代码感字体 */
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .message-meta {
@@ -586,7 +583,6 @@ onMounted(() => {
   font-weight: bold;
 }
 
-/* Markdown 样式覆盖 */
 :deep(.markdown-body) {
   color: inherit;
   font-size: 1rem;
@@ -623,7 +619,6 @@ onMounted(() => {
   margin-bottom: 0.8em;
 }
 
-/* --- 底部输入区 --- */
 .input-deck {
   position: relative;
   z-index: 20;
@@ -642,8 +637,8 @@ onMounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 30px;
   display: flex;
-  align-items: flex-end; /* 底部对齐，适合多行 */
-  padding: 8px 12px; /* 减小内边距 */
+  align-items: flex-end;
+  padding: 8px 12px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
@@ -715,10 +710,10 @@ onMounted(() => {
   border: none;
   color: #fff;
   font-family: 'Rajdhani', sans-serif;
-  font-size: 16px; /* 固定字体大小 */
+  font-size: 16px;
   padding: 10px 15px;
-  line-height: 24px; /* 固定行高为 24px */
-  min-height: 44px; /* 1行高度 (24px) + padding (20px) = 44px */
+  line-height: 24px;
+  min-height: 44px;
   max-height: 120px;
   resize: none;
   outline: none;
@@ -729,7 +724,6 @@ onMounted(() => {
   align-items: center;
 }
 
-/* Chrome, Safari, Edge 隐藏滚动条 */
 .holo-input::-webkit-scrollbar {
   display: none;
   width: 0;
@@ -740,7 +734,6 @@ onMounted(() => {
   color: rgba(255, 255, 255, 0.3);
 }
 
-/* --- 加载状态 --- */
 .loading-status {
   display: flex;
   align-items: center;
@@ -816,17 +809,37 @@ onMounted(() => {
   0% { transform: rotate(0deg) rotateX(45deg); }
   100% { transform: rotate(360deg) rotateX(45deg); }
 }
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-@keyframes breathe { 0%, 100% { transform: scale(0.9); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* 进入动画 */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .msg-enter-active,
 .msg-leave-active {
   transition: all 0.4s ease;
 }
+
 .msg-enter-from {
   opacity: 0;
   transform: translateY(20px) scale(0.95);
