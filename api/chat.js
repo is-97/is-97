@@ -5,7 +5,7 @@ const DEFAULT_BASE_URL =
   process.env.NVIDIA_API_BASE_URL ||
   "https://integrate.api.nvidia.com/v1/chat/completions";
 const DEFAULT_MODEL =
-  process.env.NVIDIA_MODEL || process.env.NVIDIA_CHAT_MODEL || "moonshotai/kimi-k2.5";
+  process.env.NVIDIA_MODEL || process.env.NVIDIA_CHAT_MODEL || "minimaxai/minimax-m2.5";
 const DEFAULT_MAX_TOKENS = Number(process.env.NVIDIA_MAX_TOKENS || 16384);
 const DEFAULT_TEMPERATURE = Number(process.env.NVIDIA_TEMPERATURE || 1.0);
 const DEFAULT_TOP_P = Number(process.env.NVIDIA_TOP_P || 1.0);
