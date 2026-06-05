@@ -1,116 +1,158 @@
 <template>
   <div class="theme-switcher">
-    <div class="theme-grid">
-      <button
-        v-for="(theme, key) in themeStore.themes"
-        :key="key"
-        class="theme-button"
-        :class="{ active: themeStore.currentTheme === key }"
-        @click="themeStore.setTheme(key)"
-      >
-        <div class="theme-preview" :style="getThemePreviewStyle(theme)"></div>
-        <span class="theme-name">{{ theme.name }}</span>
-      </button>
-    </div>
+    <button
+      class="theme-btn"
+      @click="toggleMenu"
+      :title="'当前主题: ' + currentThemeName"
+    >
+      <span class="theme-icon">{{ currentThemeIcon }}</span>
+    </button>
+    <Transition name="menu">
+      <div v-if="showMenu" class="theme-menu">
+        <button
+          v-for="theme in themeList"
+          :key="theme.id"
+          class="theme-option"
+          :class="{ active: appStore.theme === theme.id }"
+          @click="selectTheme(theme.id)"
+        >
+          <span class="option-icon">{{ theme.icon }}</span>
+          <span class="option-name">{{ theme.name }}</span>
+        </button>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
-import { useThemeStore } from '../stores/theme'
+import { ref, computed, onMounted } from 'vue'
+import { useAppStore } from '../stores/app'
+import { themeList, applyTheme } from '../styles/themes'
 
-const themeStore = useThemeStore()
+const appStore = useAppStore()
+const showMenu = ref(false)
 
-const getThemePreviewStyle = (theme) => {
-  return {
-    background: theme.colors.background,
-    border: `1px solid ${theme.colors.border}`
+const currentTheme = computed(() => themeList.find(t => t.id === appStore.theme) || themeList[0])
+const currentThemeName = computed(() => currentTheme.value?.name || '赛博朋克')
+const currentThemeIcon = computed(() => currentTheme.value?.icon || '⚡')
+
+function toggleMenu() {
+  showMenu.value = !showMenu.value
+}
+
+function selectTheme(themeId) {
+  appStore.setTheme(themeId)
+  applyTheme(themeId)
+  showMenu.value = false
+}
+
+onMounted(() => {
+  applyTheme(appStore.theme)
+})
+
+// Close menu when clicking outside
+function handleClickOutside(e) {
+  if (!e.target.closest('.theme-switcher')) {
+    showMenu.value = false
   }
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('click', handleClickOutside)
 }
 </script>
 
 <style scoped>
 .theme-switcher {
-  background: var(--surface-color);
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 200;
+}
+
+.theme-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border-radius: 6px;
-  padding: 0.3rem;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 16px var(--shadow-color);
-  width: 120px;
-}
-
-.theme-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.25rem;
-}
-
-.theme-button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-  padding: 0.25rem;
-  border: none;
-  background: none;
+  color: var(--text-main);
   cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.theme-button:hover {
-  background: rgba(0, 0, 0, 0.1);
+.theme-btn:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 15px var(--accent-glow);
+  transform: scale(1.1);
 }
 
-.theme-button.active {
-  background: rgba(0, 0, 0, 0.15);
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 0.5rem;
+  min-width: 160px;
+  z-index: 1000;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
-.theme-preview {
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   width: 100%;
-  aspect-ratio: 1;
-  border-radius: 2px;
+  padding: 0.6rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 8px;
   transition: all 0.2s ease;
-  border: 1px solid var(--border-color);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
 }
 
-.theme-button.active .theme-preview {
-  transform: scale(0.95);
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 1px var(--primary-color);
+.theme-option:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
 }
 
-.theme-name {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+.theme-option.active {
+  color: var(--primary);
+  background: var(--chip-bg);
+}
+
+.option-icon {
+  font-size: 1.1rem;
+}
+
+.option-name {
   white-space: nowrap;
-  transition: all 0.2s ease;
-  letter-spacing: 0.02em;
 }
 
-.theme-button.active .theme-name {
-  color: var(--text-primary);
-  font-weight: 500;
-  transform: scale(1.05);
+.menu-enter-active,
+.menu-leave-active {
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-@media (max-width: 768px) {
-  .theme-switcher {
-    width: 110px;
-    padding: 0.25rem;
-  }
+.menu-enter-from {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+}
 
-  .theme-grid {
-    gap: 0.15rem;
-  }
-
-  .theme-button {
-    padding: 0.15rem;
-    gap: 0.1rem;
-  }
-
-  .theme-name {
-    font-size: 0.7rem;
-  }
+.menu-leave-to {
+  opacity: 0;
+  transform: translateY(-5px) scale(0.95);
 }
 </style>

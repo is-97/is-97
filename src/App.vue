@@ -1,6 +1,11 @@
 <template>
   <Analytics />
   <CyberBackground />
+  <ParticleBackground />
+  <ScrollProgress />
+
+  <ThemeSwitcher />
+
   <div class="app">
     <nav class="cyber-nav">
       <div class="nav-brand">
@@ -77,7 +82,7 @@
       <CyberFooter v-if="!isChatPage" />
     </div>
 
-    <button class="scroll-to-top" @click="scrollToTop">
+    <button class="scroll-to-top" :class="{ show: showScrollTop }" @click="scrollToTop">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="18 15 12 9 6 15"/>
       </svg>
@@ -88,16 +93,22 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { useAppStore } from './stores/app'
 import CyberBackground from './components/CyberBackground.vue'
 import CyberFooter from './components/CyberFooter.vue'
 import MusicPlayer from './components/MusicPlayer.vue'
 import Live2dWidget from './components/Live2dWidget.vue'
+import ParticleBackground from './components/ParticleBackground.vue'
+import ScrollProgress from './components/ScrollProgress.vue'
+import ThemeSwitcher from './components/ThemeSwitcher.vue'
 import { Analytics } from '@vercel/analytics/vue'
 
 const route = useRoute()
+const appStore = useAppStore()
 const isChatPage = computed(() => route.path === '/chat')
+const showScrollTop = computed(() => appStore.scrollY > 300)
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -108,25 +119,9 @@ const scrollToTop = () => {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Rajdhani:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Deep Tech Palette */
-  --bg-deep: #050510;
-  --bg-card: rgba(20, 25, 40, 0.4);
-  --bg-card-hover: rgba(30, 35, 60, 0.5);
-
-  --primary: #00f0ff; /* Electric Blue */
-  --secondary: #7000ff; /* Deep Neon Purple */
-  --text-main: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.6);
-
-  --border-light: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(0, 240, 255, 0.3);
-
-  --font-display: 'Syncopate', sans-serif;
-  --font-body: 'Space Grotesk', sans-serif;
-
   --nav-width: 100px;
 }
 
@@ -137,9 +132,9 @@ const scrollToTop = () => {
 }
 
 body {
-  font-family: var(--font-body);
-  background: var(--bg-deep);
-  color: var(--text-main);
+  font-family: var(--font-body, 'Space Grotesk', sans-serif);
+  background: var(--bg-deep, #050510);
+  color: var(--text-main, #ffffff);
   min-height: 100vh;
   min-width: 0;
   overflow-x: hidden;
@@ -151,14 +146,14 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-deep);
+  background: var(--scrollbar-track, #050510);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--scrollbar-thumb, rgba(255, 255, 255, 0.2));
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: var(--scrollbar-thumb-hover, #00f0ff);
 }
 
 .app {
@@ -173,9 +168,9 @@ body {
   top: 0;
   bottom: 0;
   width: var(--nav-width);
-  background: rgba(5, 5, 16, 0.6);
+  background: var(--nav-bg, rgba(5, 5, 16, 0.6));
   backdrop-filter: blur(20px);
-  border-right: 1px solid var(--border-light);
+  border-right: 1px solid var(--border-light, rgba(255, 255, 255, 0.08));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -190,17 +185,17 @@ body {
 }
 
 .brand-logo {
-  font-family: var(--font-display);
+  font-family: var(--font-display, 'Syncopate', sans-serif);
   font-weight: 700;
   font-size: 1.2rem;
-  color: var(--text-main);
+  color: var(--text-main, #ffffff);
   letter-spacing: 0.1em;
   margin-bottom: 0.2rem;
 }
 
 .brand-sub {
   font-size: 0.6rem;
-  color: var(--text-muted);
+  color: var(--text-muted, rgba(255, 255, 255, 0.6));
   letter-spacing: 0.2em;
 }
 
@@ -218,7 +213,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 60px;
-  color: var(--text-muted);
+  color: var(--text-muted, rgba(255, 255, 255, 0.6));
   text-decoration: none;
   transition: all 0.3s ease;
   border-radius: 12px;
@@ -250,7 +245,7 @@ body {
 .active-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(0, 240, 255, 0.15), transparent 70%);
+  background: radial-gradient(circle at center, var(--accent-glow, rgba(0, 240, 255, 0.15)), transparent 70%);
   opacity: 0;
   transition: opacity 0.3s ease;
   border-radius: 12px;
@@ -264,7 +259,7 @@ body {
 }
 
 .nav-item:hover {
-  color: var(--text-main);
+  color: var(--text-main, #ffffff);
 }
 
 .nav-item:hover .active-glow {
@@ -272,7 +267,7 @@ body {
 }
 
 .nav-item.router-link-active {
-  color: var(--primary);
+  color: var(--primary, #00f0ff);
 }
 
 .nav-item.router-link-active .active-glow {
@@ -280,11 +275,15 @@ body {
 }
 
 .nav-item.router-link-active .nav-icon svg {
-  filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.5));
+  filter: drop-shadow(0 0 8px var(--primary, rgba(0, 240, 255, 0.5)));
 }
 
 .nav-footer {
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
 .status-indicator {
@@ -292,7 +291,7 @@ body {
   align-items: center;
   gap: 6px;
   font-size: 0.6rem;
-  color: var(--text-muted);
+  color: var(--text-muted, rgba(255, 255, 255, 0.6));
   background: rgba(255, 255, 255, 0.05);
   padding: 4px 8px;
   border-radius: 20px;
@@ -322,12 +321,12 @@ body {
 
 .content-area > * {
   width: 100%;
-  max-width: 1400px; /* 在这里统一控制最大宽度 */
-  margin: 0 auto;    /* 确保内容居中 */
+  max-width: 1400px;
+  margin: 0 auto;
   flex: 1;
 }
 
-/* 特殊处理全屏页面，如 Chat */
+/* Fullscreen pages like Chat */
 .content-area:has(.chat-interface),
 .content-area:has(.chat-view) {
   height: 100vh;
@@ -357,17 +356,17 @@ body {
   transform: translateY(10px);
 }
 
-/* Scroll Top */
+/* Scroll Top Button */
 .scroll-to-top {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
   width: 44px;
   height: 44px;
-  background: rgba(5, 5, 16, 0.8);
-  border: 1px solid var(--border-light);
+  background: var(--bg-card, rgba(5, 5, 16, 0.8));
+  border: 1px solid var(--border-light, rgba(255, 255, 255, 0.08));
   border-radius: 50%;
-  color: var(--text-main);
+  color: var(--text-main, #ffffff);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -375,11 +374,20 @@ body {
   transition: all 0.3s ease;
   z-index: 50;
   backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+.scroll-to-top.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .scroll-to-top:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--primary, #00f0ff);
+  color: var(--primary, #00f0ff);
   transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
@@ -398,9 +406,9 @@ body {
     flex-direction: row;
     padding: 0;
     border-right: none;
-    border-top: 1px solid var(--border-light);
+    border-top: 1px solid var(--border-light, rgba(255, 255, 255, 0.08));
     justify-content: space-around;
-    background: rgba(5, 5, 16, 0.9);
+    background: var(--nav-bg, rgba(5, 5, 16, 0.9));
   }
 
   .nav-brand, .nav-footer {
@@ -433,6 +441,13 @@ body {
     height: calc(100vh - 70px);
     min-height: calc(100vh - 70px);
     padding-bottom: 0;
+  }
+
+  .scroll-to-top {
+    bottom: 5rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
   }
 }
 </style>

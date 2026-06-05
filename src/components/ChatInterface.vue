@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="holographic-interface">
     <div class="aurora-layer">
       <div class="aurora-beam"></div>
@@ -12,7 +12,7 @@
         </div>
         <div class="info-text">
           <span class="model-name">AURA-AI <span class="version">V4.0</span></span>
-          <span class="status-text">SYSTEM ONLINE</span>
+          <span class="status-text">{{ chatStore.isLoading ? 'GENERATING...' : 'SYSTEM ONLINE' }}</span>
         </div>
       </div>
       <div class="window-controls">
@@ -26,7 +26,7 @@
 
     <div class="chat-viewport" ref="viewportRef">
       <div class="messages-container">
-        <div v-if="messages.length === 0" class="welcome-screen">
+        <div v-if="!chatStore.hasHistory" class="welcome-screen">
           <div class="ai-core-container">
             <div class="ai-core-outer-ring"></div>
             <div class="ai-core-inner-ring"></div>
@@ -43,7 +43,7 @@
         </div>
 
         <TransitionGroup name="msg">
-          <div v-for="(msg, index) in messages" :key="index" class="message-row" :class="msg.role">
+          <div v-for="(msg, index) in chatStore.messages" :key="index" class="message-row" :class="msg.role">
             <div class="message-content">
               <div v-if="msg.role === 'assistant'" class="ai-avatar">
                 <div class="avatar-ring"></div>
@@ -63,7 +63,7 @@
           </div>
         </TransitionGroup>
 
-        <div v-if="isLoading && !isTyping" class="loading-status">
+        <div v-if="chatStore.isLoading && !lastIsTyping" class="loading-status">
           <div class="quantum-loader">
             <div class="orbit"></div>
             <div class="orbit"></div>
@@ -97,7 +97,7 @@
           @input="autoResize"
         ></textarea>
 
-        <button class="send-trigger" :disabled="!inputMessage.trim() || isLoading" @click="sendMessage">
+        <button class="send-trigger" :disabled="!inputMessage.trim() || chatStore.isLoading" @click="sendMessage">
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2">
             <line x1="22" y1="2" x2="11" y2="13"></line>
             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -111,12 +111,13 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, computed, nextTick, onMounted } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/atom-one-dark.css'
-import { sendToAI } from '../services/aiService'
+import { sendToAIWithHistory } from '../services/aiService'
+import { useChatStore } from '../stores/chat'
 
 marked.setOptions({
   highlight: function (code, lang) {
@@ -127,14 +128,17 @@ marked.setOptions({
   breaks: true
 })
 
-const messages = ref([])
+const chatStore = useChatStore()
 const inputMessage = ref('')
-const isLoading = ref(false)
-const isTyping = ref(false)
 const isFocused = ref(false)
 const viewportRef = ref(null)
 const inputRef = ref(null)
 const bottomAnchorRef = ref(null)
+
+const lastIsTyping = computed(() => {
+  const last = chatStore.messages[chatStore.messages.length - 1]
+  return last?.isTyping || false
+})
 
 const quickPromptPool = [
   '生成一段自我介绍',
@@ -167,6 +171,7 @@ const refreshQuickPrompts = () => {
 }
 
 const formatTime = (ts) => {
+  if (!ts) return ''
   return new Date(ts).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
 }
 
@@ -205,7 +210,7 @@ const usePrompt = (text) => {
 }
 
 const clearChat = () => {
-  messages.value = []
+  chatStore.clearMessages()
   refreshQuickPrompts()
 }
 
@@ -216,10 +221,10 @@ const handleEnter = (e) => {
 }
 
 const appendAssistantChunk = (index, chunk) => {
-  const target = messages.value[index]
+  const target = chatStore.messages[index]
   if (!target) return
 
-  target.content += chunk
+  chatStore.appendToLastMessage(chunk)
 
   if (!viewportRef.value) return
 
@@ -233,53 +238,39 @@ const appendAssistantChunk = (index, chunk) => {
 
 const sendMessage = async () => {
   const content = inputMessage.value.trim()
-  if (!content || isLoading.value) return
+  if (!content || chatStore.isLoading) return
 
-  messages.value.push({
-    role: 'user',
-    content,
-    timestamp: Date.now()
-  })
+  chatStore.addUserMessage(content)
+  chatStore.addAssistantMessage()
 
   inputMessage.value = ''
   if (inputRef.value) inputRef.value.style.height = 'auto'
-  isLoading.value = true
+  chatStore.setLoading(true)
   await scrollToBottom()
 
-  try {
-    const aiMsg = {
-      role: 'assistant',
-      content: '',
-      isTyping: true,
-      timestamp: Date.now()
-    }
-    messages.value.push(aiMsg)
-    const aiMsgIndex = messages.value.length - 1
-    await scrollToBottom()
+  const aiMsgIndex = chatStore.messages.length - 1
 
-    await sendToAI(content, (chunk) => {
+  try {
+    const apiMessages = chatStore.getMessagesForAPI()
+
+    await sendToAIWithHistory(apiMessages, (chunk) => {
       appendAssistantChunk(aiMsgIndex, chunk)
     })
   } catch (err) {
-      messages.value.push({
-        role: 'assistant',
-        content: 'System Error: 连接中断或超时，请检查网络连接。',
-        isTyping: false,
-        timestamp: Date.now()
-      })
+    chatStore.appendToLastMessage('\n\n[Error: 连接中断或超时，请检查网络连接]')
   } finally {
-    isLoading.value = false
-    const lastMsg = messages.value[messages.value.length - 1]
-    if (lastMsg && lastMsg.role === 'assistant') {
-      lastMsg.isTyping = false
-    }
+    chatStore.setLoading(false)
+    chatStore.finalizeLastMessage()
     await scrollToBottom()
     nextTick(() => inputRef.value?.focus())
   }
 }
 
 onMounted(() => {
-  refreshQuickPrompts()
+  chatStore.loadMessages()
+  if (!chatStore.hasHistory) {
+    refreshQuickPrompts()
+  }
   inputRef.value?.focus()
 })
 </script>

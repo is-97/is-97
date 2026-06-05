@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import ThreeScene from '../components/ThreeScene.vue'
 import CountUp from '../components/CountUp.vue'
 import TypeText from '../components/TypeText.vue'
+import { profile, skills } from '../data/profile'
 
 const isLoaded = ref(false)
 const activeSkill = ref(0)
@@ -12,54 +13,6 @@ onMounted(() => {
     isLoaded.value = true
   }, 100)
 })
-
-const skills = [
-  {
-    category: 'Frontend',
-    icon: '⚡',
-    color: '#00f0ff',
-    description: 'Architecture & UI Engineering',
-    items: [
-      { name: 'Vue 3 / Nuxt 3', level: 98 },
-      { name: 'React 18 / Next.js', level: 95 },
-      { name: 'TypeScript 5.x', level: 95 },
-      { name: 'Tailwind / UnoCSS', level: 92 },
-      { name: 'Vite / Turbopack', level: 90 }
-    ]
-  },
-  {
-    category: 'Engineering',
-    icon: '🛠',
-    color: '#7000ff',
-    description: 'Infrastructure & Performance',
-    items: [
-      { name: 'Rust / WebAssembly', level: 85 },
-      { name: 'Docker / K8s', level: 88 },
-      { name: 'CI/CD Pipelines', level: 92 },
-      { name: 'Node.js / Bun', level: 90 },
-      { name: 'Micro-Frontend', level: 88 }
-    ]
-  },
-  {
-    category: 'Visualization',
-    icon: '🔮',
-    color: '#ff0055',
-    description: '3D Graphics & Creative Coding',
-    items: [
-      { name: 'Three.js / R3F', level: 95 },
-      { name: 'WebGL / GLSL', level: 90 },
-      { name: 'Blender', level: 85 },
-      { name: 'Generative Art', level: 88 },
-      { name: 'D3.js', level: 85 }
-    ]
-  }
-]
-
-const stats = [
-  { value: 7, label: 'YEARS EXP', pad: 2, suffix: '' },
-  { value: 50, label: 'PROJECTS', pad: 0, suffix: '+' },
-  { value: 20, label: 'STACKS', pad: 0, suffix: '+' }
-]
 </script>
 
 <template>
@@ -74,17 +27,17 @@ const stats = [
           </h1>
           <div class="bio-text">
             <TypeText
-              text="专注于构建高性能、高交互的现代 Web 应用。&#10;追求代码的优雅与极致的用户体验。"
+              :text="profile.bio"
               :delay="800"
               :speed="50"
             />
           </div>
 
           <div class="action-group">
-            <a href="mailto:s_shizhenxing@163.com" class="btn-primary">
+            <a :href="'mailto:' + profile.email" class="btn-primary">
               <span>CONTACT ME</span>
             </a>
-            <a href="https://github.com/is-97" target="_blank" class="btn-ghost">
+            <a :href="profile.github" target="_blank" class="btn-ghost">
               <span>GITHUB</span>
             </a>
           </div>
@@ -99,7 +52,7 @@ const stats = [
 
     <!-- Stats Grid -->
     <section class="stats-section">
-      <div v-for="(stat, index) in stats" :key="index" class="stat-item">
+      <div v-for="(stat, index) in profile.stats" :key="index" class="stat-item">
         <div class="stat-value">
           <CountUp
             :to="stat.value"
@@ -303,7 +256,7 @@ const stats = [
   line-height: 1.6;
   margin-bottom: 3rem;
   max-width: 500px;
-  min-height: 3.2em; /* 防止打字时高度跳动 */
+  min-height: 3.2em;
 }
 
 .action-group {
@@ -545,7 +498,7 @@ const stats = [
   }
 
   .hero-visual {
-    display: none; /* Mobile simplified */
+    display: none;
   }
 
   .skills-layout {

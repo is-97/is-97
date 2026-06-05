@@ -1,130 +1,112 @@
 export const themes = {
-  dark: {
-    name: '深邃夜空',
-    colors: {
-      primary: '#3b82f6',
-      secondary: '#9333ea',
-      background: 'linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%)',
-      surface: 'rgba(255, 255, 255, 0.05)',
-      text: {
-        primary: '#fff',
-        secondary: '#a0aec0',
-        accent: '#3b82f6'
-      },
-      border: 'rgba(255, 255, 255, 0.1)',
-      shadow: 'rgba(0, 0, 0, 0.2)'
-    }
+  cyberpunk: {
+    id: 'cyberpunk',
+    name: '赛博朋克',
+    icon: '⚡',
+    '--bg-deep': '#050510',
+    '--bg-card': 'rgba(20, 25, 40, 0.4)',
+    '--bg-card-hover': 'rgba(30, 35, 60, 0.5)',
+    '--primary': '#00f0ff',
+    '--secondary': '#7000ff',
+    '--text-main': '#ffffff',
+    '--text-muted': 'rgba(255, 255, 255, 0.6)',
+    '--border-light': 'rgba(255, 255, 255, 0.08)',
+    '--border-hover': 'rgba(0, 240, 255, 0.3)',
+    '--accent-glow': 'rgba(0, 240, 255, 0.15)',
+    '--success': '#00ff88',
+    '--warning': '#ffaa00',
+    '--danger': '#ff0055',
+    '--bg-gradient': 'linear-gradient(135deg, #050510 0%, #0a0a2e 100%)',
+    '--card-bg': 'rgba(20, 25, 40, 0.6)',
+    '--font-display': "'Syncopate', sans-serif",
+    '--font-body': "'Space Grotesk', sans-serif",
+    '--scrollbar-track': '#050510',
+    '--scrollbar-thumb': 'rgba(255, 255, 255, 0.2)',
+    '--scrollbar-thumb-hover': '#00f0ff',
+    '--nav-bg': 'rgba(5, 5, 16, 0.6)',
+    '--input-bg': 'rgba(20, 30, 50, 0.6)',
+    '--modal-overlay': 'rgba(0, 5, 10, 0.8)',
+    '--code-bg': 'rgba(0, 0, 0, 0.6)',
+    '--chip-bg': 'rgba(0, 240, 255, 0.1)',
+    '--chip-border': 'rgba(0, 240, 255, 0.3)',
+    '--hero-gradient': 'radial-gradient(ellipse at center, rgba(0, 240, 255, 0.08), transparent 70%)'
   },
-  light: {
-    name: '清新日光',
-    colors: {
-      primary: '#0284c7',
-      secondary: '#6d28d9',
-      background: 'linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%)',
-      surface: 'rgba(255, 255, 255, 0.9)',
-      text: {
-        primary: '#0f172a',
-        secondary: '#334155',
-        accent: '#0284c7'
-      },
-      border: 'rgba(51, 65, 85, 0.2)',
-      shadow: 'rgba(51, 65, 85, 0.2)'
-    }
+  abyss: {
+    id: 'abyss',
+    name: '深渊',
+    icon: '🌑',
+    '--bg-deep': '#0f0f1a',
+    '--bg-card': 'rgba(30, 30, 50, 0.4)',
+    '--bg-card-hover': 'rgba(45, 45, 70, 0.5)',
+    '--primary': '#c084fc',
+    '--secondary': '#818cf8',
+    '--text-main': '#e2e8f0',
+    '--text-muted': 'rgba(226, 232, 240, 0.55)',
+    '--border-light': 'rgba(255, 255, 255, 0.08)',
+    '--border-hover': 'rgba(192, 132, 252, 0.4)',
+    '--accent-glow': 'rgba(192, 132, 252, 0.15)',
+    '--success': '#4ade80',
+    '--warning': '#fbbf24',
+    '--danger': '#f87171',
+    '--bg-gradient': 'linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%)',
+    '--card-bg': 'rgba(30, 30, 50, 0.6)',
+    '--font-display': "'Space Grotesk', sans-serif",
+    '--font-body': "'Space Grotesk', sans-serif",
+    '--scrollbar-track': '#0f0f1a',
+    '--scrollbar-thumb': 'rgba(255, 255, 255, 0.15)',
+    '--scrollbar-thumb-hover': '#c084fc',
+    '--nav-bg': 'rgba(15, 15, 26, 0.7)',
+    '--input-bg': 'rgba(30, 30, 50, 0.6)',
+    '--modal-overlay': 'rgba(0, 0, 0, 0.8)',
+    '--code-bg': 'rgba(0, 0, 0, 0.5)',
+    '--chip-bg': 'rgba(192, 132, 252, 0.1)',
+    '--chip-border': 'rgba(192, 132, 252, 0.3)',
+    '--hero-gradient': 'radial-gradient(ellipse at center, rgba(192, 132, 252, 0.08), transparent 70%)'
   },
-  ocean: {
-    name: '深海幻境',
-    colors: {
-      primary: '#06b6d4',
-      secondary: '#3b82f6',
-      background: 'linear-gradient(135deg, #0f172a 0%, #164e63 100%)',
-      surface: 'rgba(255, 255, 255, 0.05)',
-      text: {
-        primary: '#fff',
-        secondary: '#94a3b8',
-        accent: '#06b6d4'
-      },
-      border: 'rgba(255, 255, 255, 0.1)',
-      shadow: 'rgba(0, 0, 0, 0.2)'
-    }
-  },
-  purple: {
-    name: '紫霞仙境',
-    colors: {
-      primary: '#a855f7',
-      secondary: '#ec4899',
-      background: 'linear-gradient(135deg, #2e1065 0%, #701a75 100%)',
-      surface: 'rgba(255, 255, 255, 0.05)',
-      text: {
-        primary: '#fff',
-        secondary: '#e9d5ff',
-        accent: '#a855f7'
-      },
-      border: 'rgba(255, 255, 255, 0.1)',
-      shadow: 'rgba(0, 0, 0, 0.2)'
-    }
-  },
-  sunset: {
-    name: '晚霞',
-    colors: {
-      primary: '#f97316',
-      secondary: '#db2777',
-      background: 'linear-gradient(135deg, #7f1d1d 0%, #831843 100%)',
-      surface: 'rgba(255, 255, 255, 0.05)',
-      text: {
-        primary: '#fff',
-        secondary: '#fecaca',
-        accent: '#f97316'
-      },
-      border: 'rgba(249, 115, 22, 0.2)',
-      shadow: 'rgba(0, 0, 0, 0.3)'
-    }
-  },
-  emerald: {
-    name: '翡翠森林',
-    colors: {
-      primary: '#34d399',
-      secondary: '#fbbf24',
-      background: 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)',
-      surface: 'rgba(255, 255, 255, 0.05)',
-      text: {
-        primary: '#fff',
-        secondary: '#d1fae5',
-        accent: '#34d399'
-      },
-      border: 'rgba(52, 211, 153, 0.2)',
-      shadow: 'rgba(0, 0, 0, 0.3)'
-    }
-  },
-  aurora: {
-    name: '极光',
-    colors: {
-      primary: '#22d3ee',
-      secondary: '#818cf8',
-      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-      surface: 'rgba(255, 255, 255, 0.05)',
-      text: {
-        primary: '#fff',
-        secondary: '#bae6fd',
-        accent: '#22d3ee'
-      },
-      border: 'rgba(34, 211, 238, 0.2)',
-      shadow: 'rgba(0, 0, 0, 0.3)'
-    }
-  },
-  galaxy: {
-    name: '星河永恒',
-    colors: {
-      primary: '#60a5fa',
-      secondary: '#c084fc',
-      background: 'linear-gradient(135deg, #020617 0%, #1e1b4b 100%)',
-      surface: 'rgba(255, 255, 255, 0.03)',
-      text: {
-        primary: '#fff',
-        secondary: '#94a3b8',
-        accent: '#60a5fa'
-      },
-      border: 'rgba(96, 165, 250, 0.2)',
-      shadow: 'rgba(0, 0, 0, 0.4)'
-    }
+  terminal: {
+    id: 'terminal',
+    name: '复古终端',
+    icon: '⌨️',
+    '--bg-deep': '#0c0c0c',
+    '--bg-card': 'rgba(20, 40, 20, 0.5)',
+    '--bg-card-hover': 'rgba(30, 60, 30, 0.6)',
+    '--primary': '#33ff33',
+    '--secondary': '#00aa00',
+    '--text-main': '#33ff33',
+    '--text-muted': 'rgba(51, 255, 51, 0.5)',
+    '--border-light': 'rgba(51, 255, 51, 0.15)',
+    '--border-hover': 'rgba(51, 255, 51, 0.5)',
+    '--accent-glow': 'rgba(51, 255, 51, 0.15)',
+    '--success': '#33ff33',
+    '--warning': '#ffcc00',
+    '--danger': '#ff3333',
+    '--bg-gradient': 'linear-gradient(135deg, #0c0c0c 0%, #001100 100%)',
+    '--card-bg': 'rgba(20, 40, 20, 0.7)',
+    '--font-display': "'Courier New', monospace",
+    '--font-body': "'Courier New', monospace",
+    '--scrollbar-track': '#0c0c0c',
+    '--scrollbar-thumb': 'rgba(51, 255, 51, 0.3)',
+    '--scrollbar-thumb-hover': '#33ff33',
+    '--nav-bg': 'rgba(12, 12, 12, 0.9)',
+    '--input-bg': 'rgba(20, 40, 20, 0.8)',
+    '--modal-overlay': 'rgba(0, 0, 0, 0.9)',
+    '--code-bg': 'rgba(0, 0, 0, 0.8)',
+    '--chip-bg': 'rgba(51, 255, 51, 0.1)',
+    '--chip-border': 'rgba(51, 255, 51, 0.3)',
+    '--hero-gradient': 'radial-gradient(ellipse at center, rgba(51, 255, 51, 0.08), transparent 70%)'
   }
 }
+
+export function applyTheme(themeId) {
+  const theme = themes[themeId]
+  if (!theme) return
+
+  const root = document.documentElement
+  Object.keys(theme).forEach(key => {
+    if (key.startsWith('--')) {
+      root.style.setProperty(key, theme[key])
+    }
+  })
+}
+
+export const themeList = Object.values(themes)
