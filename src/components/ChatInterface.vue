@@ -1,12 +1,12 @@
 <template>
-  <div class="holographic-interface">
+  <div class="holographic-interface" role="main" aria-label="AI 聊天界面">
     <div class="aurora-layer">
       <div class="aurora-beam"></div>
       <div class="aurora-beam"></div>
     </div>
 
-    <div class="status-bar">
-      <div class="model-info">
+    <div class="status-bar" role="banner" aria-label="状态栏">
+      <div class="model-info" aria-label="AI模型信息">
         <div class="ai-avatar-small">
           <div class="core-pulse"></div>
         </div>
@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="window-controls">
-        <button class="control-btn" @click="clearChat" title="Clear Memory">
+        <button class="control-btn" @click="clearChat" title="清除聊天记录" aria-label="清除聊天记录">
           <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2">
             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
           </svg>
@@ -24,26 +24,26 @@
       </div>
     </div>
 
-    <div class="chat-viewport" ref="viewportRef">
-      <div class="messages-container">
-        <div v-if="!chatStore.hasHistory" class="welcome-screen">
+    <div class="chat-viewport" ref="viewportRef" role="log" aria-live="polite" aria-label="聊天记录">
+      <div class="messages-container" role="region" aria-label="消息列表">
+        <div v-if="!chatStore.hasHistory" class="welcome-screen" role="region" aria-label="欢迎页面">
           <div class="ai-core-container">
             <div class="ai-core-outer-ring"></div>
             <div class="ai-core-inner-ring"></div>
             <div class="ai-core-center"></div>
           </div>
           <h2 class="welcome-title">AURA SYSTEM READY</h2>
-          <p class="welcome-subtitle">等待指令输入...</p>
+          <p class="welcome-subtitle">你可以问我关于技术、项目、工作经历的问题</p>
 
           <div class="quick-prompts">
-            <button v-for="prompt in quickPrompts" :key="prompt" @click="usePrompt(prompt)" class="prompt-chip">
+            <button v-for="prompt in quickPrompts" :key="prompt" @click="usePrompt(prompt)" class="prompt-chip" :aria-label="`快速提问：${prompt}`">
               {{ prompt }}
             </button>
           </div>
         </div>
 
         <TransitionGroup name="msg">
-          <div v-for="(msg, index) in chatStore.messages" :key="index" class="message-row" :class="msg.role">
+          <div v-for="(msg, index) in chatStore.messages" :key="index" class="message-row" :class="msg.role" :aria-label="msg.role === `user` ? `用户消息` : `AI回复`">
             <div class="message-content">
               <div v-if="msg.role === 'assistant'" class="ai-avatar">
                 <div class="avatar-ring"></div>
@@ -63,7 +63,7 @@
           </div>
         </TransitionGroup>
 
-        <div v-if="chatStore.isLoading && !lastIsTyping" class="loading-status">
+        <div v-if="chatStore.isLoading && !lastIsTyping" class="loading-status" role="status" aria-live="polite" aria-label="AI正在生成回复">
           <div class="quantum-loader">
             <div class="orbit"></div>
             <div class="orbit"></div>
@@ -77,9 +77,9 @@
       </div>
     </div>
 
-    <div class="input-deck">
+    <div class="input-deck" role="form" aria-label="消息输入区域">
       <div class="glass-capsule" :class="{ focused: isFocused }">
-        <div class="upload-trigger" title="Upload Data">
+        <div class="upload-trigger" title="上传文件" aria-label="上传文件" role="button" tabindex="0">
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2">
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
           </svg>
@@ -97,7 +97,7 @@
           @input="autoResize"
         ></textarea>
 
-        <button class="send-trigger" :disabled="!inputMessage.trim() || chatStore.isLoading" @click="sendMessage">
+        <button class="send-trigger" :disabled="!inputMessage.trim() || chatStore.isLoading" @click="sendMessage" aria-label="发送消息">
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2">
             <line x1="22" y1="2" x2="11" y2="13"></line>
             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -114,10 +114,29 @@
 import { ref, computed, nextTick, onMounted } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
-import hljs from 'highlight.js'
+import hljs from 'highlight.js/lib/core'
+import javascript from 'highlight.js/lib/languages/javascript'
+import python from 'highlight.js/lib/languages/python'
+import css from 'highlight.js/lib/languages/css'
+import xml from 'highlight.js/lib/languages/xml'
+import json from 'highlight.js/lib/languages/json'
+import bash from 'highlight.js/lib/languages/bash'
+import typescript from 'highlight.js/lib/languages/typescript'
 import 'highlight.js/styles/atom-one-dark.css'
 import { sendToAIWithHistory } from '../services/aiService'
 import { useChatStore } from '../stores/chat'
+
+hljs.registerLanguage('javascript', javascript)
+hljs.registerLanguage('js', javascript)
+hljs.registerLanguage('python', python)
+hljs.registerLanguage('css', css)
+hljs.registerLanguage('html', xml)
+hljs.registerLanguage('xml', xml)
+hljs.registerLanguage('json', json)
+hljs.registerLanguage('bash', bash)
+hljs.registerLanguage('shell', bash)
+hljs.registerLanguage('typescript', typescript)
+hljs.registerLanguage('ts', typescript)
 
 marked.setOptions({
   highlight: function (code, lang) {
@@ -129,6 +148,7 @@ marked.setOptions({
 })
 
 const chatStore = useChatStore()
+const mdCache = new Map()
 const inputMessage = ref('')
 const isFocused = ref(false)
 const viewportRef = ref(null)
@@ -141,33 +161,28 @@ const lastIsTyping = computed(() => {
 })
 
 const quickPromptPool = [
-  '生成一段自我介绍',
-  '帮我润色一份简历项目经历',
-  '分析我的简历亮点',
-  '模拟一段前端面试问答',
-  'Vue3 核心特性是什么？',
-  'Vue3 和 Vue2 的主要区别有哪些？',
-  '如何优化前端性能？',
-  '讲一下浏览器缓存机制',
-  '什么是虚拟 DOM？',
-  '如何实现一个防抖和节流函数？',
-  '写一个常用的 JavaScript 工具函数合集',
-  '解释一下闭包、原型链和作用域',
-  '手写一个 Promise.all',
-  '如何设计一个聊天页面的交互体验？',
-  '帮我写一个 Vue3 组件示例',
-  '生成一个接口请求封装方案',
+  '介绍一下你的技术栈',
+  '你最擅长的前端技术是什么？',
+  '你的工作经历中有哪些亮点？',
+  '你的三个代表性项目是什么？',
+  'Vue3 和 React 你更喜欢哪个？为什么？',
+  '你在前端性能优化方面有哪些经验？',
+  'Three.js / WebGL 是如何学习的？',
+  '微前端架构有哪些实践经验？',
+  '低代码平台的设计思路是什么？',
   '如何排查线上白屏问题？',
-  '给我一份前端学习路线图',
-  '写一段工作日报',
-  '总结一下今天的工作内容'
+  '前端开发中最常见的性能瓶颈有哪些？',
+  '你对前端未来的趋势怎么看？',
+  '移动端开发（小程序/App）有哪些经验？',
+  '你的职业目标是什么？',
+  '帮我模拟一段前端面试场景',
+  '给我一份前端学习路线图'
 ]
 
 const quickPrompts = ref([])
 
 const refreshQuickPrompts = () => {
-  const shuffled = [...quickPromptPool].sort(() => Math.random() - 0.5)
-  quickPrompts.value = shuffled.slice(0, 6)
+  quickPrompts.value = quickPromptPool.slice(0, 6)
 }
 
 const formatTime = (ts) => {
@@ -176,7 +191,13 @@ const formatTime = (ts) => {
 }
 
 const renderMarkdown = (content) => {
-  return DOMPurify.sanitize(marked.parse(content || ''))
+  if (!content) return ''
+  const key = content.length + '_' + content.slice(0, 50)
+  if (mdCache.has(key)) return mdCache.get(key)
+  const html = DOMPurify.sanitize(marked.parse(content))
+  mdCache.set(key, html)
+  if (mdCache.size > 50) mdCache.delete(mdCache.keys().next().value)
+  return html
 }
 
 const scrollToBottom = async () => {

@@ -1,7 +1,7 @@
 <template>
   <Analytics />
   <CyberBackground />
-  <ParticleBackground />
+  <ParticleBackground v-if="!isMobile && !prefersReducedMotion" />
   <ScrollProgress />
 
   <ThemeSwitcher />
@@ -87,13 +87,13 @@
         <polyline points="18 15 12 9 6 15"/>
       </svg>
     </button>
-    <Live2dWidget />
-    <MusicPlayer songId="2007985391" />
+    <Live2dWidget v-if="!isMobile" />
+    <MusicPlayer v-if="!isMobile" songId="2007985391" />
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppStore } from './stores/app'
 import CyberBackground from './components/CyberBackground.vue'
@@ -110,17 +110,24 @@ const appStore = useAppStore()
 const isChatPage = computed(() => route.path === '/chat')
 const showScrollTop = computed(() => appStore.scrollY > 300)
 
+const prefersReducedMotion = ref(false)
+const isMobile = ref(false)
+
+onMounted(() => {
+  prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  isMobile.value = window.innerWidth <= 768
+  window.addEventListener('resize', () => { isMobile.value = window.innerWidth <= 768 })
+})
+
 const scrollToTop = () => {
   window.scrollTo({
     top: 0,
-    behavior: 'smooth'
+    behavior: prefersReducedMotion.value ? 'auto' : 'smooth'
   })
 }
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Rajdhani:wght@400;500;600;700&display=swap');
-
 :root {
   --nav-width: 100px;
 }
@@ -354,6 +361,25 @@ body {
 .fade-leave-to {
   opacity: 0;
   transform: translateY(10px);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Hide Live2D and MusicPlayer on mobile */
+@media (max-width: 768px) {
+  .live2d-container {
+    display: none !important;
+  }
+  .music-player {
+    display: none !important;
+  }
 }
 
 /* Scroll Top Button */

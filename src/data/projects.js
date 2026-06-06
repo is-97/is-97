@@ -9,6 +9,8 @@ export const projects = [
       '整合 WebSocket 实现低延迟的前后端数据传输。',
       '设计多模态内容预览组件，优化生成结果展示体验。'
     ],
+    image: '/project-aigc.png',
+    imageColor: 'linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 100%)',
     techStack: ['React', 'WebSocket', 'RESTful API', 'AIGC'],
     links: {
       demo: 'https://is-97.vercel.app',
@@ -25,6 +27,8 @@ export const projects = [
       '封装高复用性可视化组件库，支持动态配置图表类型。',
       '实现复杂的地图下钻与多维数据联动分析功能。'
     ],
+    image: '/project-dashboard.png',
+    imageColor: 'linear-gradient(135deg, #0a1a2e 0%, #1b3a5c 100%)',
     techStack: ['Vue3', 'Web Worker', 'ECharts', 'Performance'],
     links: {
       demo: null,
@@ -41,6 +45,8 @@ export const projects = [
       '集成 ChatGPT 打造智能数据助手，实现自然语言查询数据。',
       '搭建企业级低代码引擎，支持拖拽生成业务表单。'
     ],
+    image: '/project-portal.png',
+    imageColor: 'linear-gradient(135deg, #0f0f1a 0%, #1a1a3e 100%)',
     techStack: ['Micro-Frontend', 'Vue3', 'React', 'ChatGPT'],
     links: {
       demo: null,
@@ -57,6 +63,8 @@ export const projects = [
       '构建请求去重与缓存机制，显著降低服务器负载。',
       '配置 Webpack 构建优化，首屏加载体积减少 40%。'
     ],
+    image: '/project-pms.png',
+    imageColor: 'linear-gradient(135deg, #1a0f0a 0%, #3a2b1b 100%)',
     techStack: ['Vue3', 'Virtual List', 'Webpack', 'Optimization'],
     links: {
       demo: null,
@@ -73,6 +81,8 @@ export const projects = [
       '使用 RxJS 处理复杂的跨组件状态流转与数据共享。',
       '封装富文本组件，支持多媒体内容的高效上传与展示。'
     ],
+    image: '/project-onestar.png',
+    imageColor: 'linear-gradient(135deg, #0a1a0f 0%, #1b3a2b 100%)',
     techStack: ['Vue2', 'RxJS', 'H5', 'RBAC'],
     links: {
       demo: null,
@@ -89,6 +99,8 @@ export const projects = [
       '集成 IM SDK 实现买卖家实时沟通与多媒体消息发送。',
       '优化高并发下的抢购体验，确保交易数据的一致性。'
     ],
+    image: '/project-nft.png',
+    imageColor: 'linear-gradient(135deg, #1a0a1a 0%, #2b1b3a 100%)',
     techStack: ['Vue', 'Web3', 'IM SDK', 'Payment'],
     links: {
       demo: null,
@@ -105,6 +117,8 @@ export const projects = [
       '开发动态海报生成组件，利用 Canvas 实现个性化分享。',
       '集成会员积分与抽奖系统，提升用户留存与活跃度。'
     ],
+    image: '/project-pet.png',
+    imageColor: 'linear-gradient(135deg, #0f1a0f 0%, #1a3a1a 100%)',
     techStack: ['Mini Program', 'Vant Weapp', 'Cloud Base'],
     links: {
       demo: null,
@@ -121,6 +135,8 @@ export const projects = [
       '集成 3D 渲染引擎展示数字藏品，优化移动端渲染性能。',
       '对接百度超级链，实现数字资产的链上确权与流转。'
     ],
+    image: '/project-metaverse.png',
+    imageColor: 'linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%)',
     techStack: ['UniApp', 'Vite', 'Blockchain', '3D'],
     links: {
       demo: null,
@@ -137,6 +153,8 @@ export const projects = [
       '设计可视化编辑器架构，实现拖拽式场景搭建与配置。',
       '优化全景图加载策略，采用分块加载提升大图浏览体验。'
     ],
+    image: '/project-vr.png',
+    imageColor: 'linear-gradient(135deg, #0a0a1a 0%, #1a2b3c 100%)',
     techStack: ['Three.js', 'React', 'WebGL', 'Editor'],
     links: {
       demo: 'https://is-97.vercel.app',

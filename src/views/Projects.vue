@@ -20,20 +20,28 @@
       <div class="header-scanner"></div>
     </div>
 
-    <!-- 瀑布流网格 -->
     <div class="projects-grid">
       <div v-for="(project, index) in projects" :key="project.id"
            class="project-capsule"
-           @click="openProject(project.id)"
+           @click="openProject(project)"
            :style="{ '--delay': index * 0.1 + 's' }">
 
         <div class="capsule-glass"></div>
         <div class="capsule-border"></div>
 
+        <div class="project-thumbnail" :style="{ background: project.imageColor || 'linear-gradient(135deg, #1a1a2e, #0f0f1a)' }">
+          <div class="thumb-icon">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8M12 17v4"/>
+            </svg>
+          </div>
+          <span class="thumb-label">PROJECT {{ String(index + 1).padStart(2, '0') }}</span>
+        </div>
+
         <div class="capsule-content">
           <div class="project-header">
             <div class="header-left">
-              <span class="project-index">{{ String(index + 1).padStart(2, '0') }}</span>
               <h2 class="project-name">{{ project.name }}</h2>
             </div>
           </div>
@@ -51,11 +59,23 @@
               <span v-if="project.techStack.length > 3" class="tech-tag more">+{{ project.techStack.length - 3 }}</span>
             </div>
 
-            <div class="click-hint">>> CLICK TO READ DATA</div>
+            <div class="project-actions">
+              <a v-if="project.links?.demo" :href="project.links.demo" target="_blank" rel="noopener noreferrer" class="action-link demo" @click.stop>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                DEMO
+              </a>
+              <a v-if="project.links?.github" :href="project.links.github" target="_blank" rel="noopener noreferrer" class="action-link github" @click.stop>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                SOURCE
+              </a>
+              <span v-if="!project.links?.demo && !project.links?.github" class="action-link disabled">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                PRIVATE
+              </span>
+            </div>
           </div>
         </div>
 
-        <!-- 装饰元素 -->
         <div class="deco-corner tl"></div>
         <div class="deco-corner br"></div>
         <div class="scan-line"></div>
@@ -78,13 +98,87 @@ onMounted(() => {
   }, 100)
 })
 
-const openProject = (id) => {
-  router.push(`/projects/${id}`)
+const openProject = (project) => {
+  router.push(`/projects/${project.id}`)
 }
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap');
+.project-thumbnail {
+  width: 100%;
+  height: 180px;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+.project-thumbnail::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.6));
+  pointer-events: none;
+}
+.thumb-icon {
+  color: rgba(255, 255, 255, 0.3);
+  z-index: 1;
+}
+.thumb-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.4);
+  z-index: 1;
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+.action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.action-link.demo {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+}
+.action-link.demo:hover {
+  background: rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+}
+.action-link.github {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+}
+.action-link.github:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.action-link.disabled {
+  background: rgba(255, 170, 0, 0.05);
+  border-color: rgba(255, 170, 0, 0.2);
+  color: rgba(255, 170, 0, 0.6);
+  cursor: default;
+}
 
 .holo-projects {
   font-family: 'Rajdhani', sans-serif;
@@ -102,7 +196,6 @@ const openProject = (id) => {
   transform: translateY(0);
 }
 
-/* 标题区域 */
 .page-header {
   margin-bottom: 5rem;
   position: relative;
@@ -235,14 +328,12 @@ const openProject = (id) => {
   50% { opacity: 0.3; }
 }
 
-/* 瀑布流布局 */
 .projects-grid {
   column-count: 3;
   column-gap: 2rem;
   padding: 0 1rem;
 }
 
-/* 全息胶囊卡片 */
 .project-capsule {
   position: relative;
   background: rgba(10, 20, 30, 0.4);
@@ -313,20 +404,7 @@ const openProject = (id) => {
   gap: 0.5rem;
 }
 
-.project-index {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 3rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.1);
-  line-height: 1;
-  transition: color 0.3s;
-}
-
-.project-capsule:hover .project-index {
-  color: rgba(0, 240, 255, 0.2);
-}
-
-.project-name {
+.project-capsule:hover .project-name {
   font-size: 1.4rem;
   font-weight: 700;
   margin: 0;
@@ -380,23 +458,7 @@ const openProject = (id) => {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.click-hint {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  color: #00f0ff;
-  opacity: 0;
-  transform: translateX(-10px);
-  transition: all 0.3s;
-  margin-top: auto;
-  padding-top: 0.5rem;
-}
-
-.project-capsule:hover .click-hint {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* 装饰元素 */
+.project-capsule:hover
 .deco-corner {
   position: absolute;
   width: 10px;
@@ -437,7 +499,6 @@ const openProject = (id) => {
   100% { transform: translateY(100%); }
 }
 
-/* 响应式 */
 @media (max-width: 1200px) {
   .projects-grid {
     column-count: 2;

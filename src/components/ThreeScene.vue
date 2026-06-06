@@ -13,15 +13,37 @@ let scene, camera, renderer, frameId
 let particles, particlesMesh
 let wireframe, wireframeMesh
 let textMesh
+let isVisible = true
+let observer = null
 
 onMounted(() => {
+  // 检测是否开启减少动画
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (prefersReduced) {
+    return // 完全跳过 Three.js 初始化
+  }
+
   init()
   animate()
   window.addEventListener('resize', onWindowResize)
+
+  // IntersectionObserver: 离开视口时暂停渲染
+  observer = new IntersectionObserver((entries) => {
+    isVisible = entries[0].isIntersecting
+    if (isVisible && !frameId) {
+      animate()
+    }
+  }, { threshold: 0.1 })
+
+  if (container.value) {
+    observer.observe(container.value)
+  }
 })
 
 onBeforeUnmount(() => {
+  if (observer) observer.disconnect()
   cancelAnimationFrame(frameId)
+  frameId = null
   window.removeEventListener('resize', onWindowResize)
   if (renderer) {
     renderer.dispose()
@@ -90,7 +112,7 @@ const init = () => {
 
   // 添加 SZX 3D文字
   const loader = new FontLoader()
-  loader.load('https://unpkg.com/three@0.160.0/examples/fonts/helvetiker_bold.typeface.json', function (font) {
+  loader.load('/fonts/helvetiker_bold.typeface.json', function (font) {
     const textGeo = new TextGeometry('SZX', {
       font: font,
       size: 0.8,
@@ -130,6 +152,11 @@ const init = () => {
 }
 
 const animate = () => {
+  if (!isVisible) {
+    frameId = null
+    return
+  }
+
   frameId = requestAnimationFrame(animate)
 
   if (wireframeMesh) {
@@ -143,9 +170,7 @@ const animate = () => {
   }
 
   if (textMesh) {
-    // 文字反向缓慢旋转，增加层次感
     textMesh.rotation.y -= 0.003
-    // 轻微浮动
     textMesh.position.y = Math.sin(Date.now() * 0.001) * 0.1
   }
 

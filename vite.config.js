@@ -10,8 +10,22 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src')
     }
   },
+  build: {
+    chunkSizeWarningLimit: 500,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three'],
+          vue: ['vue', 'vue-router', 'pinia'],
+          chat: ['highlight.js', 'marked', 'dompurify'],
+          icons: ['@fortawesome/fontawesome-free'],
+          vendor: ['@vercel/analytics/vue']
+        }
+      }
+    }
+  },
   server: {
     host: '0.0.0.0',
     port: 5173
   }
-}) 
+})

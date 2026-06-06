@@ -17,11 +17,23 @@ const appStore = useAppStore()
 appStore.loadTheme()
 applyTheme(appStore.theme)
 
+// RAF throttle helper for scroll (avoids layout thrashing)
+function rafThrottle(fn) {
+  let raf = null
+  return () => {
+    if (raf) return
+    raf = requestAnimationFrame(() => {
+      raf = null
+      fn()
+    })
+  }
+}
+
 // Handle scroll and resize events
 appStore.checkMobile()
 appStore.updateScroll()
 
 window.addEventListener('resize', () => appStore.checkMobile())
-window.addEventListener('scroll', () => appStore.updateScroll(), { passive: true })
+window.addEventListener('scroll', rafThrottle(() => appStore.updateScroll()), { passive: true })
 
 app.mount('#app')

@@ -65,6 +65,7 @@ app.post("/api/chat", async (req, res) => {
     return res.status(400).json({ error: "未配置 NVIDIA API Key" });
   }
 
+  let upstreamResponse;
   try {
     const response = await fetch(DEFAULT_BASE_URL, {
       method: "POST",
@@ -84,6 +85,8 @@ app.post("/api/chat", async (req, res) => {
       });
     }
 
+    upstreamResponse = response;
+
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
@@ -100,6 +103,13 @@ app.post("/api/chat", async (req, res) => {
 
     response.body.on("error", () => {
       res.end();
+    });
+
+    // Client disconnect cleanup
+    req.on("close", () => {
+      if (!res.writableEnded) {
+        res.end();
+      }
     });
   } catch (error) {
     res.status(500).json({
