@@ -50,13 +50,15 @@ class Particle {
 
 function connectParticles(context, canvas) {
   const maxDist = 120
+  const maxDistSq = maxDist * maxDist
   for (let i = 0; i < particles.length; i++) {
     for (let j = i + 1; j < particles.length; j++) {
       const dx = particles[i].x - particles[j].x
       const dy = particles[i].y - particles[j].y
-      const dist = Math.sqrt(dx * dx + dy * dy)
+      const distSq = dx * dx + dy * dy
 
-      if (dist < maxDist) {
+      if (distSq < maxDistSq) {
+        const dist = Math.sqrt(distSq)
         const opacity = (1 - dist / maxDist) * 0.15
         context.beginPath()
         context.strokeStyle = `rgba(0, 240, 255, ${opacity})`
@@ -94,6 +96,15 @@ function resizeCanvas() {
   }
 }
 
+let resizeTimeout = null
+
+function handleResize() {
+  if (resizeTimeout) clearTimeout(resizeTimeout)
+  resizeTimeout = setTimeout(() => {
+    resizeCanvas()
+  }, 200)
+}
+
 function handleMouseMove(e) {
   mouse.x = e.clientX
   mouse.y = e.clientY
@@ -111,14 +122,15 @@ onMounted(() => {
   resizeCanvas()
   animate()
 
-  window.addEventListener('resize', resizeCanvas)
+  window.addEventListener('resize', handleResize)
   window.addEventListener('mousemove', handleMouseMove)
   window.addEventListener('mouseleave', handleMouseLeave)
 })
 
 onUnmounted(() => {
   if (animationId) cancelAnimationFrame(animationId)
-  window.removeEventListener('resize', resizeCanvas)
+  if (resizeTimeout) clearTimeout(resizeTimeout)
+  window.removeEventListener('resize', handleResize)
   window.removeEventListener('mousemove', handleMouseMove)
   window.removeEventListener('mouseleave', handleMouseLeave)
 })

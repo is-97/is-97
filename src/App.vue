@@ -334,6 +334,7 @@ body {
 }
 
 /* Fullscreen pages like Chat */
+.chat-page .content-area,
 .content-area:has(.chat-interface),
 .content-area:has(.chat-view) {
   height: 100vh;
@@ -343,6 +344,7 @@ body {
   overflow: hidden;
 }
 
+.chat-page .content-area > *,
 .content-area:has(.chat-interface) > *,
 .content-area:has(.chat-view) > * {
   max-width: none;
@@ -462,10 +464,12 @@ body {
     padding-bottom: 90px;
   }
 
+  .chat-page .content-area,
   .content-area:has(.chat-interface),
   .content-area:has(.chat-view) {
     height: calc(100vh - 70px);
     min-height: calc(100vh - 70px);
+    padding: 0;
     padding-bottom: 0;
   }
 

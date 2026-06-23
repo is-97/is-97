@@ -47,6 +47,8 @@ export const useChatStore = defineStore('chat', () => {
     const msg = {
       role: 'assistant',
       content: '',
+      reasoning: '',
+      showReasoning: true,
       isTyping: true,
       timestamp: Date.now()
     }
@@ -58,6 +60,14 @@ export const useChatStore = defineStore('chat', () => {
     const last = messages.value[messages.value.length - 1]
     if (last && last.role === 'assistant') {
       last.content += chunk
+      saveMessages()
+    }
+  }
+
+  function appendReasoningToLastMessage(chunk) {
+    const last = messages.value[messages.value.length - 1]
+    if (last && last.role === 'assistant') {
+      last.reasoning += chunk
       saveMessages()
     }
   }
@@ -101,6 +111,7 @@ export const useChatStore = defineStore('chat', () => {
     addUserMessage,
     addAssistantMessage,
     appendToLastMessage,
+    appendReasoningToLastMessage,
     finalizeLastMessage,
     clearMessages,
     getMessagesForAPI,

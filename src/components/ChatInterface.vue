@@ -53,8 +53,29 @@
                 <div class="bubble" :class="{ typing: msg.isTyping }">
                   <div v-if="msg.role === 'user'" class="user-text">{{ msg.content }}</div>
                   <div v-else class="ai-text-container">
-                    <div class="ai-text markdown-body" v-html="renderMarkdown(msg.content)"></div>
-                    <span v-if="msg.isTyping" class="cursor">_</span>
+                    <!-- 思考过程 -->
+                    <div v-if="msg.reasoning" class="thinking-block">
+                      <div class="thinking-header" @click="msg.showReasoning = !msg.showReasoning" role="button" tabindex="0">
+                        <span class="thinking-icon">
+                          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                          </svg>
+                        </span>
+                        <span class="thinking-title">思考过程</span>
+                        <span class="toggle-arrow" :class="{ expanded: msg.showReasoning }">
+                          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                          </svg>
+                        </span>
+                      </div>
+                      <div v-show="msg.showReasoning" class="thinking-content">
+                        {{ msg.reasoning }}
+                      </div>
+                    </div>
+
+                    <div v-if="msg.content" class="ai-text markdown-body" v-html="renderMarkdown(msg.content)"></div>
+                    <span v-if="msg.isTyping && !msg.content" class="thinking-pulse-text">AI 正在思考中...</span>
+                    <span v-else-if="msg.isTyping" class="cursor">_</span>
                   </div>
                 </div>
                 <div class="message-meta" v-if="!msg.isTyping">{{ formatTime(msg.timestamp) }}</div>
@@ -84,6 +105,12 @@
             <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
           </svg>
         </div>
+
+        <button class="clear-trigger" @click="clearChat" title="清除聊天记录" aria-label="清除聊天记录">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2">
+            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </button>
 
         <textarea
           ref="inputRef"
@@ -231,8 +258,10 @@ const usePrompt = (text) => {
 }
 
 const clearChat = () => {
-  chatStore.clearMessages()
-  refreshQuickPrompts()
+  if (window.confirm('确定要清除所有聊天记录吗？此操作无法撤销。')) {
+    chatStore.clearMessages()
+    refreshQuickPrompts()
+  }
 }
 
 const handleEnter = (e) => {
@@ -241,11 +270,16 @@ const handleEnter = (e) => {
   }
 }
 
-const appendAssistantChunk = (index, chunk) => {
+const appendAssistantChunk = (index, delta) => {
   const target = chatStore.messages[index]
   if (!target) return
 
-  chatStore.appendToLastMessage(chunk)
+  if (delta.reasoning_content) {
+    chatStore.appendReasoningToLastMessage(delta.reasoning_content)
+  }
+  if (delta.content) {
+    chatStore.appendToLastMessage(delta.content)
+  }
 
   if (!viewportRef.value) return
 
@@ -707,7 +741,7 @@ onMounted(() => {
   opacity: 1;
 }
 
-.upload-trigger, .send-trigger {
+.upload-trigger, .clear-trigger, .send-trigger {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -722,7 +756,7 @@ onMounted(() => {
   margin-bottom: 2px;
 }
 
-.upload-trigger:hover {
+.upload-trigger:hover, .clear-trigger:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.1);
 }
@@ -883,5 +917,76 @@ onMounted(() => {
 .msg-enter-from {
   opacity: 0;
   transform: translateY(20px) scale(0.95);
+}
+
+.thinking-block {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  max-width: 100%;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.thinking-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s;
+  outline: none;
+}
+
+.thinking-header:hover, .thinking-header:focus-visible {
+  color: rgba(0, 240, 255, 0.8);
+}
+
+.thinking-icon {
+  display: flex;
+  align-items: center;
+  color: #00f0ff;
+  animation: pulse 1.5s infinite;
+}
+
+.thinking-title {
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.toggle-arrow {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.toggle-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.thinking-content {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.05);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.thinking-pulse-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(0, 240, 255, 0.6);
+  letter-spacing: 0.05em;
+  animation: pulseText 1.5s infinite alternate;
 }
 </style>

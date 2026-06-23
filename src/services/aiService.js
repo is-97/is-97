@@ -1,7 +1,7 @@
 const DEV_API_ENDPOINT = 'http://localhost:3000/api/chat'
 const PROD_API_ENDPOINT = '/api/chat'
 
-async function* streamAI(endpoint, payload, onMessageChunk) {
+async function streamAI(endpoint, payload, onMessageChunk) {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -41,8 +41,8 @@ async function* streamAI(endpoint, payload, onMessageChunk) {
 
       try {
         const parsed = JSON.parse(jsonStr)
-        const delta = parsed.choices?.[0]?.delta?.content || ''
-        if (delta) {
+        const delta = parsed.choices?.[0]?.delta || {}
+        if (delta.content || delta.reasoning_content) {
           onMessageChunk(delta)
         }
       } catch {

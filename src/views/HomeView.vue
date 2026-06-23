@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import ThreeScene from '../components/ThreeScene.vue'
 import CountUp from '../components/CountUp.vue'
 import TypeText from '../components/TypeText.vue'
@@ -7,11 +7,29 @@ import { profile, skills } from '../data/profile'
 
 const isLoaded = ref(false)
 const activeSkill = ref(0)
+const isLargeScreen = ref(true)
+
+let resizeTimeout = null
+const checkScreenSize = () => {
+  isLargeScreen.value = window.innerWidth > 1024
+}
+
+const handleResize = () => {
+  if (resizeTimeout) clearTimeout(resizeTimeout)
+  resizeTimeout = setTimeout(checkScreenSize, 150)
+}
 
 onMounted(() => {
   setTimeout(() => {
     isLoaded.value = true
   }, 100)
+  checkScreenSize()
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  if (resizeTimeout) clearTimeout(resizeTimeout)
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 
@@ -44,7 +62,7 @@ onMounted(() => {
         </div>
 
         <div class="hero-visual">
-          <ThreeScene />
+          <ThreeScene v-if="isLargeScreen" />
           <div class="visual-circle"></div>
         </div>
       </div>
