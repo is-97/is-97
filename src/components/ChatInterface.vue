@@ -74,7 +74,7 @@
                     </div>
 
                     <div v-if="msg.content" class="ai-text markdown-body" v-html="renderMarkdown(msg.content)"></div>
-                    <span v-if="msg.isTyping && !msg.content" class="thinking-pulse-text">AI 正在思考中...</span>
+                    <span v-if="msg.isTyping && !msg.content" class="thinking-pulse-text">AI 正在思考中<span class="thinking-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></span>
                     <span v-else-if="msg.isTyping" class="cursor">_</span>
 
                     <!-- 消息操作栏（仅在非typing状态显示） -->
@@ -1262,8 +1262,256 @@ onUnmounted(() => {
 .thinking-pulse-text {
   font-family: 'Rajdhani', sans-serif;
   font-size: 0.9rem;
-  color: rgba(0, 240, 255, 0.6);
   letter-spacing: 0.05em;
-  animation: pulseText 1.5s infinite alternate;
+  background: linear-gradient(90deg, rgba(0, 240, 255, 0.3), rgba(0, 240, 255, 0.9), rgba(0, 240, 255, 0.3));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShimmer 2s infinite linear;
+}
+
+/* 跳动省略号 */
+.thinking-dots {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  margin-left: 2px;
+}
+
+.thinking-dots .dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #00f0ff;
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+  animation: dotBounce 1.4s infinite ease-in-out both;
+  -webkit-text-fill-color: initial;
+}
+
+.thinking-dots .dot:nth-child(1) { animation-delay: 0s; }
+.thinking-dots .dot:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots .dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotBounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  40% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+@keyframes textShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── 移动端响应式 ── */
+@media (max-width: 768px) {
+  .status-bar {
+    height: 52px;
+    padding: 0 1rem;
+  }
+
+  .model-info {
+    gap: 0.6rem;
+  }
+
+  .ai-avatar-small {
+    width: 28px;
+    height: 28px;
+  }
+
+  .core-pulse {
+    width: 10px;
+    height: 10px;
+  }
+
+  .model-name {
+    font-size: 0.85rem;
+  }
+
+  .status-text {
+    font-size: 0.62rem;
+  }
+
+  .chat-viewport {
+    padding: 1rem 0.8rem;
+  }
+
+  .messages-container {
+    max-width: 100%;
+  }
+
+  /* 欢迎屏幕 */
+  .welcome-screen {
+    padding: 2rem 0.5rem;
+  }
+
+  .ai-core-container {
+    width: 110px;
+    height: 110px;
+    margin-bottom: 1.5rem;
+  }
+
+  .ai-core-inner-ring {
+    inset: 15px;
+  }
+
+  .ai-core-center {
+    inset: 38px;
+  }
+
+  .welcome-title {
+    font-size: 1.6rem;
+    letter-spacing: 0.15em;
+  }
+
+  .welcome-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+    text-align: center;
+  }
+
+  .quick-prompts {
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+  }
+
+  .prompt-chip {
+    font-size: 0.78rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 16px;
+  }
+
+  /* 消息列表 */
+  .message-row {
+    margin-bottom: 1.2rem;
+  }
+
+  .message-content {
+    max-width: 92%;
+    gap: 0.6rem;
+  }
+
+  .ai-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .bubble {
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    border-radius: 14px;
+  }
+
+  .message-row.assistant .bubble {
+    padding-left: 0;
+  }
+
+  .message-meta {
+    font-size: 0.68rem;
+  }
+
+  /* 思考块 */
+  .thinking-block {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+
+  .thinking-header {
+    font-size: 0.78rem;
+  }
+
+  .thinking-content {
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  /* 消息操作栏 - 移动端始终显示 */
+  .message-actions {
+    opacity: 1;
+  }
+
+  .action-btn {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+
+  .action-label {
+    display: none;
+  }
+
+  /* 代码块 */
+  :deep(.code-block-wrapper) {
+    margin: 0.6rem 0;
+  }
+
+  :deep(.code-copy-btn) {
+    opacity: 1;
+  }
+
+  :deep(pre) {
+    padding: 0.7rem;
+    font-size: 0.78rem;
+  }
+
+  :deep(.markdown-body) {
+    font-size: 0.9rem;
+  }
+
+  /* 输入区域 */
+  .input-deck {
+    padding: 0.8rem 0.8rem;
+    padding-bottom: calc(0.8rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .glass-capsule {
+    max-width: 100%;
+    border-radius: 22px;
+    padding: 6px 8px;
+  }
+
+  .stop-trigger, .shuffle-trigger, .clear-trigger, .send-trigger {
+    width: 34px;
+    height: 34px;
+  }
+
+  .holo-input {
+    font-size: 15px;
+    padding: 8px 10px;
+    min-height: 38px;
+    line-height: 22px;
+  }
+
+  .loading-status {
+    padding: 0.6rem;
+    gap: 8px;
+  }
+
+  .loading-label {
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .message-content {
+    max-width: 95%;
+  }
+
+  .welcome-title {
+    font-size: 1.3rem;
+  }
+
+  .prompt-chip {
+    font-size: 0.72rem;
+    padding: 0.4rem 0.65rem;
+  }
 }
 </style>

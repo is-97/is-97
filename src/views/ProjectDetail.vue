@@ -596,56 +596,127 @@ const goBack = () => {
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .project-detail {
-    padding: 1rem 0 2rem;
+    padding: 0.5rem 0 2rem;
   }
 
   .hero-banner {
-    padding: 1.5rem 1.2rem 2rem;
-    min-height: 200px;
+    padding: 1.2rem 1rem 1.5rem;
+    min-height: 180px;
     border-radius: 14px;
+    margin-bottom: 1.5rem;
+  }
+
+  .back-btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.78rem;
+    border-radius: 6px;
+  }
+
+  .back-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .meta-id {
+    font-size: 0.68rem;
   }
 
   .project-title {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
+    margin: 0 0 0.6rem 0;
   }
 
   .hero-info {
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .info-item {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
+    gap: 4px;
+  }
+
+  .info-item svg {
+    width: 12px;
+    height: 12px;
   }
 
   .info-sep {
     display: none;
   }
 
-  .section-title {
-    font-size: 0.95rem;
+  .hero-corners .corner {
+    width: 12px;
+    height: 12px;
+  }
+
+  .hero-corners .corner.tl { top: 8px; left: 8px; }
+  .hero-corners .corner.tr { top: 8px; right: 8px; }
+  .hero-corners .corner.bl { bottom: 8px; left: 8px; }
+  .hero-corners .corner.br { bottom: 8px; right: 8px; }
+
+  .detail-body {
+    gap: 1.5rem;
+  }
+
+  .section-header {
+    gap: 0.6rem;
+    margin-bottom: 1rem;
   }
 
   .section-num {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    padding: 2px 6px;
   }
 
-  .achievement-card {
-    padding: 1rem 1.2rem;
-    gap: 0.8rem;
-  }
-
-  .achievement-index {
-    font-size: 1.1rem;
-    min-width: 30px;
-  }
-
-  .achievement-text {
+  .section-title {
     font-size: 0.88rem;
   }
 
   .project-description {
-    padding: 1rem 1.2rem;
-    font-size: 0.9rem;
+    padding: 1rem;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    border-radius: 10px;
+  }
+
+  .achievement-card {
+    padding: 0.9rem 1rem;
+    gap: 0.7rem;
+    border-radius: 10px;
+  }
+
+  .achievement-card:hover {
+    transform: none;
+  }
+
+  .achievement-index {
+    font-size: 1rem;
+    min-width: 28px;
+  }
+
+  .achievement-text {
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .tech-tag {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+  }
+
+  .link-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.82rem;
+    border-radius: 8px;
+  }
+
+  .private-notice {
+    padding: 0.8rem 1rem;
+    font-size: 0.82rem;
+  }
+
+  .not-found-content h1 {
+    font-size: 4rem;
   }
 }
 </style>

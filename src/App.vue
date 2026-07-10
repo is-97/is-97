@@ -434,7 +434,7 @@ body {
 
   .cyber-nav {
     width: 100%;
-    height: 70px;
+    height: 64px;
     top: auto;
     bottom: 0;
     flex-direction: row;
@@ -442,7 +442,8 @@ body {
     border-right: none;
     border-top: 1px solid var(--border-light, rgba(255, 255, 255, 0.08));
     justify-content: space-around;
-    background: var(--nav-bg, rgba(5, 5, 16, 0.9));
+    background: var(--nav-bg, rgba(5, 5, 16, 0.92));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .nav-brand, .nav-footer {
@@ -453,28 +454,41 @@ body {
     flex-direction: row;
     justify-content: space-around;
     padding: 0;
+    gap: 0;
   }
 
   .nav-item {
     height: 100%;
     width: auto;
     flex: 1;
+    border-radius: 0;
+  }
+
+  .nav-content {
+    gap: 3px;
+  }
+
+  .nav-icon svg {
+    width: 18px;
+    height: 18px;
   }
 
   .nav-text {
-    font-size: 0.6rem;
+    font-size: 0.58rem;
   }
 
   .content-area {
     margin-left: 0;
-    padding-bottom: 90px;
+    padding: 1rem;
+    padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+    width: 100%;
   }
 
   .chat-page .content-area,
   .content-area:has(.chat-interface),
   .content-area:has(.chat-view) {
-    height: calc(100vh - 70px);
-    min-height: calc(100vh - 70px);
+    height: calc(100vh - 64px - env(safe-area-inset-bottom, 0px));
+    min-height: calc(100vh - 64px - env(safe-area-inset-bottom, 0px));
     padding: 0;
     padding-bottom: 0;
   }
@@ -486,10 +500,10 @@ body {
     height: 40px;
   }
 
-  /* 移动端聊天页面：主题切换器对齐（status-bar 高度 60px，trigger 38px） */
+  /* 移动端聊天页面：主题切换器对齐 */
   #app:has(.chat-interface) .theme-switcher,
   #app:has(.chat-view) .theme-switcher {
-    top: 11px;
+    top: 8px;
   }
 }
 </style>

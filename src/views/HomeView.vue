@@ -514,31 +514,154 @@ onBeforeUnmount(() => {
   .skills-nav {
     flex-direction: row;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+
+  .skills-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .skill-tab {
     white-space: nowrap;
+    flex-shrink: 0;
   }
 }
 
 @media (max-width: 768px) {
-  .name-title {
-    font-size: 3rem;
+  .deep-home {
+    padding-top: 2rem;
   }
 
-  .stats-section {
-    grid-template-columns: 1fr;
+  .hero-section {
+    margin-bottom: 3rem;
+  }
+
+  .hero-layout {
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .identity-badge {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .name-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .bio-text {
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .action-group {
     gap: 1rem;
-    border: none;
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn-primary, .btn-ghost {
+    width: 100%;
+    height: 46px;
+    font-size: 0.85rem;
+  }
+
+  /* 统计区域：双列网格 */
+  .stats-section {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+    padding: 1.5rem 0;
+    margin-bottom: 3rem;
   }
 
   .stat-item {
     background: var(--bg-card);
-    padding: 1.5rem;
+    padding: 1.2rem 0.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+  }
+
+  /* 技能区域 */
+  .section-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .text-gradient {
+    margin-left: 0.5rem;
+  }
+
+  .skills-layout {
+    gap: 1rem;
+  }
+
+  .skill-tab {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+  }
+
+  .skill-detail-card {
+    padding: 1.2rem;
     border-radius: 12px;
   }
 
+  .card-header {
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .header-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.6rem;
+    border-radius: 10px;
+  }
+
+  .header-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .header-info p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
   .skill-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .skill-meta {
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .name-title {
+    font-size: 2rem;
+  }
+
+  .stats-section {
     grid-template-columns: 1fr;
   }
 }

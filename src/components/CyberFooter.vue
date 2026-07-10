@@ -245,18 +245,67 @@ onUnmounted(() => {
 
 /* 响应式 */
 @media (max-width: 768px) {
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
+  .cyber-footer {
+    padding: 1.5rem 0;
+    margin-top: 2rem;
   }
 
-  .comms-section {
-    align-items: center;
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+    text-align: center;
   }
 
   .logs-section {
     display: none; /* 移动端隐藏日志以节省空间 */
+  }
+
+  .center-section {
+    order: 1;
+  }
+
+  .holo-seal {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0.6rem;
+  }
+
+  .copyright {
+    font-size: 0.72rem;
+  }
+
+  .version {
+    font-size: 0.62rem;
+  }
+
+  .comms-section {
+    align-items: center;
+    order: 2;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .links-grid {
+    flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .cyber-link {
+    width: auto;
+    min-width: 130px;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.78rem;
+    gap: 0.5rem;
+  }
+
+  .link-status {
+    font-size: 0.6rem;
   }
 }
 </style>

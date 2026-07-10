@@ -330,32 +330,92 @@ import { experiences } from '../data/experience'
 
 /* 响应式 */
 @media (max-width: 768px) {
+  .holo-experience {
+    padding: 1rem 0;
+  }
+
+  .page-header {
+    padding-left: 1.2rem;
+    margin-bottom: 2.5rem;
+    border-left-width: 3px;
+  }
+
+  .title-text {
+    font-size: 2rem;
+  }
+
+  .title-deco {
+    font-size: 0.75rem;
+  }
+
   .timeline-container {
-    padding-left: 20px;
+    padding-left: 30px;
   }
 
   .laser-beam {
-    left: 0;
+    left: 10px;
   }
 
   .timeline-node {
-    left: -6px;
-    top: -30px;
+    left: -20px;
+    top: -25px;
   }
 
   .date-label {
-    left: 20px;
+    left: 25px;
     right: auto;
+    font-size: 0.75rem;
+    padding: 2px 6px;
   }
 
   .experience-item {
-    margin-top: 3rem;
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .experience-card {
+    padding: 1.2rem;
+    border-radius: 10px;
   }
 
   .card-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .company-name {
+    font-size: 1.3rem;
+  }
+
+  .job-title {
+    font-size: 0.85rem;
+    padding: 3px 8px;
+  }
+
+  .divider {
+    margin-bottom: 1rem;
+  }
+
+  .responsibilities-list li {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    gap: 8px;
+  }
+
+  .tech-stack {
     gap: 0.5rem;
+  }
+
+  .tech-chip {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+  }
+
+  .experience-card:hover {
+    transform: none;
   }
 }
 </style>

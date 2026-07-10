@@ -519,12 +519,89 @@ const thumbnailStyle = (project) => {
 }
 
 @media (max-width: 768px) {
+  .holo-projects {
+    padding: 1rem 0;
+  }
+
+  .page-header {
+    padding: 1.5rem 1rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+  }
+
+  .holo-badge {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.65rem;
+    margin-bottom: 1rem;
+  }
+
   .page-title {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .header-meta {
+    font-size: 0.65rem;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .meta-sep {
+    display: none;
+  }
+
+  .meta-item {
+    background: rgba(0, 240, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
   }
 
   .projects-grid {
     column-count: 1;
+    padding: 0;
+    column-gap: 0;
+  }
+
+  .project-capsule {
+    margin-bottom: 1rem;
+    border-radius: 14px;
+  }
+
+  .capsule-glass, .capsule-border {
+    border-radius: 14px;
+  }
+
+  .project-thumbnail {
+    height: 140px;
+    border-radius: 14px 14px 0 0;
+  }
+
+  .capsule-content {
+    padding: 1.2rem;
+  }
+
+  .project-name {
+    font-size: 1.15rem;
+  }
+
+  .project-period {
+    font-size: 0.72rem;
+  }
+
+  .description {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .tech-tag {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .action-link {
+    font-size: 0.6rem;
+    padding: 0.3rem 0.5rem;
   }
 }
 </style>
