@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAppStore } from '../stores/app'
 import { themeList, applyTheme } from '../styles/themes'
 
@@ -46,10 +46,6 @@ function selectTheme(themeId) {
   showMenu.value = false
 }
 
-onMounted(() => {
-  applyTheme(appStore.theme)
-})
-
 // Close menu when clicking outside
 function handleClickOutside(e) {
   if (!e.target.closest('.theme-switcher')) {
@@ -57,9 +53,14 @@ function handleClickOutside(e) {
   }
 }
 
-if (typeof window !== 'undefined') {
+onMounted(() => {
+  applyTheme(appStore.theme)
   window.addEventListener('click', handleClickOutside)
-}
+})
+
+onUnmounted(() => {
+  window.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <style scoped>

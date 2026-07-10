@@ -110,13 +110,13 @@ const appStore = useAppStore()
 const isChatPage = computed(() => route.path === '/chat')
 const showScrollTop = computed(() => appStore.scrollY > 300)
 
+// 统一使用 Store 中的 isMobile 状态，避免重复维护
+const isMobile = computed(() => appStore.isMobile)
+
 const prefersReducedMotion = ref(false)
-const isMobile = ref(false)
 
 onMounted(() => {
   prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  isMobile.value = window.innerWidth <= 768
-  window.addEventListener('resize', () => { isMobile.value = window.innerWidth <= 768 })
 })
 
 const scrollToTop = () => {

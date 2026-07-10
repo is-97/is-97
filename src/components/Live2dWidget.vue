@@ -247,7 +247,7 @@ onUnmounted(() => {
   top: 0;
   width: 32px;
   height: 32px;
-  background-image: url('https://raw.githubusercontent.com/adryd325/oneko.js/main/oneko.gif');
+  background-image: url('https://cdn.jsdelivr.net/gh/adryd325/oneko.js@main/oneko.gif');
   background-repeat: no-repeat;
   image-rendering: pixelated;
   image-rendering: crisp-edges;

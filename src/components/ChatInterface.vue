@@ -166,12 +166,18 @@ hljs.registerLanguage('typescript', typescript)
 hljs.registerLanguage('ts', typescript)
 
 marked.setOptions({
-  highlight: function (code, lang) {
-    const language = hljs.getLanguage(lang) ? lang : 'plaintext'
-    return hljs.highlight(code, { language }).value
-  },
-  langPrefix: 'hljs language-',
   breaks: true
+})
+
+// marked v15 移除了 highlight 选项，改用自定义 renderer 实现代码高亮
+marked.use({
+  renderer: {
+    code({ text, lang }) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext'
+      const highlighted = hljs.highlight(text, { language }).value
+      return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>\n`
+    }
+  }
 })
 
 const chatStore = useChatStore()
@@ -219,10 +225,9 @@ const formatTime = (ts) => {
 
 const renderMarkdown = (content) => {
   if (!content) return ''
-  const key = content.length + '_' + content.slice(0, 50)
-  if (mdCache.has(key)) return mdCache.get(key)
+  if (mdCache.has(content)) return mdCache.get(content)
   const html = DOMPurify.sanitize(marked.parse(content))
-  mdCache.set(key, html)
+  mdCache.set(content, html)
   if (mdCache.size > 50) mdCache.delete(mdCache.keys().next().value)
   return html
 }
@@ -331,7 +336,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Rajdhani & JetBrains Mono 字体已在 index.html 中统一加载 */
 
 .holographic-interface {
   position: relative;

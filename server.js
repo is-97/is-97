@@ -1,109 +1,31 @@
 import express from "express";
 import cors from "cors";
-import fetch from "node-fetch";
-import * as dotenv from "dotenv";
-
-dotenv.config();
+import {
+  proxyChatRequest,
+  validateChatRequest,
+} from "./api/shared.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const PORT = Number(process.env.PORT || 3000);
-const DEFAULT_API_KEY = process.env.NVIDIA_API_KEY;
-const DEFAULT_BASE_URL =
-  process.env.NVIDIA_API_BASE_URL ||
-  "https://integrate.api.nvidia.com/v1/chat/completions";
-const DEFAULT_MODEL =
-  process.env.NVIDIA_MODEL || process.env.NVIDIA_CHAT_MODEL || "minimaxai/minimax-m2.7";
-const DEFAULT_MAX_TOKENS = Number(process.env.NVIDIA_MAX_TOKENS || 16384);
-const DEFAULT_TEMPERATURE = Number(process.env.NVIDIA_TEMPERATURE || 1.0);
-const DEFAULT_TOP_P = Number(process.env.NVIDIA_TOP_P || 1.0);
-const DEFAULT_THINKING = process.env.NVIDIA_THINKING !== "false";
-
-function buildPayload(body) {
-  const {
-    message,
-    model,
-    maxTokens,
-    temperature,
-    topP,
-    thinking,
-    messages,
-  } = body;
-
-  return {
-    model: model || DEFAULT_MODEL,
-    messages:
-      Array.isArray(messages) && messages.length > 0
-        ? messages
-        : [{ role: "user", content: message }],
-    max_tokens: Number.isFinite(Number(maxTokens))
-      ? Number(maxTokens)
-      : DEFAULT_MAX_TOKENS,
-    temperature: Number.isFinite(Number(temperature))
-      ? Number(temperature)
-      : DEFAULT_TEMPERATURE,
-    top_p: Number.isFinite(Number(topP)) ? Number(topP) : DEFAULT_TOP_P,
-    stream: true,
-    chat_template_kwargs: {
-      thinking:
-        typeof thinking === "boolean" ? thinking : DEFAULT_THINKING,
-    },
-  };
-}
 
 app.post("/api/chat", async (req, res) => {
-  const { message, apiKey, messages } = req.body;
+  const { apiKey } = req.body;
 
-  if (!message && (!Array.isArray(messages) || messages.length === 0)) {
-    return res.status(400).json({ error: "message 或 messages 不能为空" });
+  const validationError = validateChatRequest(req.body);
+  if (validationError) {
+    return res.status(400).json({ error: validationError });
   }
 
-  const actualApiKey = apiKey || DEFAULT_API_KEY;
+  const actualApiKey = apiKey || process.env.NVIDIA_API_KEY;
   if (!actualApiKey) {
     return res.status(400).json({ error: "未配置 NVIDIA API Key" });
   }
 
-  let upstreamResponse;
   try {
-    const response = await fetch(DEFAULT_BASE_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${actualApiKey}`,
-        Accept: "text/event-stream",
-      },
-      body: JSON.stringify(buildPayload(req.body)),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(response.status).json({
-        error: "调用 NVIDIA 接口失败",
-        details: errorText,
-      });
-    }
-
-    upstreamResponse = response;
-
-    res.setHeader("Content-Type", "text/event-stream");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-    response.body.on("data", (chunk) => {
-      res.write(chunk);
-    });
-
-    response.body.on("end", () => {
-      res.end();
-    });
-
-    response.body.on("error", () => {
-      res.end();
-    });
+    await proxyChatRequest(req, res, actualApiKey);
 
     // Client disconnect cleanup
     req.on("close", () => {

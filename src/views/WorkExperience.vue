@@ -71,7 +71,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
+/* Rajdhani 字体已在 index.html 中统一加载 */
 
 .holo-experience {
   font-family: 'Rajdhani', sans-serif;

@@ -33,6 +33,12 @@ const router = createRouter({
       name: 'chat',
       component: () => import('../views/Chat.vue'),
       meta: { title: 'AI 助手' }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/NotFound.vue'),
+      meta: { title: '404' }
     }
   ]
 })
