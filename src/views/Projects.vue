@@ -29,7 +29,7 @@
         <div class="capsule-glass"></div>
         <div class="capsule-border"></div>
 
-        <div class="project-thumbnail" :style="{ background: project.imageColor || 'linear-gradient(135deg, #1a1a2e, #0f0f1a)' }">
+        <div class="project-thumbnail" :style="thumbnailStyle(project)">
           <div class="thumb-icon">
             <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3">
               <rect x="2" y="3" width="20" height="14" rx="2"/>
@@ -100,6 +100,17 @@ onMounted(() => {
 
 const openProject = (project) => {
   router.push(`/projects/${project.id}`)
+}
+
+const thumbnailStyle = (project) => {
+  if (project.imageCover) {
+    return {
+      backgroundImage: `linear-gradient(135deg, rgba(10,10,30,0.5), rgba(10,10,30,0.75)), url(${project.imageCover})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }
+  }
+  return { background: project.imageColor || 'linear-gradient(135deg, #1a1a2e, #0f0f1a)' }
 }
 </script>
 

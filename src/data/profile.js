@@ -1,15 +1,15 @@
 export const profile = {
   name: 'SHI ZHENXING',
-  title: 'FRONTEND ARCHITECT',
-  bio: '专注于构建高性能、高交互的现代 Web 应用。\n追求代码的优雅与极致的用户体验。',
+  title: 'FRONTEND LEAD',
+  bio: '8 年前端开发经验，现任前端负责人。\n专注医疗 AI 领域全栈产品矩阵架构，擅长多技术栈协同与工程化体系搭建。',
   email: 's_shizhenxing@163.com',
   github: 'https://github.com/is-97',
   website: 'https://is-97.vercel.app',
   avatar: null,
   stats: [
-    { value: 7, label: 'YEARS EXP', pad: 2, suffix: '' },
-    { value: 50, label: 'PROJECTS', pad: 0, suffix: '+' },
-    { value: 20, label: 'STACKS', pad: 0, suffix: '+' }
+    { value: 8, label: 'YEARS EXP', pad: 2, suffix: '' },
+    { value: 15, label: 'PROJECTS', pad: 0, suffix: '+' },
+    { value: 25, label: 'STACKS', pad: 0, suffix: '+' }
   ]
 }
 
@@ -18,39 +18,39 @@ export const skills = [
     category: 'Frontend',
     icon: '⚡',
     color: '#00f0ff',
-    description: 'Architecture & UI Engineering',
+    description: 'Framework & UI Engineering',
     items: [
-      { name: 'Vue 3 / Nuxt 3', level: 98 },
-      { name: 'React 18 / Next.js', level: 95 },
+      { name: 'React 19 / React Router 7', level: 96 },
+      { name: 'Vue 3 / Vue 2', level: 98 },
+      { name: 'Svelte 5 / SvelteKit', level: 88 },
       { name: 'TypeScript 5.x', level: 95 },
-      { name: 'Tailwind / UnoCSS', level: 92 },
-      { name: 'Vite / Turbopack', level: 90 }
+      { name: 'Ant Design / Element Plus', level: 95 }
     ]
   },
   {
     category: 'Engineering',
     icon: '🛠',
     color: '#7000ff',
-    description: 'Infrastructure & Performance',
+    description: 'Architecture & DevOps',
     items: [
-      { name: 'Rust / WebAssembly', level: 85 },
-      { name: 'Docker / K8s', level: 88 },
-      { name: 'CI/CD Pipelines', level: 92 },
-      { name: 'Node.js / Bun', level: 90 },
-      { name: 'Micro-Frontend', level: 88 }
+      { name: 'Vite 8 / Webpack 5', level: 95 },
+      { name: 'Docker / K8s / Nginx', level: 88 },
+      { name: 'CI/CD Pipelines', level: 90 },
+      { name: 'Micro-Frontend / RBAC', level: 90 },
+      { name: 'UniApp Cross-Platform', level: 88 }
     ]
   },
   {
     category: 'Visualization',
     icon: '🔮',
     color: '#ff0055',
-    description: '3D Graphics & Creative Coding',
+    description: 'Data Viz & Editor Engineering',
     items: [
-      { name: 'Three.js / R3F', level: 95 },
-      { name: 'WebGL / GLSL', level: 90 },
-      { name: 'Blender', level: 85 },
-      { name: 'Generative Art', level: 88 },
-      { name: 'D3.js', level: 85 }
+      { name: 'React Flow / D3.js', level: 92 },
+      { name: 'ECharts / Plotly.js', level: 90 },
+      { name: 'Three.js / WebGL', level: 88 },
+      { name: 'Monaco Editor', level: 88 },
+      { name: 'SSE / WebSocket', level: 92 }
     ]
   }
 ]
