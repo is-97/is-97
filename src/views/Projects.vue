@@ -1,5 +1,5 @@
 <template>
-  <div class="holo-projects" :class="{ loaded: isLoaded }">
+  <div class="holo-projects">
     <div class="page-header">
       <div class="header-content">
         <div class="holo-badge">
@@ -85,25 +85,35 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { projects } from '../data/projects'
 
-const isLoaded = ref(false)
 const router = useRouter()
 
-onMounted(() => {
-  setTimeout(() => {
-    isLoaded.value = true
-  }, 100)
-})
+// 预加载封面图，加载失败的标记为不可用，自动回退到渐变色
+const brokenCovers = ref(new Set())
+
+const preloadCovers = () => {
+  projects.forEach(p => {
+    if (!p.imageCover) return
+    const img = new Image()
+    img.onload = () => {}
+    img.onerror = () => {
+      brokenCovers.value.add(p.id)
+      brokenCovers.value = new Set(brokenCovers.value)
+    }
+    img.src = p.imageCover
+  })
+}
+preloadCovers()
 
 const openProject = (project) => {
   router.push(`/projects/${project.id}`)
 }
 
 const thumbnailStyle = (project) => {
-  if (project.imageCover) {
+  if (project.imageCover && !brokenCovers.value.has(project.id)) {
     return {
       backgroundImage: `linear-gradient(135deg, rgba(10,10,30,0.5), rgba(10,10,30,0.75)), url(${project.imageCover})`,
       backgroundSize: 'cover',
@@ -197,14 +207,6 @@ const thumbnailStyle = (project) => {
   padding: 2rem 0;
   max-width: 1200px;
   margin: 0 auto;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.holo-projects.loaded {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .page-header {

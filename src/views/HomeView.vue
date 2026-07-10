@@ -5,7 +5,6 @@ import CountUp from '../components/CountUp.vue'
 import TypeText from '../components/TypeText.vue'
 import { profile, skills } from '../data/profile'
 
-const isLoaded = ref(false)
 const activeSkill = ref(0)
 const isLargeScreen = ref(true)
 
@@ -20,9 +19,6 @@ const handleResize = () => {
 }
 
 onMounted(() => {
-  setTimeout(() => {
-    isLoaded.value = true
-  }, 100)
   checkScreenSize()
   window.addEventListener('resize', handleResize)
 })
@@ -34,7 +30,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="deep-home" :class="{ loaded: isLoaded }">
+  <div class="deep-home">
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-layout">
@@ -146,14 +142,6 @@ onBeforeUnmount(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding-top: 4rem;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.deep-home.loaded {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* Hero Section */

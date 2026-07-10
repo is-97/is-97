@@ -120,25 +120,6 @@ export const projects = [
     }
   },
   {
-    id: 'proj-5',
-    name: '星辰销售数据平台',
-    period: '2024.01 - 2024.11',
-    description: '移动端销售数据查询平台，支持多维度业务数据实时分析。',
-    achievements: [
-      '设计动态路由权限系统，实现细粒度的页面与按钮级控制。',
-      '使用 RxJS 处理复杂的跨组件状态流转与数据共享。',
-      '封装富文本组件，支持多媒体内容的高效上传与展示。'
-    ],
-    image: '/project-onestar.png',
-    imageCover: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80&auto=format',
-    imageColor: 'linear-gradient(135deg, #0a1a0f 0%, #1b3a2b 100%)',
-    techStack: ['Vue2', 'RxJS', 'H5', 'RBAC'],
-    links: {
-      demo: null,
-      github: null
-    }
-  },
-  {
     id: 'proj-6',
     name: '元宇宙 NFT 交易平台',
     period: '2021.10 - 2022.10',
@@ -149,7 +130,7 @@ export const projects = [
       '优化高并发下的抢购体验，确保交易数据的一致性。'
     ],
     image: '/project-nft.png',
-    imageCover: 'https://images.unsplash.com/photo-1620792926468-5cb47c5c4b59?w=800&q=80&auto=format',
+    imageCover: 'https://images.unsplash.com/photo-1639762681057-408e52192e55?w=800&q=80&auto=format',
     imageColor: 'linear-gradient(135deg, #1a0a1a 0%, #2b1b3a 100%)',
     techStack: ['Vue', 'Web3', 'IM SDK', 'Payment'],
     links: {

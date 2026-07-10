@@ -18,6 +18,8 @@
 - 💡 持续学习新技术，热衷技术创新
 - 🤝 积极参与开源社区，乐于技术分享
 - 🎯 追求代码质量和用户体验的完美平衡
+- 🔒 重视应用安全和用户隐私保护
+- 📱 注重性能和跨设备兼容性
 
 ## 🛠️ 技术栈
 
@@ -50,12 +52,12 @@
 
 | 领域           | 技术栈                                                                 |
 |----------------|------------------------------------------------------------------------|
-| **前端框架**   | Vue 3 (Composition API), React (Hooks), Next.js                        |
+| **前端框架**   | Vue 3 (Composition API), React 19 (Hooks), Next.js, Svelte 5          |
 | **样式解决方案** | Sass, LESS, CSS Modules, Tailwind CSS                                 |
-| **状态管理**   | Vuex, Pinia, Redux, React Context                                      |
-| **构建工具**   | Webpack, Vite, Rollup                                                  |
-| **测试工具**   | Jest, Vitest, Cypress                                                  |
-| **CI/CD**      | GitHub Actions, Jenkins                                                |
+| **状态管理**   | Pinia, Vuex, Redux, React Context                                      |
+| **构建工具**   | Vite 8, Webpack 5, Rollup                                             |
+| **可视化技术** | Three.js, D3.js, ECharts, React Flow                                   |
+| **工程化**     | Docker, Kubernetes, CI/CD, Micro-Frontend                             |
 
 ## 💼 项目经验
 

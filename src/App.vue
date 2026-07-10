@@ -1,23 +1,23 @@
 <template>
   <Analytics />
   <CyberBackground />
-  <ParticleBackground v-if="!isMobile && !prefersReducedMotion" />
+  <ParticleBackground v-if="!isMobile && !prefersReducedMotion && !isLowEndDevice" />
   <ScrollProgress />
 
   <ThemeSwitcher />
 
   <div class="app">
-    <nav class="cyber-nav">
+    <nav class="cyber-nav" role="navigation" aria-label="主导航">
       <div class="nav-brand">
         <div class="brand-logo">SZX</div>
         <span class="brand-sub">DEVELOPER</span>
       </div>
 
       <div class="nav-links">
-        <router-link to="/" class="nav-item">
+        <router-link to="/" class="nav-item" aria-label="首页">
           <div class="nav-content">
             <span class="nav-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 <polyline points="9 22 9 12 15 12 15 22"/>
               </svg>
@@ -27,10 +27,10 @@
           <div class="active-glow"></div>
         </router-link>
 
-        <router-link to="/experience" class="nav-item">
+        <router-link to="/experience" class="nav-item" aria-label="工作经历">
           <div class="nav-content">
             <span class="nav-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
               </svg>
@@ -40,10 +40,10 @@
           <div class="active-glow"></div>
         </router-link>
 
-        <router-link to="/projects" class="nav-item">
+        <router-link to="/projects" class="nav-item" aria-label="项目展示">
           <div class="nav-content">
             <span class="nav-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
               </svg>
             </span>
@@ -52,10 +52,10 @@
           <div class="active-glow"></div>
         </router-link>
 
-        <router-link to="/chat" class="nav-item">
+        <router-link to="/chat" class="nav-item" aria-label="AI助手">
           <div class="nav-content">
             <span class="nav-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
               </svg>
             </span>
@@ -74,16 +74,12 @@
     </nav>
 
     <div class="content-area">
-      <router-view v-slot="{ Component }">
-        <transition name="fade" mode="out-in">
-          <component :is="Component" />
-        </transition>
-      </router-view>
+      <router-view :key="route.path" />
       <CyberFooter v-if="!isChatPage" />
     </div>
 
-    <button class="scroll-to-top" :class="{ show: showScrollTop }" @click="scrollToTop">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <button class="scroll-to-top" :class="{ show: showScrollTop }" @click="scrollToTop" aria-label="返回顶部">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <polyline points="18 15 12 9 6 15"/>
       </svg>
     </button>
@@ -114,9 +110,26 @@ const showScrollTop = computed(() => appStore.scrollY > 300)
 const isMobile = computed(() => appStore.isMobile)
 
 const prefersReducedMotion = ref(false)
+const isLowEndDevice = ref(false)
 
 onMounted(() => {
   prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  
+  // 检测低端设备，优化性能
+  const checkDeviceCapability = () => {
+    const memory = navigator.deviceMemory
+    const hardwareConcurrency = navigator.hardwareConcurrency
+    const isMobile = window.innerWidth <= 768
+    
+    // 低端设备判断：内存少、CPU核心少或移动设备
+    isLowEndDevice.value = 
+      (memory && memory < 4) || 
+      (hardwareConcurrency && hardwareConcurrency < 4) ||
+      isMobile
+  }
+  
+  checkDeviceCapability()
+  window.addEventListener('resize', checkDeviceCapability)
 })
 
 const scrollToTop = () => {
@@ -244,8 +257,8 @@ body {
 .nav-text {
   font-size: 0.7rem;
   font-weight: 500;
-  opacity: 0;
-  transform: translateY(5px);
+  opacity: 0.5;
+  transform: translateY(0);
   transition: all 0.3s ease;
 }
 
@@ -262,7 +275,6 @@ body {
 .nav-item:hover .nav-text,
 .nav-item.router-link-active .nav-text {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .nav-item:hover {
@@ -353,16 +365,10 @@ body {
   overflow: hidden;
 }
 
-/* Transition */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(10px);
+/* 聊天页面：主题切换器与 status-bar 垂直居中对齐 */
+#app:has(.chat-interface) .theme-switcher,
+#app:has(.chat-view) .theme-switcher {
+  top: 9px;
 }
 
 /* Respect reduced motion preference */
@@ -478,6 +484,12 @@ body {
     right: 1rem;
     width: 40px;
     height: 40px;
+  }
+
+  /* 移动端聊天页面：主题切换器对齐（status-bar 高度 60px，trigger 38px） */
+  #app:has(.chat-interface) .theme-switcher,
+  #app:has(.chat-view) .theme-switcher {
+    top: 11px;
   }
 }
 </style>

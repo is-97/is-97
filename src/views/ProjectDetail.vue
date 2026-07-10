@@ -1,63 +1,125 @@
 <template>
-  <div class="project-detail" :class="{ loaded: isLoaded }" v-if="project">
-    <div class="page-header">
+  <div class="project-detail" v-if="project">
+    <!-- 顶部 Banner -->
+    <div class="hero-banner" :style="heroStyle">
+      <div class="hero-overlay"></div>
+      <div class="hero-scan-line"></div>
+
       <button class="back-btn" @click="goBack">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
-        返回
+        返回项目列表
       </button>
-      <h1 class="project-title">{{ project.name }}</h1>
-      <p class="project-period">{{ project.period }}</p>
+
+      <div class="hero-content">
+        <div class="hero-meta">
+          <span class="meta-id">PROJECT // {{ project.id.toUpperCase() }}</span>
+        </div>
+        <h1 class="project-title">{{ project.name }}</h1>
+        <div class="hero-info">
+          <span class="info-item">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            {{ project.period }}
+          </span>
+          <span class="info-sep">//</span>
+          <span class="info-item tech-count">{{ project.techStack.length }} 项技术栈</span>
+          <span class="info-sep">//</span>
+          <span class="info-item ach-count">{{ project.achievements.length }} 项核心成果</span>
+        </div>
+      </div>
+
+      <div class="hero-corners">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+      </div>
     </div>
 
-    <div class="detail-layout">
-      <div class="detail-card">
-        <div class="card-glass"></div>
-        <div class="card-content">
-          <div class="section">
-            <h2 class="section-title">项目描述</h2>
-            <p class="project-description">{{ project.description }}</p>
-          </div>
+    <!-- 主体内容 -->
+    <div class="detail-body">
+      <!-- 项目描述 -->
+      <div class="detail-section">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 class="section-title">项目概述</h2>
+          <div class="section-line"></div>
+        </div>
+        <p class="project-description">{{ project.description }}</p>
+      </div>
 
-          <div class="section">
-            <h2 class="section-title">主要成就</h2>
-            <ul class="achievements-list">
-              <li v-for="(achievement, i) in project.achievements" :key="i">
-                <span class="bullet">⟐</span>
-                <span class="text">{{ achievement }}</span>
-              </li>
-            </ul>
-          </div>
-
-          <div class="section">
-            <h2 class="section-title">技术栈</h2>
-            <div class="tech-stack">
-              <span v-for="(tech, i) in project.techStack" :key="i" class="tech-tag">
-                {{ tech }}
-              </span>
+      <!-- 主要成就 -->
+      <div class="detail-section">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-title">核心成果</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="achievements-grid">
+          <div v-for="(achievement, i) in project.achievements" :key="i" class="achievement-card" :style="{ '--card-delay': i * 0.1 + 's' }">
+            <div class="achievement-index">{{ String(i + 1).padStart(2, '0') }}</div>
+            <div class="achievement-body">
+              <span class="achievement-text">{{ achievement }}</span>
             </div>
+            <div class="achievement-glow"></div>
           </div>
+        </div>
+      </div>
 
-          <div class="section" v-if="hasLinks">
-            <h2 class="section-title">相关链接</h2>
-            <div class="links">
-              <a v-if="project.links?.demo" :href="project.links.demo" target="_blank" class="link-btn demo">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                  <polyline points="15 3 21 3 21 9"/>
-                  <line x1="10" y1="14" x2="21" y2="3"/>
-                </svg>
-                在线预览
-              </a>
-              <a v-if="project.links?.github" :href="project.links.github" target="_blank" class="link-btn github">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-                </svg>
-                GitHub
-              </a>
-            </div>
-          </div>
+      <!-- 技术栈 -->
+      <div class="detail-section">
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-title">技术栈</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="tech-stack">
+          <span v-for="(tech, i) in project.techStack" :key="i" class="tech-tag">
+            <span class="tag-dot"></span>
+            {{ tech }}
+          </span>
+        </div>
+      </div>
+
+      <!-- 相关链接 -->
+      <div class="detail-section" v-if="hasLinks">
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <h2 class="section-title">相关链接</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="links">
+          <a v-if="project.links?.demo" :href="project.links.demo" target="_blank" class="link-btn demo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            在线预览
+          </a>
+          <a v-if="project.links?.github" :href="project.links.github" target="_blank" class="link-btn github">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+            </svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- 私有项目提示 -->
+      <div class="detail-section" v-if="!hasLinks">
+        <div class="private-notice">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>该项目为私有项目，暂未公开源码</span>
         </div>
       </div>
     </div>
@@ -73,13 +135,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { projects } from '../data/projects'
 
 const route = useRoute()
 const router = useRouter()
-const isLoaded = ref(false)
+
+const brokenCovers = ref(new Set())
 
 const project = computed(() => {
   return projects.find(p => p.id === route.params.id) || null
@@ -89,57 +152,106 @@ const hasLinks = computed(() => {
   return project.value?.links?.demo || project.value?.links?.github
 })
 
+const heroStyle = computed(() => {
+  if (!project.value) return {}
+  const p = project.value
+  if (p.imageCover && !brokenCovers.value.has(p.id)) {
+    const img = new Image()
+    img.onerror = () => {
+      brokenCovers.value.add(p.id)
+      brokenCovers.value = new Set(brokenCovers.value)
+    }
+    img.src = p.imageCover
+    return {
+      backgroundImage: `linear-gradient(135deg, rgba(5,5,16,0.7), rgba(5,5,16,0.9)), url(${p.imageCover})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }
+  }
+  return { background: p.imageColor || 'linear-gradient(135deg, #1a1a2e, #0f0f1a)' }
+})
+
 const goBack = () => {
   router.push('/projects')
 }
-
-onMounted(() => {
-  setTimeout(() => {
-    isLoaded.value = true
-  }, 100)
-})
 </script>
 
 <style scoped>
 .project-detail {
-  padding: 2rem 0;
+  padding: 1.5rem 0 3rem;
   max-width: 1000px;
   margin: 0 auto;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.project-detail.loaded {
-  opacity: 1;
-  transform: translateY(0);
+/* ── Hero Banner ── */
+.hero-banner {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+  padding: 2rem 2.5rem 2.5rem;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--border-light);
+  animation: heroFadeIn 0.6s ease;
 }
 
-.page-header {
-  margin-bottom: 3rem;
-  padding-left: 3rem;
-  border-left: 4px solid var(--primary);
-  background: linear-gradient(90deg, var(--accent-glow), transparent);
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(5, 5, 16, 0.8) 100%);
+  pointer-events: none;
+}
+
+.hero-scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+  opacity: 0.4;
+  animation: heroScan 5s infinite linear;
+}
+
+@keyframes heroScan {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.4; }
+  100% { top: 100%; opacity: 0; }
 }
 
 .back-btn {
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  margin-bottom: 1.5rem;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--border-light);
   color: var(--text-muted);
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.3s ease;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  align-self: flex-start;
 }
 
 .back-btn:hover {
   border-color: var(--primary);
   color: var(--primary);
+  background: rgba(0, 0, 0, 0.5);
+  transform: translateX(-3px);
 }
 
 .back-btn svg {
@@ -147,123 +259,252 @@ onMounted(() => {
   height: 16px;
 }
 
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-meta {
+  margin-bottom: 0.6rem;
+}
+
+.meta-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--primary);
+  letter-spacing: 0.15em;
+  opacity: 0.7;
+}
+
 .project-title {
   font-family: var(--font-display);
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: var(--text-main);
-  margin: 0 0 0.5rem 0;
-  text-shadow: 0 0 10px var(--accent-glow);
+  margin: 0 0 1rem 0;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
 }
 
-.project-period {
+.hero-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.info-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: 'JetBrains Mono', monospace;
-  color: var(--primary);
-  font-size: 1rem;
-  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.detail-layout {
+.info-sep {
+  color: var(--primary);
+  opacity: 0.4;
+}
+
+/* Hero Corners */
+.hero-corners .corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--primary);
+  opacity: 0.5;
+  z-index: 3;
+}
+.hero-corners .corner.tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+.hero-corners .corner.tr { top: 12px; right: 12px; border-left: none; border-bottom: none; }
+.hero-corners .corner.bl { bottom: 12px; left: 12px; border-right: none; border-top: none; }
+.hero-corners .corner.br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+
+/* ── Detail Body ── */
+.detail-body {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5rem;
 }
 
-.detail-card {
-  position: relative;
-  border-radius: 16px;
-  overflow: hidden;
+.detail-section {
+  animation: sectionSlide 0.5s ease;
+  animation-fill-mode: both;
 }
 
-.card-glass {
-  position: absolute;
-  inset: 0;
-  background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  z-index: 0;
+.detail-section:nth-child(1) { animation-delay: 0.1s; }
+.detail-section:nth-child(2) { animation-delay: 0.2s; }
+.detail-section:nth-child(3) { animation-delay: 0.3s; }
+.detail-section:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes sectionSlide {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.card-content {
-  position: relative;
-  z-index: 1;
-  padding: 2.5rem;
+/* Section Header */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.section {
-  margin-bottom: 2.5rem;
-}
-
-.section:last-child {
-  margin-bottom: 0;
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--chip-bg);
+  border: 1px solid var(--chip-border);
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
 }
 
 .section-title {
   font-family: var(--font-display);
-  font-size: 1.2rem;
-  color: var(--primary);
-  margin-bottom: 1rem;
-  letter-spacing: 0.1em;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-light), transparent);
+}
+
+/* Project Description */
 .project-description {
   color: var(--text-muted);
-  line-height: 1.7;
-  font-size: 1.1rem;
+  line-height: 1.8;
+  font-size: 1rem;
+  padding: 1.2rem 1.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(10px);
 }
 
-.achievements-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* ── Achievements Grid ── */
+.achievements-grid {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 
-.achievements-list li {
+.achievement-card {
+  position: relative;
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--bg-card);
-  border-radius: 8px;
-  border-left: 2px solid var(--primary);
-  color: var(--text-main);
-  line-height: 1.6;
+  gap: 1.2rem;
+  padding: 1.2rem 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  overflow: hidden;
+  animation: cardSlide 0.5s ease;
+  animation-fill-mode: both;
+  animation-delay: var(--card-delay);
 }
 
-.achievements-list li:hover {
+@keyframes cardSlide {
+  from { opacity: 0; transform: translateX(-15px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.achievement-card:hover {
+  border-color: var(--border-hover);
   background: var(--bg-card-hover);
-  transform: translateX(5px);
+  transform: translateX(6px);
 }
 
-.bullet {
+.achievement-index {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
   color: var(--primary);
-  font-weight: bold;
+  opacity: 0.3;
+  min-width: 40px;
+  line-height: 1;
+  padding-top: 2px;
+  transition: opacity 0.3s;
 }
 
+.achievement-card:hover .achievement-index {
+  opacity: 0.8;
+}
+
+.achievement-body {
+  flex: 1;
+}
+
+.achievement-text {
+  color: var(--text-main);
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.achievement-glow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.achievement-card:hover .achievement-glow {
+  opacity: 1;
+  box-shadow: 0 0 10px var(--primary);
+}
+
+/* ── Tech Stack ── */
 .tech-stack {
   display: flex;
-  gap: 0.8rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
 }
 
 .tech-tag {
-  padding: 0.5rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.45rem 0.9rem;
   background: var(--chip-bg);
   border: 1px solid var(--chip-border);
   border-radius: 20px;
   color: var(--primary);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  font-family: 'JetBrains Mono', monospace;
   transition: all 0.3s ease;
 }
 
-.tech-tag:hover {
-  box-shadow: 0 0 10px var(--accent-glow);
+.tag-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 6px var(--primary);
 }
 
+.tech-tag:hover {
+  background: rgba(0, 240, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+/* ── Links ── */
 .links {
   display: flex;
   gap: 1rem;
@@ -274,10 +515,10 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
 }
 
@@ -289,11 +530,12 @@ onMounted(() => {
 .link-btn.demo {
   background: var(--primary);
   color: var(--bg-deep);
+  font-weight: 600;
 }
 
 .link-btn.demo:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px var(--accent-glow);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px var(--accent-glow);
 }
 
 .link-btn.github {
@@ -305,9 +547,28 @@ onMounted(() => {
 .link-btn.github:hover {
   border-color: var(--primary);
   color: var(--primary);
+  transform: translateY(-3px);
 }
 
-/* Not Found */
+/* ── Private Notice ── */
+.private-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.private-notice svg {
+  color: var(--warning, #ffaa00);
+  flex-shrink: 0;
+}
+
+/* ── Not Found ── */
 .not-found {
   display: flex;
   justify-content: center;
@@ -332,17 +593,59 @@ onMounted(() => {
   margin-bottom: 2rem;
 }
 
+/* ── Responsive ── */
 @media (max-width: 768px) {
+  .project-detail {
+    padding: 1rem 0 2rem;
+  }
+
+  .hero-banner {
+    padding: 1.5rem 1.2rem 2rem;
+    min-height: 200px;
+    border-radius: 14px;
+  }
+
   .project-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 
-  .card-content {
-    padding: 1.5rem;
+  .hero-info {
+    gap: 0.5rem;
   }
 
-  .page-header {
-    padding-left: 1rem;
+  .info-item {
+    font-size: 0.72rem;
+  }
+
+  .info-sep {
+    display: none;
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+  }
+
+  .section-num {
+    font-size: 0.75rem;
+  }
+
+  .achievement-card {
+    padding: 1rem 1.2rem;
+    gap: 0.8rem;
+  }
+
+  .achievement-index {
+    font-size: 1.1rem;
+    min-width: 30px;
+  }
+
+  .achievement-text {
+    font-size: 0.88rem;
+  }
+
+  .project-description {
+    padding: 1rem 1.2rem;
+    font-size: 0.9rem;
   }
 }
 </style>

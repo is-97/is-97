@@ -76,6 +76,34 @@
                     <div v-if="msg.content" class="ai-text markdown-body" v-html="renderMarkdown(msg.content)"></div>
                     <span v-if="msg.isTyping && !msg.content" class="thinking-pulse-text">AI 正在思考中...</span>
                     <span v-else-if="msg.isTyping" class="cursor">_</span>
+
+                    <!-- 消息操作栏（仅在非typing状态显示） -->
+                    <div v-if="!msg.isTyping && msg.content" class="message-actions">
+                      <button class="action-btn" @click="copyMessage(msg.content)" :title="copiedId === msg.content ? '已复制！' : '复制'">
+                        <svg v-if="copiedId === msg.content" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <svg v-else viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span class="action-label">{{ copiedId === msg.content ? '已复制' : '复制' }}</span>
+                      </button>
+                      <!-- 重新生成：仅在最后一条AI消息显示 -->
+                      <button
+                        v-if="index === chatStore.messages.length - 1 && !chatStore.isLoading"
+                        class="action-btn"
+                        @click="regenerateResponse"
+                        title="重新生成"
+                      >
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2">
+                          <polyline points="23 4 23 10 17 10"></polyline>
+                          <polyline points="1 20 1 14 7 14"></polyline>
+                          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        <span class="action-label">重新生成</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div class="message-meta" v-if="!msg.isTyping">{{ formatTime(msg.timestamp) }}</div>
@@ -100,13 +128,44 @@
 
     <div class="input-deck" role="form" aria-label="消息输入区域">
       <div class="glass-capsule" :class="{ focused: isFocused }">
-        <div class="upload-trigger" title="上传文件" aria-label="上传文件" role="button" tabindex="0">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2">
-            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+        <!-- 停止生成按钮（loading时显示） -->
+        <button
+          v-if="chatStore.isLoading"
+          class="stop-trigger"
+          @click="stopGeneration"
+          title="停止生成"
+          aria-label="停止生成"
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <rect x="6" y="6" width="12" height="12" rx="2"></rect>
           </svg>
-        </div>
+        </button>
 
-        <button class="clear-trigger" @click="clearChat" title="清除聊天记录" aria-label="清除聊天记录">
+        <!-- 刷新快捷提问按钮（非loading且无历史时显示） -->
+        <button
+          v-else-if="!chatStore.hasHistory"
+          class="shuffle-trigger"
+          @click="refreshQuickPrompts"
+          title="换一批问题"
+          aria-label="换一批问题"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2">
+            <polyline points="16 3 21 3 21 8"></polyline>
+            <line x1="4" y1="20" x2="21" y2="3"></line>
+            <polyline points="21 16 21 21 16 21"></polyline>
+            <line x1="15" y1="15" x2="21" y2="21"></line>
+            <line x1="4" y1="4" x2="9" y2="9"></line>
+          </svg>
+        </button>
+
+        <!-- 清除聊天按钮（有历史时显示） -->
+        <button
+          v-else
+          class="clear-trigger"
+          @click="clearChat"
+          title="清除聊天记录"
+          aria-label="清除聊天记录"
+        >
           <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2">
             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
           </svg>
@@ -138,7 +197,7 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick, onMounted } from 'vue'
+import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js/lib/core'
@@ -175,7 +234,8 @@ marked.use({
     code({ text, lang }) {
       const language = hljs.getLanguage(lang) ? lang : 'plaintext'
       const highlighted = hljs.highlight(text, { language }).value
-      return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>\n`
+      const encoded = encodeURIComponent(text)
+      return `<div class="code-block-wrapper"><button class="code-copy-btn" data-code="${encoded}" title="复制代码"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button><pre><code class="hljs language-${language}">${highlighted}</code></pre></div>\n`
     }
   }
 })
@@ -187,6 +247,8 @@ const isFocused = ref(false)
 const viewportRef = ref(null)
 const inputRef = ref(null)
 const bottomAnchorRef = ref(null)
+const copiedId = ref(null)
+const abortController = ref(null)
 
 const lastIsTyping = computed(() => {
   const last = chatStore.messages[chatStore.messages.length - 1]
@@ -215,7 +277,9 @@ const quickPromptPool = [
 const quickPrompts = ref([])
 
 const refreshQuickPrompts = () => {
-  quickPrompts.value = quickPromptPool.slice(0, 6)
+  // 随机取6条
+  const shuffled = [...quickPromptPool].sort(() => Math.random() - 0.5)
+  quickPrompts.value = shuffled.slice(0, 6)
 }
 
 const formatTime = (ts) => {
@@ -275,6 +339,35 @@ const handleEnter = (e) => {
   }
 }
 
+const copyMessage = async (content) => {
+  const markCopiedMsg = () => {
+    copiedId.value = content
+    setTimeout(() => {
+      copiedId.value = null
+    }, 2000)
+  }
+
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    try {
+      await navigator.clipboard.writeText(content)
+      markCopiedMsg()
+    } catch {
+      fallbackCopy(content)
+      markCopiedMsg()
+    }
+  } else {
+    fallbackCopy(content)
+    markCopiedMsg()
+  }
+}
+
+const stopGeneration = () => {
+  if (abortController.value) {
+    abortController.value.abort()
+    abortController.value = null
+  }
+}
+
 const appendAssistantChunk = (index, delta) => {
   const target = chatStore.messages[index]
   if (!target) return
@@ -310,19 +403,98 @@ const sendMessage = async () => {
 
   const aiMsgIndex = chatStore.messages.length - 1
 
+  abortController.value = new AbortController()
+
   try {
     const apiMessages = chatStore.getMessagesForAPI()
 
     await sendToAIWithHistory(apiMessages, (chunk) => {
       appendAssistantChunk(aiMsgIndex, chunk)
-    })
+    }, { signal: abortController.value.signal })
   } catch (err) {
-    chatStore.appendToLastMessage('\n\n[Error: 连接中断或超时，请检查网络连接]')
+    if (err.name === 'AbortError') {
+      // 用户主动停止，不显示错误
+    } else {
+      chatStore.appendToLastMessage('\n\n[Error: 连接中断或超时，请检查网络连接]')
+    }
   } finally {
+    abortController.value = null
     chatStore.setLoading(false)
     chatStore.finalizeLastMessage()
     await scrollToBottom()
     nextTick(() => inputRef.value?.focus())
+  }
+}
+
+const regenerateResponse = async () => {
+  if (chatStore.isLoading) return
+
+  // 删除最后一条AI消息
+  chatStore.removeLastAssistantMessage()
+
+  // 重新添加空的AI消息
+  chatStore.addAssistantMessage()
+  chatStore.setLoading(true)
+  await scrollToBottom()
+
+  const aiMsgIndex = chatStore.messages.length - 1
+  abortController.value = new AbortController()
+
+  try {
+    const apiMessages = chatStore.getMessagesForAPI()
+
+    await sendToAIWithHistory(apiMessages, (chunk) => {
+      appendAssistantChunk(aiMsgIndex, chunk)
+    }, { signal: abortController.value.signal })
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      chatStore.appendToLastMessage('\n\n[Error: 连接中断或超时，请检查网络连接]')
+    }
+  } finally {
+    abortController.value = null
+    chatStore.setLoading(false)
+    chatStore.finalizeLastMessage()
+    await scrollToBottom()
+    nextTick(() => inputRef.value?.focus())
+  }
+}
+
+const fallbackCopy = (code) => {
+  const textarea = document.createElement('textarea')
+  textarea.value = code
+  textarea.style.position = 'fixed'
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+  textarea.select()
+  try { document.execCommand('copy') } catch {}
+  document.body.removeChild(textarea)
+}
+
+const markCopied = (btn) => {
+  btn.classList.add('copied')
+  const label = btn.querySelector('span')
+  if (label) label.textContent = '已复制'
+  setTimeout(() => {
+    btn.classList.remove('copied')
+    if (label) label.textContent = '复制'
+  }, 2000)
+}
+
+const handleCodeCopy = (e) => {
+  const btn = e.target.closest('.code-copy-btn')
+  if (!btn) return
+  const raw = btn.getAttribute('data-code')
+  if (!raw) return
+  const code = decodeURIComponent(raw)
+
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    navigator.clipboard.writeText(code).then(() => markCopied(btn)).catch(() => {
+      fallbackCopy(code)
+      markCopied(btn)
+    })
+  } else {
+    fallbackCopy(code)
+    markCopied(btn)
   }
 }
 
@@ -332,6 +504,11 @@ onMounted(() => {
     refreshQuickPrompts()
   }
   inputRef.value?.focus()
+  viewportRef.value?.addEventListener('click', handleCodeCopy)
+})
+
+onUnmounted(() => {
+  viewportRef.value?.removeEventListener('click', handleCodeCopy)
 })
 </script>
 
@@ -536,6 +713,7 @@ onMounted(() => {
   margin-bottom: 0.5rem;
   background: linear-gradient(to right, #fff, #00f0ff);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -666,12 +844,54 @@ onMounted(() => {
   font-size: 1rem;
 }
 
+:deep(.code-block-wrapper) {
+  position: relative;
+  margin: 1rem 0;
+}
+
+:deep(.code-copy-btn) {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.5);
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: all 0.2s;
+  z-index: 1;
+}
+
+:deep(.code-block-wrapper:hover .code-copy-btn) {
+  opacity: 1;
+}
+
+:deep(.code-copy-btn:hover) {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+}
+
+:deep(.code-copy-btn.copied) {
+  background: rgba(0, 255, 136, 0.15);
+  border-color: rgba(0, 255, 136, 0.3);
+  color: #00ff88;
+  opacity: 1;
+}
+
 :deep(pre) {
   background: rgba(0, 0, 0, 0.6) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 1rem;
-  margin: 1rem 0;
+  margin: 0;
   backdrop-filter: blur(5px);
 }
 
@@ -695,6 +915,44 @@ onMounted(() => {
 :deep(ul), :deep(ol) {
   margin-left: 1.5em;
   margin-bottom: 0.8em;
+}
+
+/* ── 消息操作栏 ── */
+.message-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.message-row.assistant:hover .message-actions {
+  opacity: 1;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.3);
+  color: #00f0ff;
+}
+
+.action-label {
+  letter-spacing: 0.02em;
 }
 
 .input-deck {
@@ -735,6 +993,7 @@ onMounted(() => {
   padding: 1px;
   background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.5), transparent);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -746,7 +1005,7 @@ onMounted(() => {
   opacity: 1;
 }
 
-.upload-trigger, .clear-trigger, .send-trigger {
+.stop-trigger, .shuffle-trigger, .clear-trigger, .send-trigger {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -759,11 +1018,24 @@ onMounted(() => {
   background: transparent;
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 2px;
+  flex-shrink: 0;
 }
 
-.upload-trigger:hover, .clear-trigger:hover {
+.shuffle-trigger:hover, .clear-trigger:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.1);
+}
+
+.stop-trigger {
+  background: rgba(255, 80, 80, 0.15);
+  color: rgba(255, 100, 100, 0.9);
+  animation: pulse 1.5s infinite;
+}
+
+.stop-trigger:hover {
+  background: rgba(255, 80, 80, 0.3);
+  color: #ff6464;
+  box-shadow: 0 0 15px rgba(255, 80, 80, 0.3);
 }
 
 .send-trigger {

@@ -1,5 +1,5 @@
 <template>
-  <div class="holo-experience" :class="{ loaded: isLoaded }">
+  <div class="holo-experience">
     <div class="page-header">
       <h1 class="page-title">
         <span class="title-text">CAREER_LOG</span>
@@ -58,16 +58,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
 import { experiences } from '../data/experience'
-
-const isLoaded = ref(false)
-
-onMounted(() => {
-  setTimeout(() => {
-    isLoaded.value = true
-  }, 100)
-})
 </script>
 
 <style scoped>
@@ -79,14 +70,6 @@ onMounted(() => {
   padding: 2rem 0;
   max-width: 1000px;
   margin: 0 auto;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.holo-experience.loaded {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* 标题 */

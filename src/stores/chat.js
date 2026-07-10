@@ -80,6 +80,14 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
+  function removeLastAssistantMessage() {
+    const last = messages.value[messages.value.length - 1]
+    if (last && last.role === 'assistant') {
+      messages.value.pop()
+      saveMessages()
+    }
+  }
+
   function clearMessages() {
     messages.value = []
     sessionId.value = Date.now().toString()
@@ -113,6 +121,7 @@ export const useChatStore = defineStore('chat', () => {
     appendToLastMessage,
     appendReasoningToLastMessage,
     finalizeLastMessage,
+    removeLastAssistantMessage,
     clearMessages,
     getMessagesForAPI,
     setLoading
