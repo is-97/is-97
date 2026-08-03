@@ -1,6 +1,3 @@
-import fetch from "node-fetch";
-import "dotenv/config";
-
 // ── 默认配置（均可通过环境变量覆盖）──────────────────────────
 export const DEFAULT_BASE_URL =
   process.env.NVIDIA_API_BASE_URL ||
