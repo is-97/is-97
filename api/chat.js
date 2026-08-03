@@ -1,35 +1,103 @@
 import {
-  proxyChatRequest,
+  buildPayload,
   validateChatRequest,
+  DEFAULT_BASE_URL,
 } from "./shared.js";
 
 export const config = {
-  maxDuration: 60,
+  runtime: "edge",
 };
 
-export default async function handler(req, res) {
+export default async function handler(req) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return new Response(
+      JSON.stringify({ error: "Method Not Allowed" }),
+      {
+        status: 405,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
-  const { apiKey } = req.body;
+  let body;
+  try {
+    body = await req.json();
+  } catch (_) {
+    return new Response(
+      JSON.stringify({ error: "无效的 JSON 请求体" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
 
-  const validationError = validateChatRequest(req.body);
+  const validationError = validateChatRequest(body);
   if (validationError) {
-    return res.status(400).json({ error: validationError });
+    return new Response(
+      JSON.stringify({ error: validationError }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
-  const actualApiKey = apiKey || process.env.NVIDIA_API_KEY;
+  const actualApiKey = body.apiKey || process.env.NVIDIA_API_KEY;
   if (!actualApiKey) {
-    return res.status(400).json({ error: "未配置 NVIDIA API Key" });
+    return new Response(
+      JSON.stringify({ error: "未配置 NVIDIA API Key" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
   try {
-    await proxyChatRequest(req, res, actualApiKey);
-  } catch (error) {
-    res.status(500).json({
-      error: "服务器处理出错",
-      message: error.message,
+    const upstreamResponse = await fetch(DEFAULT_BASE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${actualApiKey}`,
+        Accept: "text/event-stream",
+      },
+      body: JSON.stringify(buildPayload(body)),
     });
+
+    if (!upstreamResponse.ok) {
+      const errorText = await upstreamResponse.text();
+      return new Response(
+        JSON.stringify({
+          error: "调用 NVIDIA 接口失败",
+          details: errorText,
+        }),
+        {
+          status: upstreamResponse.status,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // 将上游的 ReadableStream 直接直传给浏览器，零缓存实时推送
+    return new Response(upstreamResponse.body, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache, no-transform",
+        "Connection": "keep-alive",
+        "X-Accel-Buffering": "no",
+      },
+    });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        error: "服务器处理出错",
+        message: error.message,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }
