@@ -3,7 +3,7 @@ export const DEFAULT_BASE_URL =
   process.env.NVIDIA_API_BASE_URL ||
   "https://integrate.api.nvidia.com/v1/chat/completions";
 export const DEFAULT_MODEL =
-  process.env.NVIDIA_MODEL || process.env.NVIDIA_CHAT_MODEL || "meta/llama-3.3-70b-instruct";
+  process.env.NVIDIA_MODEL || process.env.NVIDIA_CHAT_MODEL || "";
 export const DEFAULT_MAX_TOKENS = Number(
   process.env.NVIDIA_MAX_TOKENS || 16384,
 );
@@ -36,7 +36,10 @@ export function buildPayload(body) {
   };
 
   // 仅在明确为 DeepSeek R1 思考模型或显式指定时包含 chat_template_kwargs
-  if (targetModel.includes("deepseek-r1") || (thinking && process.env.NVIDIA_THINKING === "true")) {
+  if (
+    targetModel.includes("deepseek-r1") ||
+    (thinking && process.env.NVIDIA_THINKING === "true")
+  ) {
     payload.chat_template_kwargs = {
       thinking: typeof thinking === "boolean" ? thinking : DEFAULT_THINKING,
     };
