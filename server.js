@@ -36,6 +36,7 @@ app.post("/api/chat", async (req, res) => {
       }
     });
   } catch (error) {
+    console.error("Chat Server Error:", error);
     res.status(500).json({
       error: "服务器处理出错",
       message: error.message,

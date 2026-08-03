@@ -225,7 +225,8 @@ hljs.registerLanguage('typescript', typescript)
 hljs.registerLanguage('ts', typescript)
 
 marked.setOptions({
-  breaks: true
+  breaks: true,
+  gfm: true
 })
 
 // marked v15 移除了 highlight 选项，改用自定义 renderer 实现代码高亮
@@ -805,22 +806,27 @@ onUnmounted(() => {
 }
 
 .message-row.user .bubble {
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  backdrop-filter: blur(8px);
-  color: #fff;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.16) 0%, rgba(112, 0, 255, 0.16) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  backdrop-filter: blur(12px);
+  color: #ffffff;
   border-bottom-right-radius: 4px;
-  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 240, 255, 0.15);
 }
 
 .message-row.assistant .bubble {
-  background: transparent;
-  padding-left: 0;
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(12, 20, 38, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(16px);
+  border-radius: 18px;
+  border-top-left-radius: 4px;
+  padding: 1.2rem 1.5rem;
+  color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.08);
 }
 
 .ai-text {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .message-meta {
@@ -842,26 +848,220 @@ onUnmounted(() => {
 }
 
 :deep(.markdown-body) {
-  color: inherit;
-  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.96rem;
+  line-height: 1.7;
+  word-break: break-word;
+  overflow-x: auto;
 }
 
+/* ── Cyber Table Styling ── */
+:deep(.markdown-body table) {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.25rem 0;
+  background: rgba(10, 18, 35, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(0, 240, 255, 0.04);
+}
+
+:deep(.markdown-body thead) {
+  background: linear-gradient(180deg, rgba(0, 240, 255, 0.18) 0%, rgba(0, 240, 255, 0.04) 100%);
+}
+
+:deep(.markdown-body th) {
+  padding: 14px 18px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #00f0ff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  border-bottom: 2px solid rgba(0, 240, 255, 0.4);
+  border-right: 1px solid rgba(0, 240, 255, 0.1);
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  white-space: nowrap;
+}
+
+:deep(.markdown-body th:last-child) {
+  border-right: none;
+}
+
+:deep(.markdown-body td) {
+  padding: 13px 18px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.88);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.25s ease;
+  line-height: 1.6;
+}
+
+:deep(.markdown-body td:last-child) {
+  border-right: none;
+}
+
+:deep(.markdown-body tbody tr:last-child td) {
+  border-bottom: none;
+}
+
+:deep(.markdown-body tbody tr) {
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+:deep(.markdown-body tbody tr:nth-child(even)) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+:deep(.markdown-body tbody tr:hover) {
+  background: rgba(0, 240, 255, 0.1);
+}
+
+:deep(.markdown-body tbody tr:hover td) {
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+/* ── Typography & Headers ── */
+:deep(.markdown-body h1),
+:deep(.markdown-body h2),
+:deep(.markdown-body h3),
+:deep(.markdown-body h4),
+:deep(.markdown-body h5),
+:deep(.markdown-body h6) {
+  font-family: 'Rajdhani', sans-serif;
+  color: #ffffff;
+  margin-top: 1.6rem;
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+}
+
+:deep(.markdown-body h1) {
+  font-size: 1.55rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(0, 240, 255, 0.35);
+  background: linear-gradient(90deg, #ffffff 0%, #00f0ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+:deep(.markdown-body h2) {
+  font-size: 1.3rem;
+  border-left: 4px solid #00f0ff;
+  padding-left: 0.75rem;
+  margin-top: 1.4rem;
+  background: linear-gradient(90deg, rgba(0, 240, 255, 0.08) 0%, transparent 100%);
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  border-radius: 0 6px 6px 0;
+}
+
+:deep(.markdown-body h3) {
+  font-size: 1.15rem;
+  color: #00f0ff;
+  margin-top: 1.2rem;
+}
+
+:deep(.markdown-body h4) {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* ── Paragraphs & Spacing ── */
+:deep(.markdown-body p) {
+  margin-bottom: 0.95rem;
+}
+
+:deep(.markdown-body p:last-child) {
+  margin-bottom: 0;
+}
+
+/* ── Blockquotes ── */
+:deep(.markdown-body blockquote) {
+  margin: 1.2rem 0;
+  padding: 0.8rem 1.2rem;
+  background: rgba(0, 240, 255, 0.05);
+  border-left: 4px solid #00f0ff;
+  border-radius: 0 10px 10px 0;
+  color: rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.03);
+}
+
+:deep(.markdown-body blockquote p) {
+  margin-bottom: 0;
+}
+
+/* ── Lists ── */
+:deep(.markdown-body ul),
+:deep(.markdown-body ol) {
+  margin-left: 1.5em;
+  margin-bottom: 1rem;
+}
+
+:deep(.markdown-body li) {
+  margin-bottom: 0.45rem;
+  line-height: 1.6;
+}
+
+:deep(.markdown-body ul li::marker) {
+  color: #00f0ff;
+}
+
+:deep(.markdown-body ol li::marker) {
+  color: #00f0ff;
+  font-weight: bold;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+/* ── Horizontal Rule ── */
+:deep(.markdown-body hr) {
+  height: 1px;
+  border: none;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 240, 255, 0.5) 50%, transparent 100%);
+  margin: 1.8rem 0;
+}
+
+/* ── Links ── */
+:deep(.markdown-body a) {
+  color: #00f0ff;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(0, 240, 255, 0.5);
+  transition: all 0.2s ease;
+  padding-bottom: 1px;
+}
+
+:deep(.markdown-body a:hover) {
+  color: #ffffff;
+  border-bottom-style: solid;
+  border-bottom-color: #00f0ff;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.8);
+}
+
+/* ── Inline Code & Code Blocks ── */
 :deep(.code-block-wrapper) {
   position: relative;
-  margin: 1rem 0;
+  margin: 1.2rem 0;
 }
 
 :deep(.code-copy-btn) {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 10px;
+  right: 10px;
   display: flex;
   align-items: center;
   gap: 4px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.5);
-  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 4px 10px;
   border-radius: 6px;
   cursor: pointer;
   font-family: 'Rajdhani', sans-serif;
@@ -876,47 +1076,56 @@ onUnmounted(() => {
 }
 
 :deep(.code-copy-btn:hover) {
-  background: rgba(0, 240, 255, 0.15);
-  border-color: rgba(0, 240, 255, 0.3);
+  background: rgba(0, 240, 255, 0.2);
+  border-color: rgba(0, 240, 255, 0.4);
   color: #00f0ff;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
 }
 
 :deep(.code-copy-btn.copied) {
-  background: rgba(0, 255, 136, 0.15);
-  border-color: rgba(0, 255, 136, 0.3);
+  background: rgba(0, 255, 136, 0.2);
+  border-color: rgba(0, 255, 136, 0.4);
   color: #00ff88;
   opacity: 1;
 }
 
 :deep(pre) {
-  background: rgba(0, 0, 0, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 1rem;
+  background: rgba(6, 11, 22, 0.85) !important;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 10px;
+  padding: 1.2rem;
   margin: 0;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 :deep(code) {
   font-family: 'JetBrains Mono', monospace;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.2em 0.4em;
-  border-radius: 4px;
-  font-size: 0.9em;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: #70e0ff;
+  padding: 0.2em 0.45em;
+  border-radius: 5px;
+  font-size: 0.88em;
 }
 
 :deep(pre code) {
   background: transparent;
+  border: none;
+  color: inherit;
   padding: 0;
+  font-size: 0.9em;
 }
 
-:deep(p) {
-  margin-bottom: 0.8em;
+:deep(.markdown-body strong) {
+  color: #00f0ff;
+  font-weight: 700;
+  text-shadow: 0 0 5px rgba(0, 240, 255, 0.2);
 }
 
-:deep(ul), :deep(ol) {
-  margin-left: 1.5em;
-  margin-bottom: 0.8em;
+:deep(.markdown-body em) {
+  color: #c4f0ff;
+  font-style: italic;
 }
 
 /* ── 消息操作栏 ── */
@@ -1414,7 +1623,7 @@ onUnmounted(() => {
   }
 
   .message-row.assistant .bubble {
-    padding-left: 0;
+    padding: 0.8rem 1rem;
   }
 
   .message-meta {
