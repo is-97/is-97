@@ -6,23 +6,20 @@ export const DEFAULT_BASE_URL =
   process.env.NVIDIA_API_BASE_URL ||
   "https://integrate.api.nvidia.com/v1/chat/completions";
 export const DEFAULT_MODEL =
-  process.env.NVIDIA_MODEL || process.env.NVIDIA_CHAT_MODEL || "minimaxai/minimax-m2.7";
-export const DEFAULT_MAX_TOKENS = Number(process.env.NVIDIA_MAX_TOKENS || 16384);
-export const DEFAULT_TEMPERATURE = Number(process.env.NVIDIA_TEMPERATURE || 1.0);
+  process.env.NVIDIA_MODEL || process.env.NVIDIA_CHAT_MODEL || "";
+export const DEFAULT_MAX_TOKENS = Number(
+  process.env.NVIDIA_MAX_TOKENS || 16384,
+);
+export const DEFAULT_TEMPERATURE = Number(
+  process.env.NVIDIA_TEMPERATURE || 1.0,
+);
 export const DEFAULT_TOP_P = Number(process.env.NVIDIA_TOP_P || 1.0);
 export const DEFAULT_THINKING = process.env.NVIDIA_THINKING !== "false";
 
 // ── 构建上游请求 payload ──────────────────────────────────
 export function buildPayload(body) {
-  const {
-    message,
-    model,
-    maxTokens,
-    temperature,
-    topP,
-    thinking,
-    messages,
-  } = body;
+  const { message, model, maxTokens, temperature, topP, thinking, messages } =
+    body;
 
   return {
     model: model || DEFAULT_MODEL,
@@ -39,8 +36,7 @@ export function buildPayload(body) {
     top_p: Number.isFinite(Number(topP)) ? Number(topP) : DEFAULT_TOP_P,
     stream: true,
     chat_template_kwargs: {
-      thinking:
-        typeof thinking === "boolean" ? thinking : DEFAULT_THINKING,
+      thinking: typeof thinking === "boolean" ? thinking : DEFAULT_THINKING,
     },
   };
 }
