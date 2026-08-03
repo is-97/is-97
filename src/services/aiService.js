@@ -1,7 +1,6 @@
 import { buildSystemPrompt } from '../data/systemPrompt.js'
 
-const DEV_API_ENDPOINT = 'http://localhost:3000/api/chat'
-const PROD_API_ENDPOINT = '/api/chat'
+const API_ENDPOINT = '/api/chat'
 
 async function streamAI(endpoint, payload, onMessageChunk, signal) {
   const response = await fetch(endpoint, {
@@ -63,22 +62,16 @@ async function streamAI(endpoint, payload, onMessageChunk, signal) {
 }
 
 export async function sendToAI(message, onMessageChunk, options = {}) {
-  const isDevelopment = import.meta.env.DEV
-  const endpoint = isDevelopment ? DEV_API_ENDPOINT : PROD_API_ENDPOINT
-
   const systemPrompt = buildSystemPrompt()
-  await streamAI(endpoint, { message, systemPrompt, ...options }, onMessageChunk)
+  await streamAI(API_ENDPOINT, { message, systemPrompt, ...options }, onMessageChunk)
 }
 
 export async function sendToAIWithHistory(messages, onMessageChunk, options = {}) {
-  const isDevelopment = import.meta.env.DEV
-  const endpoint = isDevelopment ? DEV_API_ENDPOINT : PROD_API_ENDPOINT
-
   const systemPrompt = buildSystemPrompt()
   const messagesWithSystem = [
     { role: 'system', content: systemPrompt },
     ...messages
   ]
 
-  await streamAI(endpoint, { messages: messagesWithSystem, ...options }, onMessageChunk, options.signal)
+  await streamAI(API_ENDPOINT, { messages: messagesWithSystem, ...options }, onMessageChunk, options.signal)
 }
