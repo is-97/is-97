@@ -13,13 +13,19 @@ async function streamAI(endpoint, payload, onMessageChunk, signal) {
   })
 
   if (!response.ok || !response.body) {
-    let errorMsg = '响应异常，可能是 API Key 或服务器错误'
+    let errorMsg = `响应异常 (${response.status} ${response.statusText || 'Error'})`
     try {
       const errData = await response.json()
       if (errData) {
-        errorMsg = errData.error?.message || errData.error || errData.details || errData.message || errorMsg
+        errorMsg = errData.error?.message || (typeof errData.error === 'string' ? errData.error : '') || errData.details || errData.message || errorMsg
       }
-    } catch (_) {}
+    } catch (_) {
+      if (response.status === 504) {
+        errorMsg = 'Vercel 函数响应超时 (504 Gateway Timeout)，上游模型响应过慢或处于思考状态'
+      } else if (response.status === 400) {
+        errorMsg = '请求错误 (400)，请检查 Vercel 是否配置了 API Key 环境变量'
+      }
+    }
     throw new Error(errorMsg)
   }
 
