@@ -415,7 +415,8 @@ const sendMessage = async () => {
     if (err.name === 'AbortError') {
       // 用户主动停止，不显示错误
     } else {
-      chatStore.appendToLastMessage('\n\n[Error: 连接中断或超时，请检查网络连接]')
+      const msg = err.message || '连接中断或超时，请检查网络连接'
+      chatStore.appendToLastMessage(`\n\n[Error: ${msg}]`)
     }
   } finally {
     abortController.value = null
@@ -448,7 +449,8 @@ const regenerateResponse = async () => {
     }, { signal: abortController.value.signal })
   } catch (err) {
     if (err.name !== 'AbortError') {
-      chatStore.appendToLastMessage('\n\n[Error: 连接中断或超时，请检查网络连接]')
+      const msg = err.message || '连接中断或超时，请检查网络连接'
+      chatStore.appendToLastMessage(`\n\n[Error: ${msg}]`)
     }
   } finally {
     abortController.value = null

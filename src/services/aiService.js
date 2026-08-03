@@ -14,7 +14,14 @@ async function streamAI(endpoint, payload, onMessageChunk, signal) {
   })
 
   if (!response.ok || !response.body) {
-    throw new Error('响应异常，可能是 API Key 或服务器错误')
+    let errorMsg = '响应异常，可能是 API Key 或服务器错误'
+    try {
+      const errData = await response.json()
+      if (errData) {
+        errorMsg = errData.error?.message || errData.error || errData.details || errData.message || errorMsg
+      }
+    } catch (_) {}
+    throw new Error(errorMsg)
   }
 
   const reader = response.body.getReader()
