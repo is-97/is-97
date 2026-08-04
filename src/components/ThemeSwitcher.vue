@@ -3,14 +3,23 @@
     <!-- Trigger -->
     <button
       class="theme-trigger"
+      :class="{ active: showMenu }"
       @click="toggleMenu"
       :aria-label="'切换主题，当前：' + currentThemeName"
       :aria-expanded="showMenu"
     >
-      <span class="trigger-orb" :style="orbStyle">
-        <span class="orb-inner" :style="orbInnerStyle"></span>
-      </span>
-      <span class="trigger-ring" :class="{ active: showMenu }"></span>
+      <div class="trigger-content">
+        <svg class="palette-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.21-1.79 4-4 4h-1.5a1.5 1.5 0 0 0-1.5 1.5c0 .41.16.8.44 1.09.28.28.44.68.44 1.09 0 1.25-1.02 2.32-2.88 2.32z"/>
+          <circle cx="7.5" cy="11.5" r="1.2" fill="currentColor"/>
+          <circle cx="12" cy="7.5" r="1.2" fill="currentColor"/>
+          <circle cx="16.5" cy="11.5" r="1.2" fill="currentColor"/>
+        </svg>
+        <div class="swatch-dots">
+          <span class="dot-primary" :style="{ background: currentTheme.swatch[0] }"></span>
+          <span class="dot-secondary" :style="{ background: currentTheme.swatch[1] }"></span>
+        </div>
+      </div>
     </button>
 
     <!-- Panel -->
@@ -69,15 +78,7 @@ const showMenu = ref(false)
 const currentTheme = computed(() => themeList.find(t => t.id === appStore.theme) || themeList[0])
 const currentThemeName = computed(() => currentTheme.value?.name || '赛博朋克')
 
-const orbStyle = computed(() => {
-  const c = currentTheme.value?.swatch || ['#00f0ff', '#7000ff']
-  return { background: `linear-gradient(135deg, ${c[0]}, ${c[1]})` }
-})
 
-const orbInnerStyle = computed(() => {
-  const c = currentTheme.value?.swatch || ['#00f0ff', '#7000ff']
-  return { boxShadow: `0 0 16px ${c[0]}, 0 0 4px ${c[0]}` }
-})
 
 function previewStyle(theme) {
   const bg = theme['--bg-deep'] || '#050510'
@@ -127,55 +128,71 @@ onUnmounted(() => {
 /* ====== Trigger ====== */
 .theme-trigger {
   position: relative;
-  width: 42px;
-  height: 42px;
-  border: none;
-  background: transparent;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  color: var(--text-muted);
 }
 
-.trigger-orb {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  position: relative;
-  z-index: 2;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.orb-inner {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  transition: box-shadow 0.4s ease;
-}
-
-.theme-trigger:hover .trigger-orb {
-  transform: scale(1.12);
-}
-
-.trigger-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1px solid var(--border-light);
-  background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: all 0.35s ease;
-}
-
-.theme-trigger:hover .trigger-ring {
+.theme-trigger:hover {
   border-color: var(--border-hover);
+  color: var(--text-main);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
-.trigger-ring.active {
+.theme-trigger.active {
   border-color: var(--primary);
-  box-shadow: 0 0 20px var(--accent-glow);
+  color: var(--primary);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+.trigger-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.palette-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.theme-trigger:hover .palette-icon {
+  transform: rotate(15deg);
+}
+
+.swatch-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot-primary,
+.dot-secondary {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.theme-trigger:hover .dot-primary {
+  transform: scale(1.2);
+}
+
+.theme-trigger:hover .dot-secondary {
+  transform: scale(1.2);
 }
 
 /* ====== Panel ====== */
@@ -400,13 +417,20 @@ onUnmounted(() => {
   }
 
   .theme-trigger {
-    width: 38px;
-    height: 38px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 10px;
   }
 
-  .trigger-orb {
-    width: 30px;
-    height: 30px;
+  .palette-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .dot-primary,
+  .dot-secondary {
+    width: 7px;
+    height: 7px;
   }
 
   .theme-panel {

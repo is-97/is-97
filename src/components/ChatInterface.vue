@@ -8,7 +8,15 @@
     <div class="status-bar" role="banner" aria-label="状态栏">
       <div class="model-info" aria-label="AI模型信息">
         <div class="ai-avatar-small">
-          <div class="core-pulse"></div>
+          <svg class="avatar-sparkle-small" viewBox="0 0 24 24" aria-hidden="true">
+            <defs>
+              <linearGradient id="avatarSparkleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00f0ff" />
+                <stop offset="100%" stop-color="#7000ff" />
+              </linearGradient>
+            </defs>
+            <path d="M12 3C12 7.97 16.03 12 21 12C16.03 12 12 16.03 12 21C12 16.03 7.97 12 3 12C7.97 12 12 7.97 12 3Z" fill="url(#avatarSparkleGrad)"/>
+          </svg>
         </div>
         <div class="info-text">
           <span class="model-name">AURA-AI <span class="version">V4.0</span></span>
@@ -46,7 +54,11 @@
           <div v-for="(msg, index) in chatStore.messages" :key="index" class="message-row" :class="msg.role" :aria-label="msg.role === `user` ? `用户消息` : `AI回复`">
             <div class="message-content">
               <div v-if="msg.role === 'assistant'" class="ai-avatar">
-                <div class="avatar-ring"></div>
+                <div class="avatar-badge">
+                  <svg class="avatar-sparkle" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3C12 7.97 16.03 12 21 12C16.03 12 12 16.03 12 21C12 16.03 7.97 12 3 12C7.97 12 12 7.97 12 3Z" fill="url(#avatarSparkleGrad)"/>
+                  </svg>
+                </div>
               </div>
 
               <div class="bubble-wrapper">
@@ -54,7 +66,7 @@
                   <div v-if="msg.role === 'user'" class="user-text">{{ msg.content }}</div>
                   <div v-else class="ai-text-container">
                     <!-- 思考过程 -->
-                    <div v-if="msg.reasoning" class="thinking-block">
+                    <div v-if="msg.reasoning || msg.displayedReasoning" class="thinking-block">
                       <div class="thinking-header" @click="msg.showReasoning = !msg.showReasoning" role="button" tabindex="0">
                         <span class="thinking-icon">
                           <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2">
@@ -68,14 +80,23 @@
                           </svg>
                         </span>
                       </div>
-                      <div v-show="msg.showReasoning" class="thinking-content">
-                        {{ msg.reasoning }}
-                      </div>
+                      <Transition name="thinking-expand">
+                        <div
+                          v-show="msg.showReasoning"
+                          class="thinking-content"
+                          :class="{ typing: msg.isTyping && (msg.displayedReasoning?.length || 0) < (msg.reasoning?.length || 0) }"
+                          v-html="renderMarkdown(msg.displayedReasoning !== undefined ? msg.displayedReasoning : msg.reasoning)"
+                        ></div>
+                      </Transition>
                     </div>
 
-                    <div v-if="msg.content" class="ai-text markdown-body" v-html="renderMarkdown(msg.content)"></div>
-                    <span v-if="msg.isTyping && !msg.content" class="thinking-pulse-text">AI 正在思考中<span class="thinking-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></span>
-                    <span v-else-if="msg.isTyping" class="cursor">_</span>
+                    <div
+                      v-if="msg.isTyping || (msg.displayedContent !== undefined ? msg.displayedContent : msg.content)"
+                      class="ai-text markdown-body"
+                      v-html="renderMarkdown(msg.displayedContent !== undefined ? msg.displayedContent : msg.content)"
+                    ></div>
+                    <span v-if="msg.isTyping && !(msg.displayedContent !== undefined ? msg.displayedContent : msg.content) && !(msg.displayedReasoning !== undefined ? msg.displayedReasoning : msg.reasoning)" class="thinking-pulse-text">AI 正在思考中<span class="thinking-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></span>
+                    <span v-else-if="msg.isTyping && (!(msg.displayedContent !== undefined ? msg.displayedContent : msg.content) || (msg.displayedReasoning?.length || 0) < (msg.reasoning?.length || 0))" class="streaming-cursor"></span>
 
                     <!-- 消息操作栏（仅在非typing状态显示） -->
                     <div v-if="!msg.isTyping && msg.content" class="message-actions">
@@ -250,6 +271,7 @@ const inputRef = ref(null)
 const bottomAnchorRef = ref(null)
 const copiedId = ref(null)
 const abortController = ref(null)
+let animationFrameId = null
 
 const lastIsTyping = computed(() => {
   const last = chatStore.messages[chatStore.messages.length - 1]
@@ -362,10 +384,134 @@ const copyMessage = async (content) => {
   }
 }
 
+const checkAndScroll = () => {
+  if (!viewportRef.value) return
+  const el = viewportRef.value
+  const distanceFromBottom = el.scrollHeight - (el.scrollTop + el.clientHeight)
+  if (distanceFromBottom < 160) {
+    el.scrollTop = el.scrollHeight
+  }
+}
+
+const startTypewriterPump = (fastMode = false) => {
+  if (animationFrameId && !fastMode) return
+
+  const pump = () => {
+    let hasPendingWork = false
+    const messages = chatStore.messages
+
+    try {
+      for (let i = messages.length - 1; i >= 0; i--) {
+        const msg = messages[i]
+        if (msg.role === 'assistant' && msg.isTyping) {
+          const targetReasoning = msg.reasoning || ''
+          const targetContent = msg.content || ''
+          
+          const currentDispReasoning = msg.displayedReasoning || ''
+          const currentDispContent = msg.displayedContent || ''
+
+          // 1. 优先平滑吐出思考过程
+          if (currentDispReasoning.length < targetReasoning.length) {
+            hasPendingWork = true
+            const diff = targetReasoning.length - currentDispReasoning.length
+            const step = fastMode ? diff : Math.max(1, Math.min(Math.ceil(diff / 2), 12))
+            const nextVal = currentDispReasoning + targetReasoning.slice(
+              currentDispReasoning.length,
+              currentDispReasoning.length + step
+            )
+            chatStore.updateDisplayedReasoning(i, nextVal)
+            checkAndScroll()
+          }
+          // 2. 思考过程吐完后，平滑吐出回复正文
+          else if (currentDispContent.length < targetContent.length) {
+            hasPendingWork = true
+            const diff = targetContent.length - currentDispContent.length
+            const step = fastMode ? diff : Math.max(1, Math.min(Math.ceil(diff / 2.5), 15))
+            const nextVal = currentDispContent + targetContent.slice(
+              currentDispContent.length,
+              currentDispContent.length + step
+            )
+            chatStore.updateDisplayedContent(i, nextVal)
+            checkAndScroll()
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Typewriter pump error, fallback to direct assignment:', err)
+      // 降级保护：如果发生异常，直接全量对齐内容
+      for (let i = messages.length - 1; i >= 0; i--) {
+        const msg = messages[i]
+        if (msg.role === 'assistant' && msg.isTyping) {
+          chatStore.updateDisplayedReasoning(i, msg.reasoning || '')
+          chatStore.updateDisplayedContent(i, msg.content || '')
+        }
+      }
+      hasPendingWork = false
+    }
+
+    if (hasPendingWork) {
+      animationFrameId = requestAnimationFrame(pump)
+    } else {
+      animationFrameId = null
+    }
+  }
+
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId)
+    animationFrameId = null
+  }
+  animationFrameId = requestAnimationFrame(pump)
+}
+
+const flushAndFinalizeMessage = (msgIndex) => {
+  return new Promise((resolve) => {
+    let checkCount = 0
+    const check = () => {
+      const msg = chatStore.messages[msgIndex]
+      if (!msg) {
+        resolve()
+        return
+      }
+
+      const targetReasoning = msg.reasoning || ''
+      const targetContent = msg.content || ''
+      const currentDispReasoning = msg.displayedReasoning || ''
+      const currentDispContent = msg.displayedContent || ''
+
+      const reasoningDone = currentDispReasoning.length >= targetReasoning.length
+      const contentDone = currentDispContent.length >= targetContent.length
+
+      if (reasoningDone && contentDone) {
+        chatStore.updateDisplayedReasoning(msgIndex, targetReasoning)
+        chatStore.updateDisplayedContent(msgIndex, targetContent)
+        chatStore.finalizeLastMessage()
+        resolve()
+      } else {
+        checkCount++
+        if (checkCount > 12) {
+          // 彻底降级：超时未追完，强行同步对齐并结束typing，保障绝对能出字
+          chatStore.updateDisplayedReasoning(msgIndex, targetReasoning)
+          chatStore.updateDisplayedContent(msgIndex, targetContent)
+          chatStore.finalizeLastMessage()
+          resolve()
+        } else {
+          startTypewriterPump(checkCount > 6)
+          setTimeout(check, 16)
+        }
+      }
+    }
+    check()
+  })
+}
+
 const stopGeneration = () => {
   if (abortController.value) {
     abortController.value.abort()
     abortController.value = null
+  }
+  const lastIndex = chatStore.messages.length - 1
+  if (lastIndex >= 0) {
+    flushAndFinalizeMessage(lastIndex)
   }
 }
 
@@ -380,14 +526,7 @@ const appendAssistantChunk = (index, delta) => {
     chatStore.appendToLastMessage(delta.content)
   }
 
-  if (!viewportRef.value) return
-
-  const { scrollTop, clientHeight, scrollHeight } = viewportRef.value
-  const distanceFromBottom = scrollHeight - (scrollTop + clientHeight)
-
-  if (distanceFromBottom < 120) {
-    scrollToBottom()
-  }
+  startTypewriterPump()
 }
 
 const sendMessage = async () => {
@@ -422,7 +561,7 @@ const sendMessage = async () => {
   } finally {
     abortController.value = null
     chatStore.setLoading(false)
-    chatStore.finalizeLastMessage()
+    await flushAndFinalizeMessage(aiMsgIndex)
     await scrollToBottom()
     nextTick(() => inputRef.value?.focus())
   }
@@ -583,23 +722,21 @@ onUnmounted(() => {
 }
 
 .ai-avatar-small {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid rgba(0, 240, 255, 0.3);
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(20, 30, 50, 0.8) 0%, rgba(10, 15, 30, 0.9) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
-.core-pulse {
-  width: 12px;
-  height: 12px;
-  background: #00f0ff;
-  border-radius: 50%;
-  box-shadow: 0 0 10px #00f0ff;
-  animation: pulse 2s infinite;
+.avatar-sparkle-small {
+  width: 14px;
+  height: 14px;
+  filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.4));
 }
 
 .info-text {
@@ -778,17 +915,42 @@ onUnmounted(() => {
   width: 36px;
   height: 36px;
   flex-shrink: 0;
-  margin-top: 4px;
+  margin-top: 2px;
   position: relative;
 }
 
-.avatar-ring {
+.avatar-badge {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  border: 2px solid #00f0ff;
-  box-shadow: 0 0 10px #00f0ff;
-  background: #000;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(20, 30, 50, 0.8) 0%, rgba(10, 15, 30, 0.9) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35),
+              inset 0 1px 1px rgba(255, 255, 255, 0.1),
+              0 0 12px rgba(0, 240, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.ai-avatar:hover .avatar-badge {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5),
+              inset 0 1px 1px rgba(255, 255, 255, 0.2),
+              0 0 18px rgba(0, 240, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.avatar-sparkle {
+  width: 18px;
+  height: 18px;
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.4));
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ai-avatar:hover .avatar-sparkle {
+  transform: scale(1.15) rotate(90deg);
 }
 
 .bubble-wrapper {
@@ -843,8 +1005,9 @@ onUnmounted(() => {
 .cursor {
   display: inline-block;
   color: #00f0ff;
-  animation: blink 1s step-end infinite;
   font-weight: bold;
+  text-shadow: 0 0 8px #00f0ff;
+  animation: cursorPulse 0.8s infinite alternate ease-in-out;
 }
 
 :deep(.markdown-body) {
@@ -1458,16 +1621,154 @@ onUnmounted(() => {
   transform: rotate(180deg);
 }
 
+.thinking-expand-enter-active,
+.thinking-expand-leave-active {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  max-height: 800px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.thinking-expand-enter-from,
+.thinking-expand-leave-to {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  overflow: hidden;
+}
+
 .thinking-content {
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.05);
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.85rem;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.6);
-  white-space: pre-wrap;
+  color: rgba(255, 255, 255, 0.65);
   word-break: break-word;
+}
+
+:deep(.thinking-content p) {
+  margin: 0 0 0.5rem 0;
+  line-height: 1.6;
+}
+
+:deep(.thinking-content p:last-child) {
+  margin-bottom: 0;
+}
+
+:deep(.thinking-content code) {
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.15rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: rgba(0, 240, 255, 0.8);
+}
+
+:deep(.thinking-content pre) {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  overflow-x: auto;
+}
+
+:deep(.thinking-content pre code) {
+  background: transparent;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+:deep(.thinking-content ul),
+:deep(.thinking-content ol) {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+:deep(.thinking-content li) {
+  margin-bottom: 0.25rem;
+}
+
+:deep(.thinking-content strong) {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+}
+
+:deep(.thinking-content.typing > *:last-child::after) {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 13px;
+  background: #00f0ff;
+  margin-left: 4px;
+  vertical-align: -1px;
+  border-radius: 1px;
+  box-shadow: 0 0 8px #00f0ff;
+  animation: cursorPulse 0.7s infinite alternate ease-in-out;
+}
+
+.streaming-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 1.1em;
+  vertical-align: -0.15em;
+  margin-left: 4px;
+  background: linear-gradient(180deg, #00f0ff 0%, #7000ff 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.9), 0 0 18px rgba(112, 0, 255, 0.6);
+  animation: cursorPulse 0.8s infinite alternate ease-in-out;
+}
+
+:deep(.bubble.typing .ai-text.markdown-body > *:last-child::after) {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 1.1em;
+  vertical-align: -0.15em;
+  margin-left: 5px;
+  background: linear-gradient(180deg, #00f0ff 0%, #7000ff 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.9), 0 0 18px rgba(112, 0, 255, 0.6);
+  animation: cursorPulse 0.8s infinite alternate ease-in-out;
+}
+
+.bubble.typing {
+  position: relative;
+  overflow: hidden;
+}
+
+.bubble.typing::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00f0ff 50%, #7000ff 80%, transparent);
+  background-size: 200% 100%;
+  animation: streamTopBorder 2s infinite linear;
+}
+
+@keyframes streamTopBorder {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes cursorPulse {
+  0% {
+    opacity: 0.35;
+    transform: scaleY(0.85);
+    box-shadow: 0 0 4px rgba(0, 240, 255, 0.4);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1.05);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 1), 0 0 22px rgba(112, 0, 255, 0.8);
+  }
 }
 
 .thinking-pulse-text {
@@ -1533,13 +1834,14 @@ onUnmounted(() => {
   }
 
   .ai-avatar-small {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
   }
 
-  .core-pulse {
-    width: 10px;
-    height: 10px;
+  .avatar-sparkle-small {
+    width: 12px;
+    height: 12px;
   }
 
   .model-name {

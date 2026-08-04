@@ -17,7 +17,16 @@ export const useChatStore = defineStore('chat', () => {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const parsed = JSON.parse(stored)
-        messages.value = Array.isArray(parsed) ? parsed.slice(-MAX_MESSAGES) : []
+        if (Array.isArray(parsed)) {
+          messages.value = parsed.slice(-MAX_MESSAGES).map(m => ({
+            ...m,
+            isTyping: false,
+            displayedContent: m.content || '',
+            displayedReasoning: m.reasoning || ''
+          }))
+        } else {
+          messages.value = []
+        }
       }
     } catch {
       messages.value = []
@@ -48,6 +57,8 @@ export const useChatStore = defineStore('chat', () => {
       role: 'assistant',
       content: '',
       reasoning: '',
+      displayedContent: '',
+      displayedReasoning: '',
       showReasoning: true,
       isTyping: true,
       timestamp: Date.now()
@@ -60,7 +71,6 @@ export const useChatStore = defineStore('chat', () => {
     const last = messages.value[messages.value.length - 1]
     if (last && last.role === 'assistant') {
       last.content += chunk
-      saveMessages()
     }
   }
 
@@ -68,7 +78,6 @@ export const useChatStore = defineStore('chat', () => {
     const last = messages.value[messages.value.length - 1]
     if (last && last.role === 'assistant') {
       last.reasoning += chunk
-      saveMessages()
     }
   }
 
@@ -108,6 +117,20 @@ export const useChatStore = defineStore('chat', () => {
     isLoading.value = value
   }
 
+  function updateDisplayedContent(index, val) {
+    const msg = messages.value[index]
+    if (msg) {
+      msg.displayedContent = val
+    }
+  }
+
+  function updateDisplayedReasoning(index, val) {
+    const msg = messages.value[index]
+    if (msg) {
+      msg.displayedReasoning = val
+    }
+  }
+
   return {
     messages,
     isLoading,
@@ -124,6 +147,8 @@ export const useChatStore = defineStore('chat', () => {
     removeLastAssistantMessage,
     clearMessages,
     getMessagesForAPI,
-    setLoading
+    setLoading,
+    updateDisplayedContent,
+    updateDisplayedReasoning
   }
 })

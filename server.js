@@ -21,9 +21,9 @@ app.post("/api/chat", async (req, res) => {
     return res.status(400).json({ error: validationError });
   }
 
-  const actualApiKey = apiKey || process.env.NVIDIA_API_KEY;
+  const actualApiKey = apiKey || process.env.AI_API_KEY;
   if (!actualApiKey) {
-    return res.status(400).json({ error: "未配置 NVIDIA API Key" });
+    return res.status(400).json({ error: "未配置 AI API Key" });
   }
 
   try {

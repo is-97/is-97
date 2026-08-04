@@ -151,13 +151,20 @@ const scrollToTop = () => {
   box-sizing: border-box;
 }
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
 body {
   font-family: var(--font-body, 'Space Grotesk', sans-serif);
   background: var(--bg-deep, #050510);
   color: var(--text-main, #ffffff);
   min-height: 100vh;
   min-width: 0;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -179,6 +186,10 @@ body {
 .app {
   display: flex;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
 /* Minimalist Nav */
@@ -428,6 +439,29 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+  html,
+  body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    position: relative;
+    touch-action: pan-y;
+  }
+
+  #app,
+  .app,
+  .content-area {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box;
+  }
+
+  .content-area > * {
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
   :root {
     --nav-width: 0px;
   }

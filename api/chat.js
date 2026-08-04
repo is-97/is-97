@@ -44,10 +44,10 @@ export default async function handler(req) {
     );
   }
 
-  const actualApiKey = body.apiKey || process.env.NVIDIA_API_KEY;
+  const actualApiKey = body.apiKey || process.env.AI_API_KEY;
   if (!actualApiKey) {
     return new Response(
-      JSON.stringify({ error: "未配置 NVIDIA API Key" }),
+      JSON.stringify({ error: "未配置 AI API Key" }),
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
@@ -70,7 +70,7 @@ export default async function handler(req) {
       const errorText = await upstreamResponse.text();
       return new Response(
         JSON.stringify({
-          error: "调用 NVIDIA 接口失败",
+          error: "调用 AI 接口失败",
           details: errorText,
         }),
         {

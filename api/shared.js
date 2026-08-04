@@ -1,17 +1,19 @@
 // ── 默认配置（均可通过环境变量覆盖）──────────────────────────
 export const DEFAULT_BASE_URL =
-  process.env.NVIDIA_API_BASE_URL ||
-  "https://integrate.api.nvidia.com/v1/chat/completions";
+  process.env.AI_API_BASE_URL ||
+  "https://api.openai.com/v1/chat/completions";
 export const DEFAULT_MODEL =
-  process.env.NVIDIA_MODEL || process.env.NVIDIA_CHAT_MODEL || "";
+  process.env.AI_MODEL ||
+  "";
 export const DEFAULT_MAX_TOKENS = Number(
-  process.env.NVIDIA_MAX_TOKENS || 16384,
+  process.env.AI_MAX_TOKENS || 16384,
 );
 export const DEFAULT_TEMPERATURE = Number(
-  process.env.NVIDIA_TEMPERATURE || 1.0,
+  process.env.AI_TEMPERATURE || 1.0,
 );
-export const DEFAULT_TOP_P = Number(process.env.NVIDIA_TOP_P || 1.0);
-export const DEFAULT_THINKING = process.env.NVIDIA_THINKING !== "false";
+export const DEFAULT_TOP_P = Number(process.env.AI_TOP_P || 1.0);
+export const DEFAULT_THINKING =
+  process.env.AI_THINKING !== "false";
 
 // ── 构建上游请求 payload ──────────────────────────────────
 export function buildPayload(body) {
@@ -38,7 +40,7 @@ export function buildPayload(body) {
   // 仅在明确为 DeepSeek R1 思考模型或显式指定时包含 chat_template_kwargs
   if (
     targetModel.includes("deepseek-r1") ||
-    (thinking && process.env.NVIDIA_THINKING === "true")
+    (thinking && process.env.AI_THINKING === "true")
   ) {
     payload.chat_template_kwargs = {
       thinking: typeof thinking === "boolean" ? thinking : DEFAULT_THINKING,
@@ -48,7 +50,7 @@ export function buildPayload(body) {
   return payload;
 }
 
-// ── 调用 NVIDIA 接口并以 SSE 方式转发 ─────────────────────
+// ── 调用 AI 接口并以 SSE 方式转发 ─────────────────────
 export async function proxyChatRequest(req, res, actualApiKey) {
   const response = await fetch(DEFAULT_BASE_URL, {
     method: "POST",
@@ -63,7 +65,7 @@ export async function proxyChatRequest(req, res, actualApiKey) {
   if (!response.ok) {
     const errorText = await response.text();
     res.status(response.status).json({
-      error: "调用 NVIDIA 接口失败",
+      error: "调用 AI 接口失败",
       details: errorText,
     });
     return;
