@@ -35,6 +35,12 @@ const router = createRouter({
       meta: { title: '项目详情' }
     },
     {
+      path: '/lab',
+      name: 'lab',
+      component: () => import('../views/LabView.vue'),
+      meta: { title: '实验室' }
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('../views/NotFound.vue'),

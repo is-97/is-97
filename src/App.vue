@@ -51,6 +51,20 @@
           </div>
           <div class="active-glow"></div>
         </router-link>
+
+        <router-link to="/lab" class="nav-item" aria-label="实验室与玩具箱">
+          <div class="nav-content">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                <polyline points="2 17 12 22 22 17"/>
+                <polyline points="2 12 12 17 22 12"/>
+              </svg>
+            </span>
+            <span class="nav-text">实验室</span>
+          </div>
+          <div class="active-glow"></div>
+        </router-link>
       </div>
 
       <div class="nav-footer">
@@ -83,6 +97,9 @@
     </button>
     <Live2dWidget v-if="!isMobile" />
     <MusicPlayer v-if="!isMobile" songId="2007985391" />
+    <CyberTerminalFloating v-if="!isMobile" />
+    <CursorTrail v-if="!isMobile" />
+    <KonamiEasterEgg />
   </div>
 </template>
 
@@ -97,6 +114,9 @@ import Live2dWidget from './components/Live2dWidget.vue'
 import ParticleBackground from './components/ParticleBackground.vue'
 import ScrollProgress from './components/ScrollProgress.vue'
 import ThemeSwitcher from './components/ThemeSwitcher.vue'
+import CyberTerminalFloating from './components/CyberTerminalFloating.vue'
+import CursorTrail from './components/CursorTrail.vue'
+import KonamiEasterEgg from './components/KonamiEasterEgg.vue'
 import { Analytics } from '@vercel/analytics/vue'
 import { gsap, isReducedMotion } from './utils/gsap'
 
@@ -204,7 +224,7 @@ html,
 body {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
 }
 
@@ -237,7 +257,7 @@ body {
   min-height: 100vh;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
 }
 
@@ -480,7 +500,7 @@ body {
   body {
     width: 100% !important;
     max-width: 100% !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     position: relative;
     touch-action: pan-y;
   }
@@ -490,7 +510,7 @@ body {
   .content-area {
     width: 100% !important;
     max-width: 100% !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     box-sizing: border-box;
   }
 
