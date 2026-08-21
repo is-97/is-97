@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
 export default defineConfig({
-  base: './', // 设置基础路径
+  base: './',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -11,13 +11,13 @@ export default defineConfig({
     }
   },
   build: {
-    chunkSizeWarningLimit: 500,
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks: {
           three: ['three'],
           vue: ['vue', 'vue-router', 'pinia'],
-          chat: ['highlight.js', 'marked', 'dompurify'],
+          gsap: ['gsap'],
           icons: ['@fortawesome/fontawesome-free'],
           vendor: ['@vercel/analytics/vue']
         }
@@ -26,12 +26,6 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:3000',
-        changeOrigin: true
-      }
-    }
+    port: 5173
   }
 })

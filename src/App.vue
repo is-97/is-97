@@ -51,18 +51,6 @@
           </div>
           <div class="active-glow"></div>
         </router-link>
-
-        <router-link to="/chat" class="nav-item" aria-label="AI助手">
-          <div class="nav-content">
-            <span class="nav-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              </svg>
-            </span>
-            <span class="nav-text">AI助手</span>
-          </div>
-          <div class="active-glow"></div>
-        </router-link>
       </div>
 
       <div class="nav-footer">
@@ -79,7 +67,7 @@
           <component :is="Component" :key="route.path" />
         </transition>
       </router-view>
-      <CyberFooter v-if="!isChatPage" />
+      <CyberFooter />
     </div>
 
     <button
@@ -114,7 +102,6 @@ import { gsap, isReducedMotion } from './utils/gsap'
 
 const route = useRoute()
 const appStore = useAppStore()
-const isChatPage = computed(() => route.path === '/chat')
 const showScrollTop = computed(() => appStore.scrollY > 300)
 
 const isMobile = computed(() => appStore.isMobile)
@@ -435,32 +422,6 @@ body {
   transform: translateY(-8px);
 }
 
-/* Fullscreen pages like Chat */
-.chat-page .content-area,
-.content-area:has(.chat-interface),
-.content-area:has(.chat-view) {
-  height: 100vh;
-  min-height: 100vh;
-  padding: 0;
-  max-width: none;
-  overflow: hidden;
-}
-
-.chat-page .content-area > *,
-.content-area:has(.chat-interface) > *,
-.content-area:has(.chat-view) > * {
-  max-width: none;
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
-}
-
-/* 聊天页面：主题切换器与 status-bar 垂直居中对齐 */
-#app:has(.chat-interface) .theme-switcher,
-#app:has(.chat-view) .theme-switcher {
-  top: 9px;
-}
-
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -594,25 +555,11 @@ body {
     width: 100%;
   }
 
-  .chat-page .content-area,
-  .content-area:has(.chat-interface),
-  .content-area:has(.chat-view) {
-    height: calc(100vh - 64px - env(safe-area-inset-bottom, 0px));
-    min-height: calc(100vh - 64px - env(safe-area-inset-bottom, 0px));
-    padding: 0;
-    padding-bottom: 0;
-  }
-
   .scroll-to-top {
     bottom: 5rem;
     right: 1rem;
     width: 40px;
     height: 40px;
-  }
-
-  #app:has(.chat-interface) .theme-switcher,
-  #app:has(.chat-view) .theme-switcher {
-    top: 8px;
   }
 }
 </style>
