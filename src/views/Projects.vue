@@ -1,6 +1,6 @@
 <template>
-  <div class="holo-projects">
-    <div class="page-header">
+  <div class="holo-projects" ref="projectsContainer">
+    <div class="page-header" ref="pageHeader">
       <div class="header-content">
         <div class="holo-badge">
           <span class="badge-icon">&#9673;</span>
@@ -20,14 +20,17 @@
       <div class="header-scanner"></div>
     </div>
 
-    <div class="projects-grid">
-      <div v-for="(project, index) in projects" :key="project.id"
-           class="project-capsule"
-           @click="openProject(project)"
-           :style="{ '--delay': index * 0.1 + 's' }">
-
+    <div class="projects-grid" ref="projectsGrid">
+      <div
+        v-for="(project, index) in projects"
+        :key="project.id"
+        class="project-capsule"
+        ref="capsuleRefs"
+        @click="openProject(project)"
+      >
         <div class="capsule-glass"></div>
         <div class="capsule-border"></div>
+        <div class="card-glare"></div>
 
         <div class="project-thumbnail" :style="thumbnailStyle(project)">
           <div class="thumb-icon">
@@ -85,15 +88,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { projects } from '../data/projects'
+import { gsap, bindCardTilt, isReducedMotion } from '../utils/gsap'
 
 const router = useRouter()
 
-// 预加载封面图，加载失败的标记为不可用，自动回退到渐变色
-const brokenCovers = ref(new Set())
+const projectsContainer = ref(null)
+const pageHeader = ref(null)
+const projectsGrid = ref(null)
 
+let gsapCtx = null
+const tiltCleanups = []
+
+// 预加载封面图
+const brokenCovers = ref(new Set())
 const preloadCovers = () => {
   projects.forEach(p => {
     if (!p.imageCover) return
@@ -122,6 +132,67 @@ const thumbnailStyle = (project) => {
   }
   return { background: project.imageColor || 'linear-gradient(135deg, #1a1a2e, #0f0f1a)' }
 }
+
+onMounted(() => {
+  if (isReducedMotion()) return
+
+  nextTick(() => {
+    gsapCtx = gsap.context(() => {
+      // 头部进场动效
+      if (pageHeader.value) {
+        gsap.fromTo(pageHeader.value,
+          { y: -30, opacity: 0, scale: 0.98 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'power3.out' }
+        )
+      }
+
+      // 卡片错落 3D 进场
+      const capsules = document.querySelectorAll('.project-capsule')
+      if (capsules.length > 0) {
+        gsap.fromTo(capsules,
+          { y: 60, opacity: 0, scale: 0.92, rotateX: 10 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            rotateX: 0,
+            stagger: 0.08,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: projectsGrid.value,
+              start: 'top 85%',
+              toggleActions: 'play none none none'
+            }
+          }
+        )
+
+        // 桌面端绑定 3D Tilt 视差动效
+        if (window.innerWidth > 768) {
+          capsules.forEach(card => {
+            const cleanup = bindCardTilt(card, {
+              maxTilt: 6,
+              perspective: 1200,
+              scale: 1.02,
+              speed: 0.35,
+              resetSpeed: 0.8,
+              glare: true
+            })
+            tiltCleanups.push(cleanup)
+          })
+        }
+      }
+    }, projectsContainer.value)
+  })
+})
+
+onBeforeUnmount(() => {
+  tiltCleanups.forEach(cleanup => cleanup && cleanup())
+  tiltCleanups.length = 0
+  if (gsapCtx) {
+    gsapCtx.revert()
+  }
+})
 </script>
 
 <style scoped>
@@ -137,7 +208,9 @@ const thumbnailStyle = (project) => {
   position: relative;
   overflow: hidden;
   z-index: 2;
+  transition: transform 0.4s ease;
 }
+
 .project-thumbnail::after {
   content: '';
   position: absolute;
@@ -145,10 +218,18 @@ const thumbnailStyle = (project) => {
   background: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.6));
   pointer-events: none;
 }
+
 .thumb-icon {
   color: rgba(255, 255, 255, 0.3);
   z-index: 1;
+  transition: transform 0.4s ease;
 }
+
+.project-capsule:hover .thumb-icon {
+  transform: scale(1.1);
+  color: var(--primary, #00f0ff);
+}
+
 .thumb-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.7rem;
@@ -163,6 +244,7 @@ const thumbnailStyle = (project) => {
   margin-top: 0.75rem;
   flex-wrap: wrap;
 }
+
 .action-link {
   display: inline-flex;
   align-items: center;
@@ -176,24 +258,32 @@ const thumbnailStyle = (project) => {
   border: 1px solid transparent;
   cursor: pointer;
 }
+
 .action-link.demo {
   background: rgba(0, 240, 255, 0.1);
   border-color: rgba(0, 240, 255, 0.3);
   color: #00f0ff;
 }
+
 .action-link.demo:hover {
-  background: rgba(0, 240, 255, 0.2);
-  box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+  background: rgba(0, 240, 255, 0.25);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+  transform: translateY(-2px);
 }
+
 .action-link.github {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 0.7);
 }
+
 .action-link.github:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
 }
+
 .action-link.disabled {
   background: rgba(255, 170, 0, 0.05);
   border-color: rgba(255, 170, 0, 0.2);
@@ -217,6 +307,7 @@ const thumbnailStyle = (project) => {
   border: 1px solid rgba(0, 240, 255, 0.1);
   border-radius: 4px;
   overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.05);
 }
 
 .page-header::before,
@@ -250,7 +341,7 @@ const thumbnailStyle = (project) => {
   font-size: 0.8rem;
   letter-spacing: 0.2em;
   color: #00f0ff;
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
 }
 
 .badge-icon {
@@ -351,28 +442,21 @@ const thumbnailStyle = (project) => {
   position: relative;
   background: rgba(10, 20, 30, 0.4);
   border-radius: 20px;
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  animation: slideUp 0.6s ease forwards;
-  animation-delay: var(--delay);
-  opacity: 0;
-  transform: translateY(30px);
   display: flex;
   flex-direction: column;
   break-inside: avoid;
   margin-bottom: 2rem;
   backface-visibility: hidden;
   cursor: pointer;
-}
-
-@keyframes slideUp {
-  to { opacity: 1; transform: translateY(0); }
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .capsule-glass {
   position: absolute;
   inset: 0;
   backdrop-filter: blur(10px);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
   z-index: 0;
   border-radius: 20px;
 }
@@ -384,18 +468,32 @@ const thumbnailStyle = (project) => {
   border-radius: 20px;
   z-index: 1;
   pointer-events: none;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.project-capsule:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  z-index: 10;
+/* 高光流动层 */
+.card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(0, 240, 255, 0.15),
+    transparent 60%
+  );
+}
+
+.project-capsule:hover .card-glare {
+  opacity: 1;
 }
 
 .project-capsule:hover .capsule-border {
-  border-color: rgba(0, 240, 255, 0.5);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  border-color: rgba(0, 240, 255, 0.6);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
 }
 
 .capsule-content {
@@ -417,12 +515,17 @@ const thumbnailStyle = (project) => {
   gap: 0.5rem;
 }
 
-.project-capsule:hover .project-name {
+.project-name {
   font-size: 1.4rem;
   font-weight: 700;
   margin: 0;
   color: #fff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.project-capsule:hover .project-name {
+  color: var(--primary, #00f0ff);
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
 }
 
 .project-body {
@@ -471,19 +574,20 @@ const thumbnailStyle = (project) => {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.project-capsule:hover
 .deco-corner {
   position: absolute;
   width: 10px;
   height: 10px;
   border: 2px solid #00f0ff;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, width 0.3s, height 0.3s;
   z-index: 3;
 }
 
 .project-capsule:hover .deco-corner {
   opacity: 1;
+  width: 14px;
+  height: 14px;
 }
 
 .deco-corner.tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
@@ -568,7 +672,7 @@ const thumbnailStyle = (project) => {
     border-radius: 14px;
   }
 
-  .capsule-glass, .capsule-border {
+  .capsule-glass, .capsule-border, .card-glare {
     border-radius: 14px;
   }
 

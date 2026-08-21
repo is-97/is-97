@@ -1,14 +1,27 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import ThreeScene from '../components/ThreeScene.vue'
 import CountUp from '../components/CountUp.vue'
 import TypeText from '../components/TypeText.vue'
 import { profile, skills } from '../data/profile'
+import { gsap, isReducedMotion } from '../utils/gsap'
 
 const activeSkill = ref(0)
 const isLargeScreen = ref(true)
 
+// DOM 引用
+const homeContainer = ref(null)
+const identityBadge = ref(null)
+const nameTitle = ref(null)
+const actionGroup = ref(null)
+const visualCircle = ref(null)
+const statsSection = ref(null)
+const skillsSection = ref(null)
+const skillDetailCard = ref(null)
+
+let gsapCtx = null
 let resizeTimeout = null
+
 const checkScreenSize = () => {
   isLargeScreen.value = window.innerWidth > 1024
 }
@@ -18,40 +31,226 @@ const handleResize = () => {
   resizeTimeout = setTimeout(checkScreenSize, 150)
 }
 
+// 技能面板切换动画
+const animateSkillPanel = () => {
+  if (isReducedMotion() || !skillDetailCard.value) return
+
+  nextTick(() => {
+    const card = skillDetailCard.value
+    const icon = card.querySelector('.header-icon')
+    const textInfo = card.querySelector('.header-info')
+    const skillItems = card.querySelectorAll('.skill-bar-item')
+    const progressFills = card.querySelectorAll('.progress-fill')
+
+    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+
+    // 卡片整体微缩放刷新
+    tl.fromTo(card,
+      { y: 10, opacity: 0.7 },
+      { y: 0, opacity: 1, duration: 0.35 }
+    )
+
+    // 图标旋转弹性进入
+    if (icon) {
+      tl.fromTo(icon,
+        { scale: 0.6, rotate: -20, opacity: 0 },
+        { scale: 1, rotate: 0, opacity: 1, duration: 0.45, ease: 'back.out(2)' },
+        '-=0.25'
+      )
+    }
+
+    if (textInfo) {
+      tl.fromTo(textInfo,
+        { x: -15, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.35 },
+        '-=0.35'
+      )
+    }
+
+    // 技能项错落滑入
+    if (skillItems.length > 0) {
+      tl.fromTo(skillItems,
+        { y: 15, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.06, duration: 0.4 },
+        '-=0.2'
+      )
+    }
+
+    // 进度条平滑填充
+    if (progressFills.length > 0) {
+      progressFills.forEach((fill, idx) => {
+        const targetWidth = skills[activeSkill.value]?.items[idx]?.level || 0
+        gsap.fromTo(fill,
+          { width: '0%' },
+          {
+            width: `${targetWidth}%`,
+            duration: 0.9,
+            delay: idx * 0.05,
+            ease: 'power3.out'
+          }
+        )
+      })
+    }
+  })
+}
+
+// 监听技能切换
+watch(activeSkill, () => {
+  animateSkillPanel()
+})
+
 onMounted(() => {
   checkScreenSize()
   window.addEventListener('resize', handleResize)
+
+  if (isReducedMotion()) return
+
+  // 创建 GSAP 上下文，便于组件卸载时统一销毁
+  gsapCtx = gsap.context(() => {
+    // 1. Hero 剧场式进场时间线
+    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+
+    if (identityBadge.value) {
+      heroTl.fromTo(identityBadge.value,
+        { y: -30, opacity: 0, scale: 0.9 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(1.7)' }
+      )
+    }
+
+    if (nameTitle.value) {
+      heroTl.fromTo(nameTitle.value,
+        { y: 40, opacity: 0, skewY: 3 },
+        { y: 0, opacity: 1, skewY: 0, duration: 0.9, ease: 'power4.out' },
+        '-=0.4'
+      )
+    }
+
+    if (actionGroup.value) {
+      const btns = actionGroup.value.querySelectorAll('.btn-primary, .btn-ghost')
+      heroTl.fromTo(btns,
+        { y: 20, opacity: 0, scale: 0.95 },
+        { y: 0, opacity: 1, scale: 1, stagger: 0.12, duration: 0.6, ease: 'back.out(1.5)' },
+        '-=0.3'
+      )
+    }
+
+    // 光圈呼吸与缓慢旋转动效
+    if (visualCircle.value) {
+      gsap.to(visualCircle.value, {
+        scale: 1.08,
+        opacity: 0.3,
+        duration: 4,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut'
+      })
+      gsap.to(visualCircle.value, {
+        rotation: 360,
+        duration: 40,
+        repeat: -1,
+        ease: 'none'
+      })
+    }
+
+    // 2. Stats Section 滚动触发
+    if (statsSection.value) {
+      const statItems = statsSection.value.querySelectorAll('.stat-item')
+      gsap.fromTo(statItems,
+        { y: 40, opacity: 0, scale: 0.95 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          stagger: 0.15,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: statsSection.value,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        }
+      )
+    }
+
+    // 3. Skills Section 滚动触发
+    if (skillsSection.value) {
+      const header = skillsSection.value.querySelector('.section-header')
+      const navTabs = skillsSection.value.querySelectorAll('.skill-tab')
+
+      if (header) {
+        gsap.fromTo(header,
+          { x: -30, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: skillsSection.value,
+              start: 'top 80%',
+              toggleActions: 'play none none none'
+            }
+          }
+        )
+      }
+
+      if (navTabs.length > 0) {
+        gsap.fromTo(navTabs,
+          { x: -20, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            stagger: 0.08,
+            duration: 0.6,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: skillsSection.value,
+              start: 'top 75%',
+              toggleActions: 'play none none none'
+            }
+          }
+        )
+      }
+
+      // 初次加载卡片
+      animateSkillPanel()
+    }
+  }, homeContainer.value)
 })
 
 onBeforeUnmount(() => {
   if (resizeTimeout) clearTimeout(resizeTimeout)
   window.removeEventListener('resize', handleResize)
+  if (gsapCtx) {
+    gsapCtx.revert()
+  }
 })
 </script>
 
 <template>
-  <div class="deep-home">
+  <div class="deep-home" ref="homeContainer">
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-layout">
         <div class="hero-text">
-          <div class="identity-badge">FRONTEND ARCHITECT</div>
-          <h1 class="name-title" data-text="SHI ZHENXING">
+          <div class="identity-badge" ref="identityBadge">FRONTEND ARCHITECT</div>
+          <h1 class="name-title" ref="nameTitle" data-text="SHI ZHENXING">
             SHI<br>ZHENXING
           </h1>
           <div class="bio-text">
             <TypeText
               :text="profile.bio"
-              :delay="800"
-              :speed="50"
+              :delay="600"
+              :speed="45"
             />
           </div>
 
-          <div class="action-group">
+          <div class="action-group" ref="actionGroup">
             <a :href="'mailto:' + profile.email" class="btn-primary">
               <span>CONTACT ME</span>
             </a>
-            <a :href="profile.github" target="_blank" class="btn-ghost">
+            <a :href="profile.github" target="_blank" rel="noopener noreferrer" class="btn-ghost">
               <span>GITHUB</span>
             </a>
           </div>
@@ -59,20 +258,20 @@ onBeforeUnmount(() => {
 
         <div class="hero-visual">
           <ThreeScene v-if="isLargeScreen" />
-          <div class="visual-circle"></div>
+          <div class="visual-circle" ref="visualCircle"></div>
         </div>
       </div>
     </section>
 
     <!-- Stats Grid -->
-    <section class="stats-section">
+    <section class="stats-section" ref="statsSection">
       <div v-for="(stat, index) in profile.stats" :key="index" class="stat-item">
         <div class="stat-value">
           <CountUp
             :to="stat.value"
             :pad="stat.pad"
             :suffix="stat.suffix"
-            :delay="index * 200 + 500"
+            :delay="index * 150 + 200"
           />
         </div>
         <div class="stat-label">{{ stat.label }}</div>
@@ -80,7 +279,7 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- Skills Section -->
-    <section class="skills-section">
+    <section class="skills-section" ref="skillsSection">
       <div class="section-header">
         <h2>TECHNICAL<span class="text-gradient">STACK</span></h2>
       </div>
@@ -101,7 +300,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Detail Panel -->
-        <div class="skill-detail-card">
+        <div class="skill-detail-card" ref="skillDetailCard">
           <div class="card-header">
             <div class="header-icon" :style="{ color: skills[activeSkill].color }">
               {{ skills[activeSkill].icon }}
@@ -117,7 +316,7 @@ onBeforeUnmount(() => {
               <div class="skill-meta">
                 <span>{{ item.name }}</span>
                 <span class="skill-percent">
-                  <CountUp :to="item.level" suffix="%" :duration="1500" />
+                  <CountUp :to="item.level" suffix="%" :duration="1000" />
                 </span>
               </div>
               <div class="progress-track">
@@ -164,6 +363,7 @@ onBeforeUnmount(() => {
   border-radius: 100px;
   margin-bottom: 2rem;
   background: rgba(0, 240, 255, 0.05);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
 }
 
 .name-title {
@@ -175,7 +375,6 @@ onBeforeUnmount(() => {
   color: #fff;
   position: relative;
   letter-spacing: -0.02em;
-  animation: titleFadeIn 1s ease-out forwards;
 }
 
 .name-title::before,
@@ -186,7 +385,7 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: #0b0d14;
+  background: transparent;
 }
 
 .name-title::before {
@@ -201,11 +400,6 @@ onBeforeUnmount(() => {
   text-shadow: -1px 0 #ff0055;
   clip: rect(44px, 450px, 56px, 0);
   animation: glitch-anim2 5s infinite linear alternate-reverse;
-}
-
-@keyframes titleFadeIn {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes glitch-anim {
@@ -280,7 +474,7 @@ onBeforeUnmount(() => {
   font-size: 0.9rem;
   text-decoration: none;
   border-radius: 4px;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   letter-spacing: 0.1em;
 }
 
@@ -292,8 +486,8 @@ onBeforeUnmount(() => {
 
 .btn-primary:hover {
   background: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
 }
 
 .btn-ghost {
@@ -302,8 +496,10 @@ onBeforeUnmount(() => {
 }
 
 .btn-ghost:hover {
-  border-color: var(--text-main);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--primary);
+  background: rgba(0, 240, 255, 0.08);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
 }
 
 .hero-visual {
@@ -316,11 +512,13 @@ onBeforeUnmount(() => {
 
 .visual-circle {
   position: absolute;
-  width: 500px;
-  height: 500px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  width: 480px;
+  height: 480px;
+  border: 1px dashed rgba(0, 240, 255, 0.2);
   border-radius: 50%;
   z-index: 1;
+  pointer-events: none;
+  box-shadow: inset 0 0 30px rgba(0, 240, 255, 0.05);
 }
 
 /* Stats Section */
@@ -336,6 +534,11 @@ onBeforeUnmount(() => {
 
 .stat-item {
   text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-4px);
 }
 
 .stat-value {
@@ -344,6 +547,7 @@ onBeforeUnmount(() => {
   font-weight: 700;
   color: var(--text-main);
   margin-bottom: 0.5rem;
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
 }
 
 .stat-label {
@@ -397,20 +601,24 @@ onBeforeUnmount(() => {
 }
 
 .skill-tab:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(0, 240, 255, 0.4);
   color: var(--text-main);
+  transform: translateX(4px);
 }
 
 .skill-tab.active {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--text-main);
+  background: rgba(0, 240, 255, 0.08);
+  border-color: var(--primary);
   color: var(--text-main);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+  transform: translateX(6px);
 }
 
 .tab-indicator {
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
 }
 
 /* Skill Detail Card */
@@ -420,6 +628,7 @@ onBeforeUnmount(() => {
   border-radius: 16px;
   padding: 3rem;
   backdrop-filter: blur(20px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 .card-header {
@@ -438,6 +647,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   border-radius: 12px;
+  border: 1px solid var(--border-light);
 }
 
 .header-info h3 {
@@ -469,20 +679,22 @@ onBeforeUnmount(() => {
 
 .skill-percent {
   font-family: var(--font-mono);
-  opacity: 0.7;
+  opacity: 0.8;
+  color: var(--primary);
 }
 
 .progress-track {
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
   overflow: hidden;
+  position: relative;
 }
 
 .progress-fill {
   height: 100%;
-  border-radius: 2px;
-  transition: width 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  border-radius: 3px;
+  box-shadow: 0 0 10px currentColor;
 }
 
 /* Responsive */

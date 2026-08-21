@@ -4,6 +4,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { gsap, isReducedMotion } from '../utils/gsap'
 
 const canvasRef = ref(null)
 let animationId = null
@@ -121,6 +122,13 @@ onMounted(() => {
   ctx = canvas.getContext('2d')
   resizeCanvas()
   animate()
+
+  if (!isReducedMotion()) {
+    gsap.fromTo(canvas,
+      { opacity: 0 },
+      { opacity: 0.6, duration: 1.5, ease: 'power2.out' }
+    )
+  }
 
   window.addEventListener('resize', handleResize)
   window.addEventListener('mousemove', handleMouseMove)

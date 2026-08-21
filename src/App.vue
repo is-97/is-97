@@ -7,13 +7,13 @@
   <ThemeSwitcher />
 
   <div class="app">
-    <nav class="cyber-nav" role="navigation" aria-label="主导航">
+    <nav class="cyber-nav" role="navigation" aria-label="主导航" ref="navEl">
       <div class="nav-brand">
         <div class="brand-logo">SZX</div>
         <span class="brand-sub">DEVELOPER</span>
       </div>
 
-      <div class="nav-links">
+      <div class="nav-links" ref="navLinksEl">
         <router-link to="/" class="nav-item" aria-label="首页">
           <div class="nav-content">
             <span class="nav-icon">
@@ -74,11 +74,21 @@
     </nav>
 
     <div class="content-area">
-      <router-view :key="route.path" />
+      <router-view v-slot="{ Component }">
+        <transition name="page-fade" mode="out-in">
+          <component :is="Component" :key="route.path" />
+        </transition>
+      </router-view>
       <CyberFooter v-if="!isChatPage" />
     </div>
 
-    <button class="scroll-to-top" :class="{ show: showScrollTop }" @click="scrollToTop" aria-label="返回顶部">
+    <button
+      class="scroll-to-top"
+      :class="{ show: showScrollTop }"
+      @click="scrollToTop"
+      aria-label="返回顶部"
+      ref="scrollTopBtn"
+    >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <polyline points="18 15 12 9 6 15"/>
       </svg>
@@ -89,7 +99,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppStore } from './stores/app'
 import CyberBackground from './components/CyberBackground.vue'
@@ -100,36 +110,88 @@ import ParticleBackground from './components/ParticleBackground.vue'
 import ScrollProgress from './components/ScrollProgress.vue'
 import ThemeSwitcher from './components/ThemeSwitcher.vue'
 import { Analytics } from '@vercel/analytics/vue'
+import { gsap, isReducedMotion } from './utils/gsap'
 
 const route = useRoute()
 const appStore = useAppStore()
 const isChatPage = computed(() => route.path === '/chat')
 const showScrollTop = computed(() => appStore.scrollY > 300)
 
-// 统一使用 Store 中的 isMobile 状态，避免重复维护
 const isMobile = computed(() => appStore.isMobile)
 
 const prefersReducedMotion = ref(false)
 const isLowEndDevice = ref(false)
 
+const navEl = ref(null)
+const navLinksEl = ref(null)
+const scrollTopBtn = ref(null)
+
 onMounted(() => {
-  prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  
-  // 检测低端设备，优化性能
+  prefersReducedMotion.value = isReducedMotion()
+
   const checkDeviceCapability = () => {
     const memory = navigator.deviceMemory
     const hardwareConcurrency = navigator.hardwareConcurrency
-    const isMobile = window.innerWidth <= 768
-    
-    // 低端设备判断：内存少、CPU核心少或移动设备
-    isLowEndDevice.value = 
-      (memory && memory < 4) || 
+    const mobile = window.innerWidth <= 768
+
+    isLowEndDevice.value =
+      (memory && memory < 4) ||
       (hardwareConcurrency && hardwareConcurrency < 4) ||
-      isMobile
+      mobile
   }
-  
+
   checkDeviceCapability()
   window.addEventListener('resize', checkDeviceCapability)
+
+  // 导航栏初次入场动画
+  if (!prefersReducedMotion.value && navEl.value && navLinksEl.value) {
+    const isDesk = window.innerWidth > 768
+    gsap.fromTo(navEl.value,
+      isDesk ? { x: -30, opacity: 0 } : { y: 30, opacity: 0 },
+      {
+        x: 0,
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power3.out'
+      }
+    )
+
+    const items = navLinksEl.value.querySelectorAll('.nav-item')
+    if (items.length > 0) {
+      gsap.fromTo(items,
+        { scale: 0.8, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          stagger: 0.08,
+          duration: 0.5,
+          delay: 0.2,
+          ease: 'back.out(1.7)'
+        }
+      )
+    }
+  }
+})
+
+// 返回顶部按钮 GSAP 弹跳动画
+watch(showScrollTop, (show) => {
+  if (!scrollTopBtn.value || prefersReducedMotion.value) return
+
+  if (show) {
+    gsap.fromTo(scrollTopBtn.value,
+      { scale: 0.4, y: 20, opacity: 0 },
+      { scale: 1, y: 0, opacity: 1, duration: 0.4, ease: 'back.out(2)' }
+    )
+  } else {
+    gsap.to(scrollTopBtn.value, {
+      scale: 0.4,
+      y: 20,
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.in'
+    })
+  }
 })
 
 const scrollToTop = () => {
@@ -290,6 +352,7 @@ body {
 
 .nav-item:hover {
   color: var(--text-main, #ffffff);
+  transform: scale(1.05);
 }
 
 .nav-item:hover .active-glow {
@@ -356,6 +419,22 @@ body {
   flex: 1;
 }
 
+/* 页面过渡动画 */
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
 /* Fullscreen pages like Chat */
 .chat-page .content-area,
 .content-area:has(.chat-interface),
@@ -416,7 +495,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   z-index: 50;
   backdrop-filter: blur(10px);
   opacity: 0;
@@ -425,16 +504,13 @@ body {
 }
 
 .scroll-to-top.show {
-  opacity: 1;
-  transform: translateY(0);
   pointer-events: auto;
 }
 
 .scroll-to-top:hover {
   border-color: var(--primary, #00f0ff);
   color: var(--primary, #00f0ff);
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
 }
 
 /* Responsive */
@@ -534,7 +610,6 @@ body {
     height: 40px;
   }
 
-  /* 移动端聊天页面：主题切换器对齐 */
   #app:has(.chat-interface) .theme-switcher,
   #app:has(.chat-view) .theme-switcher {
     top: 8px;

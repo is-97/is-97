@@ -232,6 +232,7 @@ import typescript from 'highlight.js/lib/languages/typescript'
 import 'highlight.js/styles/atom-one-dark.css'
 import { sendToAIWithHistory } from '../services/aiService'
 import { useChatStore } from '../stores/chat'
+import { gsap, isReducedMotion } from '../utils/gsap'
 
 hljs.registerLanguage('javascript', javascript)
 hljs.registerLanguage('js', javascript)
@@ -647,6 +648,23 @@ onMounted(() => {
   }
   inputRef.value?.focus()
   viewportRef.value?.addEventListener('click', handleCodeCopy)
+
+  if (!isReducedMotion()) {
+    nextTick(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+      const aiCore = document.querySelector('.ai-core-container')
+      const welcomeTitle = document.querySelector('.welcome-title')
+      const welcomeSub = document.querySelector('.welcome-subtitle')
+      const chips = document.querySelectorAll('.prompt-chip')
+      const inputDeck = document.querySelector('.input-deck')
+
+      if (aiCore) tl.fromTo(aiCore, { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: 'back.out(2)' })
+      if (welcomeTitle) tl.fromTo(welcomeTitle, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, '-=0.3')
+      if (welcomeSub) tl.fromTo(welcomeSub, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, '-=0.2')
+      if (chips.length > 0) tl.fromTo(chips, { y: 15, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.05, duration: 0.4, ease: 'back.out(1.5)' }, '-=0.2')
+      if (inputDeck) tl.fromTo(inputDeck, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, '-=0.4')
+    })
+  }
 })
 
 onUnmounted(() => {

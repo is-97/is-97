@@ -1,11 +1,11 @@
 <template>
-  <div class="project-detail" v-if="project">
+  <div class="project-detail" v-if="project" ref="detailContainer">
     <!-- 顶部 Banner -->
-    <div class="hero-banner" :style="heroStyle">
+    <div class="hero-banner" :style="heroStyle" ref="heroBanner">
       <div class="hero-overlay"></div>
       <div class="hero-scan-line"></div>
 
-      <button class="back-btn" @click="goBack">
+      <button class="back-btn" @click="goBack" ref="backBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
@@ -62,7 +62,11 @@
           <div class="section-line"></div>
         </div>
         <div class="achievements-grid">
-          <div v-for="(achievement, i) in project.achievements" :key="i" class="achievement-card" :style="{ '--card-delay': i * 0.1 + 's' }">
+          <div
+            v-for="(achievement, i) in project.achievements"
+            :key="i"
+            class="achievement-card"
+          >
             <div class="achievement-index">{{ String(i + 1).padStart(2, '0') }}</div>
             <div class="achievement-body">
               <span class="achievement-text">{{ achievement }}</span>
@@ -95,7 +99,7 @@
           <div class="section-line"></div>
         </div>
         <div class="links">
-          <a v-if="project.links?.demo" :href="project.links.demo" target="_blank" class="link-btn demo">
+          <a v-if="project.links?.demo" :href="project.links.demo" target="_blank" rel="noopener noreferrer" class="link-btn demo">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
               <polyline points="15 3 21 3 21 9"/>
@@ -103,7 +107,7 @@
             </svg>
             在线预览
           </a>
-          <a v-if="project.links?.github" :href="project.links.github" target="_blank" class="link-btn github">
+          <a v-if="project.links?.github" :href="project.links.github" target="_blank" rel="noopener noreferrer" class="link-btn github">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
             </svg>
@@ -135,13 +139,19 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { projects } from '../data/projects'
+import { gsap, isReducedMotion } from '../utils/gsap'
 
 const route = useRoute()
 const router = useRouter()
 
+const detailContainer = ref(null)
+const heroBanner = ref(null)
+const backBtn = ref(null)
+
+let gsapCtx = null
 const brokenCovers = ref(new Set())
 
 const project = computed(() => {
@@ -174,6 +184,85 @@ const heroStyle = computed(() => {
 const goBack = () => {
   router.push('/projects')
 }
+
+onMounted(() => {
+  if (isReducedMotion() || !project.value) return
+
+  nextTick(() => {
+    gsapCtx = gsap.context(() => {
+      // 1. 顶部 Banner 进场
+      if (heroBanner.value) {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+        tl.fromTo(heroBanner.value,
+          { y: -20, opacity: 0, scale: 0.98 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.7 }
+        )
+
+        const title = heroBanner.value.querySelector('.project-title')
+        const meta = heroBanner.value.querySelector('.hero-meta')
+        const info = heroBanner.value.querySelector('.hero-info')
+
+        if (meta) tl.fromTo(meta, { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.4 }, '-=0.4')
+        if (title) tl.fromTo(title, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.3')
+        if (info) tl.fromTo(info, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 }, '-=0.2')
+      }
+
+      // 2. 详情各个 Section 滚动错落展开
+      const sections = document.querySelectorAll('.detail-section')
+      sections.forEach((sec) => {
+        const header = sec.querySelector('.section-header')
+        const cards = sec.querySelectorAll('.achievement-card')
+        const tags = sec.querySelectorAll('.tech-tag')
+        const linkBtns = sec.querySelectorAll('.link-btn')
+
+        const secTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sec,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        })
+
+        if (header) {
+          secTl.fromTo(header,
+            { x: -20, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
+          )
+        }
+
+        if (cards.length > 0) {
+          secTl.fromTo(cards,
+            { x: -30, opacity: 0 },
+            { x: 0, opacity: 1, stagger: 0.08, duration: 0.5, ease: 'power3.out' },
+            '-=0.2'
+          )
+        }
+
+        if (tags.length > 0) {
+          secTl.fromTo(tags,
+            { scale: 0.7, opacity: 0 },
+            { scale: 1, opacity: 1, stagger: 0.04, duration: 0.4, ease: 'back.out(1.5)' },
+            '-=0.2'
+          )
+        }
+
+        if (linkBtns.length > 0) {
+          secTl.fromTo(linkBtns,
+            { y: 15, opacity: 0 },
+            { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: 'power2.out' },
+            '-=0.2'
+          )
+        }
+      })
+    }, detailContainer.value)
+  })
+})
+
+onBeforeUnmount(() => {
+  if (gsapCtx) {
+    gsapCtx.revert()
+  }
+})
 </script>
 
 <style scoped>
@@ -195,18 +284,13 @@ const goBack = () => {
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid var(--border-light);
-  animation: heroFadeIn 0.6s ease;
-}
-
-@keyframes heroFadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 30%, rgba(5, 5, 16, 0.8) 100%);
+  background: linear-gradient(180deg, transparent 30%, rgba(5, 5, 16, 0.85) 100%);
   pointer-events: none;
 }
 
@@ -236,7 +320,7 @@ const goBack = () => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-light);
   color: var(--text-muted);
@@ -250,8 +334,9 @@ const goBack = () => {
 .back-btn:hover {
   border-color: var(--primary);
   color: var(--primary);
-  background: rgba(0, 0, 0, 0.5);
-  transform: translateX(-3px);
+  background: rgba(0, 0, 0, 0.6);
+  transform: translateX(-4px);
+  box-shadow: 0 0 15px var(--accent-glow);
 }
 
 .back-btn svg {
@@ -273,7 +358,7 @@ const goBack = () => {
   font-size: 0.75rem;
   color: var(--primary);
   letter-spacing: 0.15em;
-  opacity: 0.7;
+  opacity: 0.85;
 }
 
 .project-title {
@@ -282,7 +367,7 @@ const goBack = () => {
   font-weight: 700;
   color: var(--text-main);
   margin: 0 0 1rem 0;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
   line-height: 1.2;
 }
 
@@ -299,12 +384,12 @@ const goBack = () => {
   gap: 6px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .info-sep {
   color: var(--primary);
-  opacity: 0.4;
+  opacity: 0.5;
 }
 
 /* Hero Corners */
@@ -329,18 +414,7 @@ const goBack = () => {
 }
 
 .detail-section {
-  animation: sectionSlide 0.5s ease;
-  animation-fill-mode: both;
-}
-
-.detail-section:nth-child(1) { animation-delay: 0.1s; }
-.detail-section:nth-child(2) { animation-delay: 0.2s; }
-.detail-section:nth-child(3) { animation-delay: 0.3s; }
-.detail-section:nth-child(4) { animation-delay: 0.4s; }
-
-@keyframes sectionSlide {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  position: relative;
 }
 
 /* Section Header */
@@ -410,20 +484,12 @@ const goBack = () => {
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   overflow: hidden;
-  animation: cardSlide 0.5s ease;
-  animation-fill-mode: both;
-  animation-delay: var(--card-delay);
-}
-
-@keyframes cardSlide {
-  from { opacity: 0; transform: translateX(-15px); }
-  to { opacity: 1; transform: translateX(0); }
 }
 
 .achievement-card:hover {
   border-color: var(--border-hover);
   background: var(--bg-card-hover);
-  transform: translateX(6px);
+  transform: translateX(8px);
 }
 
 .achievement-index {
@@ -431,7 +497,7 @@ const goBack = () => {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--primary);
-  opacity: 0.3;
+  opacity: 0.4;
   min-width: 40px;
   line-height: 1;
   padding-top: 2px;
@@ -439,7 +505,7 @@ const goBack = () => {
 }
 
 .achievement-card:hover .achievement-index {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .achievement-body {
@@ -466,7 +532,7 @@ const goBack = () => {
 
 .achievement-card:hover .achievement-glow {
   opacity: 1;
-  box-shadow: 0 0 10px var(--primary);
+  box-shadow: 0 0 12px var(--primary);
 }
 
 /* ── Tech Stack ── */
@@ -500,7 +566,7 @@ const goBack = () => {
 
 .tech-tag:hover {
   background: rgba(0, 240, 255, 0.15);
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.03);
   box-shadow: 0 4px 12px var(--accent-glow);
 }
 
@@ -548,6 +614,7 @@ const goBack = () => {
   border-color: var(--primary);
   color: var(--primary);
   transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2);
 }
 
 /* ── Private Notice ── */

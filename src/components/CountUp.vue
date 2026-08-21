@@ -3,7 +3,8 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { gsap, isReducedMotion } from '../utils/gsap'
 
 const props = defineProps({
   to: {
@@ -29,44 +30,38 @@ const props = defineProps({
 })
 
 const displayedValue = ref('')
-const current = ref(0)
+const countObj = { value: 0 }
+let tween = null
+
+const format = (num) => {
+  let s = Math.floor(num).toString()
+  if (props.pad > 0) s = s.padStart(props.pad, '0')
+  return s + props.suffix
+}
 
 const animate = () => {
-  // 初始值处理
-  let startVal = 0
+  if (tween) tween.kill()
 
-  // 格式化初始显示
-  const format = (num) => {
-    let s = Math.floor(num).toString()
-    if (props.pad > 0) s = s.padStart(props.pad, '0')
-    return s + props.suffix
+  if (isReducedMotion()) {
+    displayedValue.value = format(props.to)
+    return
   }
 
-  displayedValue.value = format(startVal)
+  countObj.value = 0
+  displayedValue.value = format(0)
 
-  setTimeout(() => {
-    const startTimestamp = performance.now()
-    const startValue = 0
-    const endValue = props.to
-
-    const step = (timestamp) => {
-      const progress = Math.min((timestamp - startTimestamp) / props.duration, 1)
-
-      // Easing function: easeOutExpo
-      // const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
-      // Easing function: easeOutQuart
-      const easeProgress = 1 - Math.pow(1 - progress, 4)
-
-      current.value = startValue + (endValue - startValue) * easeProgress
-      displayedValue.value = format(current.value)
-
-      if (progress < 1) {
-        requestAnimationFrame(step)
-      }
+  tween = gsap.to(countObj, {
+    value: props.to,
+    duration: props.duration / 1000,
+    delay: props.delay / 1000,
+    ease: 'power3.out',
+    onUpdate: () => {
+      displayedValue.value = format(countObj.value)
+    },
+    onComplete: () => {
+      displayedValue.value = format(props.to)
     }
-
-    requestAnimationFrame(step)
-  }, props.delay)
+  })
 }
 
 watch(() => props.to, () => {
@@ -75,5 +70,9 @@ watch(() => props.to, () => {
 
 onMounted(() => {
   animate()
+})
+
+onBeforeUnmount(() => {
+  if (tween) tween.kill()
 })
 </script>

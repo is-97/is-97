@@ -7,20 +7,20 @@ import { onMounted, onBeforeUnmount, ref } from 'vue'
 import * as THREE from 'three'
 import { FontLoader } from 'three/addons/loaders/FontLoader.js'
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
+import { gsap, isReducedMotion } from '../utils/gsap'
 
 const container = ref(null)
 let scene, camera, renderer, frameId
-let particles, particlesMesh
-let wireframe, wireframeMesh
+let particlesMesh
+let wireframeMesh
 let textMesh
 let isVisible = true
 let observer = null
+let cameraTween = null
 
 onMounted(() => {
-  // 检测是否开启减少动画
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (prefersReduced) {
-    return // 完全跳过 Three.js 初始化
+  if (isReducedMotion()) {
+    return
   }
 
   init()
@@ -42,6 +42,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (observer) observer.disconnect()
+  if (cameraTween) cameraTween.kill()
   cancelAnimationFrame(frameId)
   frameId = null
   window.removeEventListener('resize', onWindowResize)
@@ -51,14 +52,22 @@ onBeforeUnmount(() => {
 })
 
 const init = () => {
+  if (!container.value) return
+
   const width = container.value.clientWidth
   const height = container.value.clientHeight
 
   scene = new THREE.Scene()
 
-  // 透视相机
+  // 透视相机：初始化在更远处，用 GSAP 推进镜头
   camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
-  camera.position.z = 4
+  camera.position.z = 7
+
+  cameraTween = gsap.to(camera.position, {
+    z: 4,
+    duration: 1.8,
+    ease: 'power3.out'
+  })
 
   renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -89,7 +98,6 @@ const init = () => {
   const posArray = new Float32Array(particlesCount * 3)
 
   for(let i = 0; i < particlesCount * 3; i++) {
-    // 在球体周围随机分布
     posArray[i] = (Math.random() - 0.5) * 8
   }
 
@@ -116,7 +124,7 @@ const init = () => {
     const textGeo = new TextGeometry('SZX', {
       font: font,
       size: 0.8,
-      depth: 0.2, // height parameter is now depth in newer versions, but let's check. actually it's 'depth' usually in newer docs, but let's try 'height' if 'depth' fails or check docs. Three.js docs say 'depth'. Wait, previous versions used 'height'. 0.182 is very new. It is 'depth'.
+      depth: 0.2,
       curveSegments: 12,
       bevelEnabled: true,
       bevelThickness: 0.03,
@@ -139,13 +147,6 @@ const init = () => {
       opacity: 0.3
     })
 
-    const textMaterial2 = new THREE.MeshBasicMaterial({
-      color: 0x00f0ff,
-      transparent: true,
-      opacity: 0.8
-    })
-
-    // 创建两种材质的混合网格，或只用线框
     textMesh = new THREE.Mesh(textGeo, textMaterial)
     scene.add(textMesh)
   })

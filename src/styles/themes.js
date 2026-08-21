@@ -1,3 +1,5 @@
+import { gsap } from '../utils/gsap'
+
 export const themes = {
   cyberpunk: {
     id: 'cyberpunk',
@@ -113,6 +115,13 @@ export function applyTheme(themeId) {
       root.style.setProperty(key, theme[key])
     }
   })
+
+  if (typeof window !== 'undefined' && document.body) {
+    gsap.fromTo(document.body,
+      { filter: 'brightness(1.08)' },
+      { filter: 'brightness(1)', duration: 0.4, ease: 'power2.out' }
+    )
+  }
 }
 
 export const themeList = Object.values(themes)

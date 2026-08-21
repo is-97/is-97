@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { ScrollTrigger } from '../utils/gsap'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,13 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   document.title = to.meta?.title ? `SZX | ${to.meta.title}` : 'SZX | Cyber Dimension'
+})
+
+router.afterEach(() => {
+  // 路由切换后自动重新计算全站 ScrollTrigger 触发点位置，避免高度变化造成的触发误差
+  setTimeout(() => {
+    ScrollTrigger.refresh()
+  }, 150)
 })
 
 export default router
