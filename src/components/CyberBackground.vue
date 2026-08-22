@@ -1,8 +1,6 @@
 <template>
-  <div class="holographic-bg">
-    <div class="aurora-mesh"></div>
-    <div class="stars"></div>
-    <div class="grid-overlay"></div>
+  <div class="cyber-deep-space">
+    <div class="starfield"></div>
   </div>
 </template>
 
@@ -12,91 +10,50 @@ import { gsap, isReducedMotion } from '../utils/gsap'
 
 onMounted(() => {
   if (!isReducedMotion()) {
-    gsap.fromTo('.aurora-mesh',
-      { opacity: 0, scale: 0.9 },
-      { opacity: 0.8, scale: 1, duration: 2.2, ease: 'power2.out' }
+    gsap.fromTo('.cyber-deep-space',
+      { opacity: 0 },
+      { opacity: 1, duration: 0.8, ease: 'power2.out' }
     )
   }
 })
 </script>
 
 <style scoped>
-.holographic-bg {
+.cyber-deep-space {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
+  inset: 0;
+  width: 100vw;
   height: 100vh;
   z-index: -1;
-  background: #050510; /* 深空底色 */
+  pointer-events: none;
   overflow: hidden;
-}
 
-/* 极光流光 */
-.aurora-mesh {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
   background:
-    radial-gradient(at 20% 20%, rgba(0, 240, 255, 0.15) 0px, transparent 50%),
-    radial-gradient(at 80% 20%, rgba(112, 0, 255, 0.15) 0px, transparent 50%),
-    radial-gradient(at 80% 80%, rgba(0, 255, 136, 0.1) 0px, transparent 50%),
-    radial-gradient(at 20% 80%, rgba(0, 100, 255, 0.15) 0px, transparent 50%);
-  filter: blur(80px);
-  animation: meshFlow 30s infinite linear;
-  opacity: 0.8;
+    radial-gradient(circle at 20% 25%, rgba(0, 240, 255, 0.07) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(120, 40, 255, 0.06) 0%, transparent 55%),
+    radial-gradient(circle at 50% 85%, rgba(0, 140, 255, 0.05) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, #091024 0%, #060b1a 50%, #040712 100%);
 }
 
-@keyframes meshFlow {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.1); }
-  100% { transform: rotate(360deg) scale(1); }
-}
-
-/* 星尘粒子 */
-.stars {
+/* 均匀细腻的星尘点缀 */
+.starfield {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   background-image:
-    radial-gradient(1px 1px at 20px 30px, rgba(255, 255, 255, 0.8), transparent),
-    radial-gradient(1px 1px at 40px 70px, rgba(255, 255, 255, 0.8), transparent),
-    radial-gradient(1px 1px at 50px 160px, rgba(255, 255, 255, 0.8), transparent),
-    radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.8), transparent),
-    radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.8), transparent),
-    radial-gradient(1.5px 1.5px at 160px 120px, rgba(0, 240, 255, 0.8), transparent);
+    radial-gradient(1px 1px at 30px 40px, rgba(255, 255, 255, 0.65), transparent),
+    radial-gradient(1px 1px at 90px 130px, rgba(0, 240, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 170px 75px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 230px 200px, rgba(0, 240, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 300px 120px, rgba(255, 255, 255, 0.45), transparent);
   background-size: 300px 300px;
-  opacity: 0.3;
-  animation: starFloat 100s linear infinite;
+  opacity: 0.35;
+  animation: starfieldDrift 140s linear infinite;
 }
 
-@keyframes starFloat {
+@keyframes starfieldDrift {
   0% { transform: translateY(0); }
   100% { transform: translateY(-300px); }
-}
-
-/* 空间透视网格 */
-.grid-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 150px 150px;
-  transform: perspective(1000px) rotateX(10deg) scale(1.5);
-  transform-origin: top;
-  opacity: 0.2;
-  pointer-events: none;
-  mask-image: linear-gradient(to bottom, black 0%, transparent 80%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 80%);
 }
 </style>

@@ -230,7 +230,7 @@ body {
 
 body {
   font-family: var(--font-body, 'Space Grotesk', sans-serif);
-  background: var(--bg-deep, #050510);
+  background: var(--bg-deep, #040712);
   color: var(--text-main, #ffffff);
   min-height: 100vh;
   min-width: 0;
@@ -242,7 +242,7 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--scrollbar-track, #050510);
+  background: var(--scrollbar-track, #040712);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb, rgba(255, 255, 255, 0.2));

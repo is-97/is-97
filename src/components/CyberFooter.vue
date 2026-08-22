@@ -158,10 +158,10 @@ onBeforeUnmount(() => {
 <style scoped>
 .cyber-footer {
   width: 100%;
-  border-top: 1px solid rgba(0, 240, 255, 0.15);
-  background: linear-gradient(to top, rgba(0, 10, 20, 0.9), rgba(0, 10, 20, 0.3));
-  backdrop-filter: blur(15px);
-  padding: 2.5rem 0;
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.25) 30%, rgba(0, 240, 255, 0.25) 70%, transparent) 1;
+  background: linear-gradient(to top, rgba(4, 6, 15, 0.6) 0%, transparent 100%);
+  padding: 3rem 0 2.5rem;
   margin-top: 5rem;
   position: relative;
   overflow: hidden;

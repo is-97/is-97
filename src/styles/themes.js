@@ -7,7 +7,7 @@ export const themes = {
     icon: '⚡',
     desc: '霓虹电光 · 未来都市',
     swatch: ['#00f0ff', '#7000ff'],
-    '--bg-deep': '#050510',
+    '--bg-deep': '#040712',
     '--bg-card': 'rgba(20, 25, 40, 0.4)',
     '--bg-card-hover': 'rgba(30, 35, 60, 0.5)',
     '--primary': '#00f0ff',
@@ -118,8 +118,8 @@ export function applyTheme(themeId) {
 
   if (typeof window !== 'undefined' && document.body) {
     gsap.fromTo(document.body,
-      { filter: 'brightness(1.08)' },
-      { filter: 'brightness(1)', duration: 0.4, ease: 'power2.out' }
+      { opacity: 0.96 },
+      { opacity: 1, duration: 0.3, ease: 'power2.out', clearProps: 'all' }
     )
   }
 }
