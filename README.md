@@ -58,20 +58,6 @@
   <img src="https://skillicons.dev/icons?i=vite,nodejs,express,pinia,docker,cloudflare,git,vscode&perline=8&theme=dark" alt="Backend & Tools" />
 </div>
 
-<br />
-
----
-
-### 🚀 精选项目 / Featured Projects
-
-| 项目名称 | 描述 | 技术栈 | 链接 |
-| :--- | :--- | :--- | :--- |
-| 🌐 **szx-portfolio** | 个人 3D 交互作品集，融合沉浸式 Three.js 视觉与丝滑动效 | Vue 3 · Three.js · GSAP · Vite | [预览体验](https://is-97.vercel.app/) |
-| 📬 **cloudflare_temp_email** | 基于 Cloudflare 生态的高性能免费临时邮箱系统，支持邮件路由与全自动同步 | Workers · D1 · Pages · GitHub Actions | [查看仓库](https://github.com/is-97/cloudflare_temp_email) |
-| ⚡ **edgetunnel** | 基于 Cloudflare 边缘计算平台的高性能网络代理与通信隧道服务 | Cloudflare Pages · VLESS · Edge Runtime | [查看仓库](https://github.com/is-97/edgetunnel) |
-| 💌 **notify-server** | 每日早安与情话智能推送机器人，集成大模型内容生成与天气提醒 | Node.js · TypeScript · 企业微信 · 大模型 API | [查看仓库](https://github.com/is-97/notify-server) |
-
-<br />
 
 ---
 
