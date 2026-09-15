@@ -59,25 +59,6 @@
 </div>
 
 
----
-
-### 📊 GitHub 统计 / Activity Stats
-
-<div align="center">
-  <!-- GitHub Stats 卡片 (匹配 GitHub 深色主题 #0d1117) -->
-  <img src="https://github-readme-stats.vercel.app/api?username=is-97&show_icons=true&locale=cn&theme=tokyonight&bg_color=0d1117&border_color=30363d&title_color=39d353&text_color=8b949e&icon_color=58a6ff&hide_border=false" alt="is-97's GitHub stats" height="165" />
-  &nbsp;
-  <!-- 最常使用语言卡片 -->
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=is-97&layout=compact&locale=cn&theme=tokyonight&bg_color=0d1117&border_color=30363d&title_color=39d353&text_color=8b949e&hide_border=false" alt="Top Langs" height="165" />
-
-  <br />
-  <br />
-
-  <!-- 连击 Streak 统计卡片 -->
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=is-97&theme=tokyonight&background=0d1117&border=30363d&stroke=30363d&ring=39d353&fire=ff7b72&currStreakLabel=39d353" alt="GitHub Streak" width="800" />
-</div>
-
-<br />
 
 ---
 
