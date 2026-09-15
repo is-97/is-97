@@ -1,0 +1,76 @@
+<svg width="820" height="400" viewBox="0 0 820 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .t { font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', 'Fira Code', 'JetBrains Mono', Menlo, Consolas, monospace; font-size: 14px; }
+      .prompt { fill: #39d353; font-weight: 600; }
+      .path { fill: #58a6ff; }
+      .cmd { fill: #f0f6fc; }
+      .out { fill: #8b949e; }
+      .cyan { fill: #56d4dd; }
+      .yellow { fill: #d29922; }
+      .purple { fill: #bc8cff; }
+      .cursor { fill: #39d353; }
+    </style>
+  </defs>
+
+  <!-- Window Container -->
+  <rect x="1" y="1" width="818" height="398" rx="10" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Title Bar -->
+  <path d="M1 11C1 5.47715 5.47715 1 11 1H809C814.523 1 819 5.47715 819 11V38H1V11Z" fill="#161b22"/>
+  <line x1="1" y1="38" x2="819" y2="38" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Window Buttons -->
+  <circle cx="20" cy="19" r="6" fill="#ff5f56" stroke="#e0443e" stroke-width="0.5"/>
+  <circle cx="40" cy="19" r="6" fill="#ffbd2e" stroke="#dea123" stroke-width="0.5"/>
+  <circle cx="60" cy="19" r="6" fill="#27c93f" stroke="#1aab29" stroke-width="0.5"/>
+
+  <!-- Title -->
+  <text x="410" y="24" text-anchor="middle" fill="#8b949e" class="t" font-size="12.5">is-97@macbook-pro:~ (zsh)</text>
+
+  <!-- Command 1: whoami -->
+  <g transform="translate(25, 70)" class="t">
+    <text class="prompt">is-97</text>
+    <text x="48" class="out">in</text>
+    <text x="68" class="path">~</text>
+    <text x="84" class="prompt">❯</text>
+    <text x="100" class="cmd">whoami</text>
+    <text y="24" class="cyan">➜ SZX (史振兴) · 前端开发工程师 / 全栈探索者</text>
+  </g>
+
+  <!-- Command 2: cat profile.json -->
+  <g transform="translate(25, 134)" class="t">
+    <text class="prompt">is-97</text>
+    <text x="48" class="out">in</text>
+    <text x="68" class="path">~</text>
+    <text x="84" class="prompt">❯</text>
+    <text x="100" class="cmd">cat profile.json</text>
+    <text y="24" class="out">{</text>
+    <text y="46" x="20" class="purple">"focus"</text><text y="46" x="80" class="out">: [</text><text y="46" x="95" class="yellow">"Vue 3"</text><text y="46" x="145" class="out">, </text><text y="46" x="160" class="yellow">"React"</text><text y="46" x="210" class="out">, </text><text y="46" x="225" class="yellow">"TypeScript"</text><text y="46" x="315" class="out">, </text><text y="46" x="330" class="yellow">"Three.js"</text><text y="46" x="400" class="out">],</text>
+    <text y="68" x="20" class="purple">"portfolio"</text><text y="68" x="105" class="out">: </text><text y="68" x="120" class="yellow">"https://is-97.vercel.app"</text><text y="68" x="320" class="out">,</text>
+    <text y="90" x="20" class="purple">"motto"</text><text y="90" x="78" class="out">: </text><text y="90" x="94" class="yellow">"用热爱编码的心，创造非凡的用户体验 ❤️"</text>
+    <text y="112" class="out">}</text>
+  </g>
+
+  <!-- Command 3: status check -->
+  <g transform="translate(25, 290)" class="t">
+    <text class="prompt">is-97</text>
+    <text x="48" class="out">in</text>
+    <text x="68" class="path">~</text>
+    <text x="84" class="prompt">❯</text>
+    <text x="100" class="cmd">curl -s https://is-97.vercel.app/api/status</text>
+    <text y="24" class="prompt">⚡ [200 OK]</text>
+    <text y="24" x="96" class="out">Ready to craft extraordinary web applications ✨</text>
+  </g>
+
+  <!-- Active Cursor -->
+  <g transform="translate(25, 360)" class="t">
+    <text class="prompt">is-97</text>
+    <text x="48" class="out">in</text>
+    <text x="68" class="path">~</text>
+    <text x="84" class="prompt">❯</text>
+    <rect x="100" y="-12" width="9" height="17" class="cursor">
+      <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+</svg>
