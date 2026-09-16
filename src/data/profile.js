@@ -4,7 +4,7 @@ export const profile = {
   bio: '8 年前端开发经验，现任前端负责人。\n专注医疗 AI 领域全栈产品矩阵架构，擅长多技术栈协同与工程化体系搭建。',
   email: 's_shizhenxing@163.com',
   github: 'https://github.com/is-97',
-  website: 'https://is-97.vercel.app',
+  website: 'https://10to3.cc.cd',
   avatar: null,
   stats: [
     { value: 8, label: 'YEARS EXP', pad: 2, suffix: '' },

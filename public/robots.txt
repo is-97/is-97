@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://is-97.vercel.app/sitemap.xml
+Sitemap: https://10to3.cc.cd/sitemap.xml

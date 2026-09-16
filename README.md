@@ -6,15 +6,15 @@
   <br />
 
   <!-- 动态打字机效果 -->
-  <a href="https://is-97.vercel.app">
+  <a href="https://10to3.cc.cd">
     <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=17&pause=1000&color=39D353&center=true&vCenter=true&width=620&lines=Hi+there%2C+I'm+SZX+(%E5%8F%B2%E6%8C%AF%E5%85%B4)+%F0%9F%91%A8%E2%80%8D%F0%9F%92%BB;Frontend+%26+Fullstack+Explorer;Vue+3+%2F+React+%2F+TypeScript+%2F+Three.js;Building+delightful+%26+high-performance+web+apps;Always+passionate+about+cutting-edge+tech+%E2%9C%A8" alt="Typing SVG" />
   </a>
 
   <br />
 
   <!-- 极客暗黑风徽章导航栏 (byJoey 同款设计配色) -->
-  <a href="https://is-97.vercel.app">
-    <img src="https://img.shields.io/badge/portfolio-is--97.vercel.app-0d1117?style=flat-square&logo=vercel&logoColor=39d353&labelColor=161b22&color=30363d" alt="Portfolio" />
+  <a href="https://10to3.cc.cd">
+    <img src="https://img.shields.io/badge/portfolio-10to3.cc.cd-0d1117?style=flat-square&logo=cloudflare&logoColor=f38020&labelColor=161b22&color=30363d" alt="Portfolio" />
   </a>
   &nbsp;
   <a href="mailto:s_shizhenxing@163.com">

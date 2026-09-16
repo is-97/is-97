@@ -47,7 +47,7 @@
     <text x="100" class="cmd">cat profile.json</text>
     <text y="24" class="out">{</text>
     <text y="46" x="20" class="purple">"focus"</text><text y="46" x="80" class="out">: [</text><text y="46" x="95" class="yellow">"Vue 3"</text><text y="46" x="145" class="out">, </text><text y="46" x="160" class="yellow">"React"</text><text y="46" x="210" class="out">, </text><text y="46" x="225" class="yellow">"TypeScript"</text><text y="46" x="315" class="out">, </text><text y="46" x="330" class="yellow">"Three.js"</text><text y="46" x="400" class="out">],</text>
-    <text y="68" x="20" class="purple">"portfolio"</text><text y="68" x="105" class="out">: </text><text y="68" x="120" class="yellow">"https://is-97.vercel.app"</text><text y="68" x="320" class="out">,</text>
+    <text y="68" x="20"><tspan class="purple">"portfolio"</tspan><tspan class="out">: </tspan><tspan class="yellow">"https://10to3.cc.cd"</tspan><tspan class="out">,</tspan></text>
     <text y="90" x="20" class="purple">"motto"</text><text y="90" x="78" class="out">: </text><text y="90" x="94" class="yellow">"用热爱编码的心，创造非凡的用户体验 ❤️"</text>
     <text y="112" class="out">}</text>
   </g>
@@ -58,7 +58,7 @@
     <text x="48" class="out">in</text>
     <text x="68" class="path">~</text>
     <text x="84" class="prompt">❯</text>
-    <text x="100" class="cmd">curl -s https://is-97.vercel.app/api/status</text>
+    <text x="100" class="cmd">curl -s https://10to3.cc.cd/api/status</text>
     <text y="24" class="prompt">⚡ [200 OK]</text>
     <text y="24" x="96" class="out">Ready to craft extraordinary web applications ✨</text>
   </g>
