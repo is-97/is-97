@@ -1,878 +1,635 @@
-<script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
-import ThreeScene from '../components/ThreeScene.vue'
-import CountUp from '../components/CountUp.vue'
-import TypeText from '../components/TypeText.vue'
-import { profile, skills } from '../data/profile'
-import { gsap, isReducedMotion } from '../utils/gsap'
-
-const activeSkill = ref(0)
-const isLargeScreen = ref(true)
-
-// DOM 引用
-const homeContainer = ref(null)
-const identityBadge = ref(null)
-const nameTitle = ref(null)
-const actionGroup = ref(null)
-const visualCircle = ref(null)
-const statsSection = ref(null)
-const skillsSection = ref(null)
-const skillDetailCard = ref(null)
-
-let gsapCtx = null
-let resizeTimeout = null
-
-const checkScreenSize = () => {
-  isLargeScreen.value = window.innerWidth > 1024
-}
-
-const handleResize = () => {
-  if (resizeTimeout) clearTimeout(resizeTimeout)
-  resizeTimeout = setTimeout(checkScreenSize, 150)
-}
-
-// 技能面板切换动画
-const animateSkillPanel = () => {
-  if (isReducedMotion() || !skillDetailCard.value) return
-
-  nextTick(() => {
-    const card = skillDetailCard.value
-    const icon = card.querySelector('.header-icon')
-    const textInfo = card.querySelector('.header-info')
-    const skillItems = card.querySelectorAll('.skill-bar-item')
-    const progressFills = card.querySelectorAll('.progress-fill')
-
-    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
-
-    // 卡片整体微缩放刷新
-    tl.fromTo(card,
-      { y: 10, opacity: 0.7 },
-      { y: 0, opacity: 1, duration: 0.35 }
-    )
-
-    // 图标旋转弹性进入
-    if (icon) {
-      tl.fromTo(icon,
-        { scale: 0.6, rotate: -20, opacity: 0 },
-        { scale: 1, rotate: 0, opacity: 1, duration: 0.45, ease: 'back.out(2)' },
-        '-=0.25'
-      )
-    }
-
-    if (textInfo) {
-      tl.fromTo(textInfo,
-        { x: -15, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.35 },
-        '-=0.35'
-      )
-    }
-
-    // 技能项错落滑入
-    if (skillItems.length > 0) {
-      tl.fromTo(skillItems,
-        { y: 15, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.06, duration: 0.4 },
-        '-=0.2'
-      )
-    }
-
-    // 进度条平滑填充
-    if (progressFills.length > 0) {
-      progressFills.forEach((fill, idx) => {
-        const targetWidth = skills[activeSkill.value]?.items[idx]?.level || 0
-        gsap.fromTo(fill,
-          { width: '0%' },
-          {
-            width: `${targetWidth}%`,
-            duration: 0.9,
-            delay: idx * 0.05,
-            ease: 'power3.out'
-          }
-        )
-      })
-    }
-  })
-}
-
-// 监听技能切换
-watch(activeSkill, () => {
-  animateSkillPanel()
-})
-
-onMounted(() => {
-  checkScreenSize()
-  window.addEventListener('resize', handleResize)
-
-  if (isReducedMotion()) return
-
-  // 创建 GSAP 上下文，便于组件卸载时统一销毁
-  gsapCtx = gsap.context(() => {
-    // 1. Hero 剧场式进场时间线
-    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-
-    if (identityBadge.value) {
-      heroTl.fromTo(identityBadge.value,
-        { y: -30, opacity: 0, scale: 0.9 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(1.7)' }
-      )
-    }
-
-    if (nameTitle.value) {
-      heroTl.fromTo(nameTitle.value,
-        { y: 40, opacity: 0, skewY: 3 },
-        { y: 0, opacity: 1, skewY: 0, duration: 0.9, ease: 'power4.out' },
-        '-=0.4'
-      )
-    }
-
-    if (actionGroup.value) {
-      const btns = actionGroup.value.querySelectorAll('.btn-primary, .btn-ghost')
-      heroTl.fromTo(btns,
-        { y: 20, opacity: 0, scale: 0.95 },
-        { y: 0, opacity: 1, scale: 1, stagger: 0.12, duration: 0.6, ease: 'back.out(1.5)' },
-        '-=0.3'
-      )
-    }
-
-    // 光圈呼吸与缓慢旋转动效
-    if (visualCircle.value) {
-      gsap.to(visualCircle.value, {
-        scale: 1.08,
-        opacity: 0.3,
-        duration: 4,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut'
-      })
-      gsap.to(visualCircle.value, {
-        rotation: 360,
-        duration: 40,
-        repeat: -1,
-        ease: 'none'
-      })
-    }
-
-    // 2. Stats Section 滚动触发
-    if (statsSection.value) {
-      const statItems = statsSection.value.querySelectorAll('.stat-item')
-      gsap.fromTo(statItems,
-        { y: 40, opacity: 0, scale: 0.95 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          stagger: 0.15,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: statsSection.value,
-            start: 'top 85%',
-            toggleActions: 'play none none none'
-          }
-        }
-      )
-    }
-
-    // 3. Skills Section 滚动触发
-    if (skillsSection.value) {
-      const header = skillsSection.value.querySelector('.section-header')
-      const navTabs = skillsSection.value.querySelectorAll('.skill-tab')
-
-      if (header) {
-        gsap.fromTo(header,
-          { x: -30, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: skillsSection.value,
-              start: 'top 80%',
-              toggleActions: 'play none none none'
-            }
-          }
-        )
-      }
-
-      if (navTabs.length > 0) {
-        gsap.fromTo(navTabs,
-          { x: -20, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            stagger: 0.08,
-            duration: 0.6,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: skillsSection.value,
-              start: 'top 75%',
-              toggleActions: 'play none none none'
-            }
-          }
-        )
-      }
-
-      // 初次加载卡片
-      animateSkillPanel()
-    }
-  }, homeContainer.value)
-})
-
-onBeforeUnmount(() => {
-  if (resizeTimeout) clearTimeout(resizeTimeout)
-  window.removeEventListener('resize', handleResize)
-  if (gsapCtx) {
-    gsapCtx.revert()
-  }
-})
-</script>
-
 <template>
-  <div class="deep-home" ref="homeContainer">
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="hero-layout">
-        <div class="hero-text">
-          <div class="identity-badge" ref="identityBadge">FRONTEND ARCHITECT</div>
-          <h1 class="name-title" ref="nameTitle" data-text="SHI ZHENXING">
-            SHI<br>ZHENXING
-          </h1>
-          <div class="bio-text">
-            <TypeText
-              :text="profile.bio"
-              :delay="600"
-              :speed="45"
-            />
-          </div>
+  <div class="home-page page-shell">
+    <section class="hero">
+      <div class="hero-topline">
+        <span>Portfolio / 2026</span>
+        <span>Shanghai, CN</span>
+      </div>
 
-          <div class="action-group" ref="actionGroup">
-            <a :href="'mailto:' + profile.email" class="btn-primary">
-              <span>CONTACT ME</span>
-            </a>
-            <a :href="profile.github" target="_blank" rel="noopener noreferrer" class="btn-ghost">
-              <span>GITHUB</span>
-            </a>
+      <p class="eyebrow hero-eyebrow">Frontend Lead · 8 Years</p>
+      <h1 class="display-title hero-title">
+        复杂系统，<br>
+        <em>清晰交付。</em>
+      </h1>
+
+      <div class="hero-grid">
+        <p class="hero-lead">{{ profile.bio }}</p>
+
+        <div class="hero-facts">
+          <div v-for="(stat, index) in profile.stats" :key="stat.label" class="hero-fact">
+            <strong>{{ stat.value }}{{ stat.suffix }}</strong>
+            <span>{{ statLabels[index] }}</span>
           </div>
         </div>
+      </div>
 
-        <div class="hero-visual">
-          <ThreeScene v-if="isLargeScreen" />
-          <div class="visual-circle" ref="visualCircle"></div>
-        </div>
+      <div class="hero-actions">
+        <router-link to="/projects" class="action primary">查看项目案例</router-link>
+        <a :href="`mailto:${profile.email}`" class="action secondary">联系我</a>
       </div>
     </section>
 
-    <!-- Stats Grid -->
-    <section class="stats-section" ref="statsSection">
-      <div v-for="(stat, index) in profile.stats" :key="index" class="stat-item">
-        <div class="stat-value">
-          <CountUp
-            :to="stat.value"
-            :pad="stat.pad"
-            :suffix="stat.suffix"
-            :delay="index * 150 + 200"
-          />
+    <section class="selected-work">
+      <header class="section-heading">
+        <div>
+          <p class="eyebrow">Selected Work / 01</p>
+          <h2 class="display-title">代表性项目</h2>
         </div>
-        <div class="stat-label">{{ stat.label }}</div>
-      </div>
-    </section>
+        <p class="section-intro">
+          从医疗 AI 产品矩阵到实时数据平台，关注架构复杂度、交付质量与真实业务结果。
+        </p>
+      </header>
 
-    <!-- Skills Section -->
-    <section class="skills-section" ref="skillsSection">
-      <div class="section-header">
-        <h2>TECHNICAL<span class="text-gradient">STACK</span></h2>
-      </div>
+      <div class="work-list">
+        <article v-for="(project, index) in selectedProjects" :key="project.id" class="work-row">
+          <router-link
+            class="work-hit"
+            :to="{ name: 'project-detail', params: { id: project.id } }"
+            :aria-label="`查看项目：${project.name}`"
+          ></router-link>
 
-      <div class="skills-layout">
-        <!-- Categories -->
-        <div class="skills-nav">
-          <button
-            v-for="(skill, index) in skills"
-            :key="index"
-            class="skill-tab"
-            :class="{ active: activeSkill === index }"
-            @click="activeSkill = index"
-          >
-            <span class="tab-indicator" :style="{ background: skill.color }"></span>
-            {{ skill.category }}
-          </button>
-        </div>
+          <span class="work-index">{{ String(index + 1).padStart(2, '0') }}</span>
 
-        <!-- Detail Panel -->
-        <div class="skill-detail-card" ref="skillDetailCard">
-          <div class="card-header">
-            <div class="header-icon" :style="{ color: skills[activeSkill].color }">
-              {{ skills[activeSkill].icon }}
+          <div class="work-copy">
+            <div class="work-meta">
+              <span>{{ project.period }}</span>
+              <span>{{ project.visual?.caption }}</span>
             </div>
-            <div class="header-info">
-              <h3>{{ skills[activeSkill].category }}</h3>
-              <p>{{ skills[activeSkill].description }}</p>
+            <h3>{{ project.name }}</h3>
+            <p>{{ project.description }}</p>
+            <div class="work-tags">
+              <span v-for="tech in project.techStack.slice(0, 4)" :key="tech">{{ tech }}</span>
             </div>
           </div>
 
-          <div class="skill-list">
-            <div v-for="(item, i) in skills[activeSkill].items" :key="i" class="skill-bar-item">
-              <div class="skill-meta">
+          <div class="work-visual">
+            <ProjectVisual :project="project" variant="card" :sequence="index + 1" />
+          </div>
+
+          <span class="work-arrow" aria-hidden="true">↗</span>
+        </article>
+      </div>
+
+      <router-link to="/projects" class="text-link">
+        查看全部 {{ projects.length }} 个项目
+        <span aria-hidden="true">→</span>
+      </router-link>
+    </section>
+
+    <section class="capabilities">
+      <header class="section-heading">
+        <div>
+          <p class="eyebrow">Capabilities / 02</p>
+          <h2 class="display-title">能力范围</h2>
+        </div>
+        <p class="section-intro">
+          覆盖前端架构、工程化与数据可视化，能够从技术选型一直负责到生产交付。
+        </p>
+      </header>
+
+      <div class="capability-grid">
+        <article v-for="(skill, index) in skills" :key="skill.category" class="capability-card">
+          <div class="capability-head">
+            <span :style="{ color: skill.color }">{{ String(index + 1).padStart(2, '0') }}</span>
+            <h3>{{ skill.category }}</h3>
+          </div>
+          <p>{{ skill.description }}</p>
+          <ul>
+            <li v-for="item in skill.items" :key="item.name">
+              <div class="skill-line">
                 <span>{{ item.name }}</span>
-                <span class="skill-percent">
-                  <CountUp :to="item.level" suffix="%" :duration="1000" />
-                </span>
+                <small>{{ item.level }}</small>
               </div>
-              <div class="progress-track">
-                <div
-                  class="progress-fill"
-                  :style="{
-                    width: item.level + '%',
-                    background: skills[activeSkill].color
-                  }"
-                ></div>
+              <div class="skill-track">
+                <span :style="{ width: `${item.level}%`, background: skill.color }"></span>
               </div>
-            </div>
-          </div>
-        </div>
+            </li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="contact-block">
+      <p class="eyebrow">Contact / 03</p>
+      <h2 class="display-title">有复杂产品要做？<br><em>聊聊。</em></h2>
+      <a :href="`mailto:${profile.email}`" class="contact-email">{{ profile.email }}</a>
+      <div class="contact-links">
+        <a :href="profile.github" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a :href="profile.website" target="_blank" rel="noopener noreferrer">Website</a>
       </div>
     </section>
   </div>
 </template>
 
+<script setup>
+import ProjectVisual from '../components/ProjectVisual.vue'
+import { projects } from '../data/projects'
+import { profile, skills } from '../data/profile'
+
+const featuredIds = ['proj-0', 'proj-medical-ai-rd', 'proj-2']
+const selectedProjects = featuredIds
+  .map(id => projects.find(project => project.id === id))
+  .filter(Boolean)
+
+const statLabels = ['年经验', '项目交付', '技术栈']
+</script>
+
 <style scoped>
-.deep-home {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-top: 4rem;
+.home-page {
+  padding-top: 5.5rem;
 }
 
-/* Hero Section */
-.hero-layout {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  align-items: center;
-  gap: 4rem;
-  margin-bottom: 8rem;
+.hero {
+  padding-bottom: 5rem;
+  border-bottom: 1px solid var(--color-line);
 }
 
-.identity-badge {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  color: var(--primary);
-  letter-spacing: 0.2em;
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  padding: 0.5rem 1rem;
-  border-radius: 100px;
-  margin-bottom: 2rem;
-  background: rgba(0, 240, 255, 0.05);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
-}
-
-.name-title {
-  font-family: var(--font-display);
-  font-size: 5rem;
-  line-height: 0.9;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  color: #fff;
-  position: relative;
-  letter-spacing: -0.02em;
-}
-
-.name-title::before,
-.name-title::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-}
-
-.name-title::before {
-  left: 2px;
-  text-shadow: -1px 0 #00f0ff;
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim 5s infinite linear alternate-reverse;
-}
-
-.name-title::after {
-  left: -2px;
-  text-shadow: -1px 0 #ff0055;
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim2 5s infinite linear alternate-reverse;
-}
-
-@keyframes glitch-anim {
-  0% { clip: rect(30px, 9999px, 10px, 0); }
-  5% { clip: rect(68px, 9999px, 81px, 0); }
-  10% { clip: rect(7px, 9999px, 83px, 0); }
-  15% { clip: rect(24px, 9999px, 8px, 0); }
-  20% { clip: rect(93px, 9999px, 5px, 0); }
-  25% { clip: rect(23px, 9999px, 58px, 0); }
-  30% { clip: rect(59px, 9999px, 79px, 0); }
-  35% { clip: rect(40px, 9999px, 14px, 0); }
-  40% { clip: rect(36px, 9999px, 58px, 0); }
-  45% { clip: rect(55px, 9999px, 96px, 0); }
-  50% { clip: rect(11px, 9999px, 49px, 0); }
-  55% { clip: rect(66px, 9999px, 26px, 0); }
-  60% { clip: rect(10px, 9999px, 7px, 0); }
-  65% { clip: rect(20px, 9999px, 91px, 0); }
-  70% { clip: rect(78px, 9999px, 20px, 0); }
-  75% { clip: rect(22px, 9999px, 34px, 0); }
-  80% { clip: rect(43px, 9999px, 43px, 0); }
-  85% { clip: rect(65px, 9999px, 99px, 0); }
-  90% { clip: rect(16px, 9999px, 36px, 0); }
-  95% { clip: rect(20px, 9999px, 38px, 0); }
-  100% { clip: rect(64px, 9999px, 66px, 0); }
-}
-
-@keyframes glitch-anim2 {
-  0% { clip: rect(28px, 9999px, 95px, 0); }
-  5% { clip: rect(62px, 9999px, 93px, 0); }
-  10% { clip: rect(48px, 9999px, 40px, 0); }
-  15% { clip: rect(100px, 9999px, 19px, 0); }
-  20% { clip: rect(95px, 9999px, 25px, 0); }
-  25% { clip: rect(67px, 9999px, 85px, 0); }
-  30% { clip: rect(87px, 9999px, 9px, 0); }
-  35% { clip: rect(32px, 9999px, 61px, 0); }
-  40% { clip: rect(8px, 9999px, 20px, 0); }
-  45% { clip: rect(65px, 9999px, 22px, 0); }
-  50% { clip: rect(63px, 9999px, 3px, 0); }
-  55% { clip: rect(15px, 9999px, 78px, 0); }
-  60% { clip: rect(30px, 9999px, 99px, 0); }
-  65% { clip: rect(54px, 9999px, 57px, 0); }
-  70% { clip: rect(39px, 9999px, 66px, 0); }
-  75% { clip: rect(70px, 9999px, 35px, 0); }
-  80% { clip: rect(25px, 9999px, 97px, 0); }
-  85% { clip: rect(17px, 9999px, 72px, 0); }
-  90% { clip: rect(96px, 9999px, 84px, 0); }
-  95% { clip: rect(49px, 9999px, 83px, 0); }
-  100% { clip: rect(16px, 9999px, 7px, 0); }
-}
-
-.bio-text {
-  font-size: 1.1rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-  margin-bottom: 3rem;
-  max-width: 500px;
-  min-height: 3.2em;
-}
-
-.action-group {
+.hero-topline {
   display: flex;
-  gap: 1.5rem;
+  justify-content: space-between;
+  margin-bottom: 5.5rem;
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.btn-primary, .btn-ghost {
+.hero-eyebrow {
+  margin-bottom: 1.3rem;
+}
+
+.hero-title {
+  max-width: 930px;
+  font-size: clamp(4.2rem, 10vw, 8.6rem);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: 4rem;
+  align-items: end;
+  margin-top: 3.2rem;
+}
+
+.hero-lead {
+  max-width: 670px;
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.85;
+  white-space: pre-line;
+}
+
+.hero-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--color-line);
+}
+
+.hero-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hero-fact strong {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.hero-fact span {
+  color: var(--color-ink-faint);
+  font-size: 0.68rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 2.4rem;
+}
+
+.action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 2rem;
-  height: 50px;
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  text-decoration: none;
-  border-radius: 4px;
-  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  letter-spacing: 0.1em;
-}
-
-.btn-primary {
-  background: var(--text-main);
-  color: #000;
-  font-weight: 600;
-}
-
-.btn-primary:hover {
-  background: var(--primary);
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
-}
-
-.btn-ghost {
-  border: 1px solid var(--border-light);
-  color: var(--text-main);
-}
-
-.btn-ghost:hover {
-  border-color: var(--primary);
-  background: rgba(0, 240, 255, 0.08);
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-}
-
-.hero-visual {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 400px;
-}
-
-.visual-circle {
-  position: absolute;
-  width: 480px;
-  height: 480px;
-  border: 1px dashed rgba(0, 240, 255, 0.2);
-  border-radius: 50%;
-  z-index: 1;
-  pointer-events: none;
-  box-shadow: inset 0 0 30px rgba(0, 240, 255, 0.05);
-}
-
-/* Stats Section */
-.stats-section {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  padding: 2.5rem 0;
-  margin-bottom: 6rem;
-}
-
-.stat-item {
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.stat-item:hover {
-  transform: translateY(-4px);
-}
-
-.stat-value {
-  font-family: var(--font-display);
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 0.5rem;
-  text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-}
-
-.stat-label {
+  min-height: 44px;
+  padding: 0 1.15rem;
+  border: 1px solid var(--color-ink);
+  border-radius: 2px;
   font-size: 0.8rem;
-  letter-spacing: 0.2em;
-  color: var(--text-muted);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-/* Skills Section */
-.section-header {
-  margin-bottom: 3rem;
+.action.primary {
+  background: var(--color-ink);
+  color: var(--color-paper);
 }
 
-.section-header h2 {
-  font-family: var(--font-display);
-  font-size: 2.5rem;
-  color: var(--text-main);
+.action.primary:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
-.text-gradient {
-  color: var(--primary);
-  margin-left: 1rem;
+.action.secondary {
+  border-color: var(--color-line-strong);
+  color: var(--color-ink-soft);
 }
 
-.skills-layout {
+.action.secondary:hover {
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+
+.selected-work,
+.capabilities {
+  padding-top: 6rem;
+}
+
+.section-heading {
   display: grid;
-  grid-template-columns: 250px 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.65fr);
   gap: 3rem;
+  align-items: end;
+  margin-bottom: 2rem;
 }
 
-.skills-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.section-heading h2 {
+  margin-top: 0.5rem;
+  font-size: clamp(2.8rem, 5.5vw, 5rem);
 }
 
-.skill-tab {
-  display: flex;
+.section-intro {
+  max-width: 460px;
+  margin: 0 0 0.35rem auto;
+  color: var(--color-ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+
+.work-list {
+  border-top: 1px solid var(--color-ink);
+}
+
+.work-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 220px 26px;
+  gap: 1.5rem;
   align-items: center;
-  gap: 1rem;
-  padding: 1.2rem;
-  background: transparent;
-  border: 1px solid var(--border-light);
-  color: var(--text-muted);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  text-align: left;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--color-line);
+  transition: background 0.2s ease;
 }
 
-.skill-tab:hover {
-  border-color: rgba(0, 240, 255, 0.4);
-  color: var(--text-main);
+.work-row:hover {
+  background: rgba(251, 250, 246, 0.5);
+}
+
+.work-hit {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+}
+
+.work-hit:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -3px;
+}
+
+.work-index {
+  color: var(--color-warm);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+}
+
+.work-copy {
+  min-width: 0;
+}
+
+.work-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.55rem;
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.work-copy h3 {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 2.8vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.work-copy p {
+  max-width: 64ch;
+  margin: 0 0 0.8rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--color-ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.work-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.work-tags span {
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+}
+
+.work-tags span:not(:last-child)::after {
+  content: '·';
+  margin-left: 0.4rem;
+}
+
+.work-visual {
+  position: relative;
+  height: 132px;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+}
+
+.work-visual :deep(.visual-chrome) {
+  top: 9px;
+  right: 9px;
+  left: 9px;
+  font-size: 0.43rem;
+}
+
+.work-visual :deep(.chrome-code) {
+  display: none;
+}
+
+.work-visual :deep(.visual-canvas) {
+  inset: 19% 2% 19%;
+  height: 62%;
+}
+
+.work-visual :deep(.visual-footer) {
+  display: none;
+}
+
+.work-arrow {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--color-line);
+  border-radius: 50%;
+  color: var(--color-ink-soft);
+  font-size: 0.8rem;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.work-row:hover .work-arrow {
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.4rem;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-decoration: none;
+}
+
+.text-link span {
+  transition: transform 0.2s ease;
+}
+
+.text-link:hover span {
   transform: translateX(4px);
 }
 
-.skill-tab.active {
-  background: rgba(0, 240, 255, 0.08);
-  border-color: var(--primary);
-  color: var(--text-main);
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
-  transform: translateX(6px);
-}
-
-.tab-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  box-shadow: 0 0 8px currentColor;
-}
-
-/* Skill Detail Card */
-.skill-detail-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 3rem;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.header-icon {
-  font-size: 2.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  width: 70px;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
-}
-
-.header-info h3 {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.header-info p {
-  color: var(--text-muted);
-}
-
-.skill-list {
+.capability-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--color-ink);
+  border-bottom: 1px solid var(--color-line);
 }
 
-.skill-bar-item {
-  margin-bottom: 1rem;
+.capability-card {
+  padding: 1.7rem 1.6rem 2rem;
 }
 
-.skill-meta {
+.capability-card:not(:last-child) {
+  border-right: 1px solid var(--color-line);
+}
+
+.capability-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  margin-bottom: 0.65rem;
+}
+
+.capability-head span {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+}
+
+.capability-head h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 400;
+}
+
+.capability-card > p {
+  margin: 0 0 1.6rem;
+  color: var(--color-ink-faint);
+  font-size: 0.74rem;
+}
+
+.capability-card ul {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skill-line {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  gap: 1rem;
+  margin-bottom: 0.42rem;
+  color: var(--color-ink-soft);
+  font-size: 0.78rem;
 }
 
-.skill-percent {
+.skill-line small {
+  color: var(--color-ink-faint);
   font-family: var(--font-mono);
-  opacity: 0.8;
-  color: var(--primary);
+  font-size: 0.58rem;
 }
 
-.progress-track {
-  height: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 3px;
+.skill-track {
+  height: 2px;
   overflow: hidden;
-  position: relative;
+  background: var(--color-line);
 }
 
-.progress-fill {
+.skill-track span {
+  display: block;
   height: 100%;
-  border-radius: 3px;
-  box-shadow: 0 0 10px currentColor;
 }
 
-/* Responsive */
+.contact-block {
+  margin-top: 7rem;
+  padding: 4rem 0 1rem;
+  border-top: 1px solid var(--color-ink);
+}
+
+.contact-block h2 {
+  max-width: 900px;
+  margin: 1rem 0 2rem;
+  font-size: clamp(3.4rem, 8vw, 7.4rem);
+}
+
+.contact-email {
+  display: inline-block;
+  padding-bottom: 0.15rem;
+  border-bottom: 1px solid var(--color-line-strong);
+  color: var(--color-ink);
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  text-decoration: none;
+}
+
+.contact-email:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.contact-links {
+  display: flex;
+  gap: 1.4rem;
+  margin-top: 1.5rem;
+}
+
+.contact-links a {
+  color: var(--color-ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+.contact-links a:hover {
+  color: var(--color-accent);
+}
+
 @media (max-width: 1024px) {
-  .hero-layout {
+  .hero-grid,
+  .section-heading {
     grid-template-columns: 1fr;
-    gap: 3rem;
-    text-align: center;
+    gap: 2rem;
   }
 
-  .hero-text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .section-intro {
+    margin-left: 0;
   }
 
-  .bio-text {
-    margin: 0 auto 2rem;
+  .work-row {
+    grid-template-columns: 36px minmax(0, 1fr) 180px 24px;
+    gap: 1rem;
   }
 
-  .hero-visual {
-    display: none;
-  }
-
-  .skills-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .skills-nav {
-    flex-direction: row;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 4px;
-  }
-
-  .skills-nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .skill-tab {
-    white-space: nowrap;
-    flex-shrink: 0;
+  .capability-card {
+    padding: 1.5rem 1.2rem 1.8rem;
   }
 }
 
 @media (max-width: 768px) {
-  .deep-home {
-    padding-top: 2rem;
+  .home-page {
+    padding-top: 3rem;
   }
 
-  .hero-section {
-    margin-bottom: 3rem;
+  .hero {
+    padding-bottom: 3.5rem;
   }
 
-  .hero-layout {
-    gap: 2rem;
-    margin-bottom: 3rem;
+  .hero-topline {
+    margin-bottom: 3.5rem;
   }
 
-  .identity-badge {
-    font-size: 0.7rem;
-    padding: 0.4rem 0.8rem;
-    margin-bottom: 1.5rem;
+  .hero-title {
+    font-size: clamp(3.6rem, 16vw, 5.6rem);
   }
 
-  .name-title {
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
+  .hero-grid {
+    margin-top: 2.2rem;
   }
 
-  .bio-text {
-    font-size: 0.95rem;
-    margin-bottom: 2rem;
-    max-width: 100%;
-    padding: 0 0.5rem;
+  .hero-facts {
+    gap: 0.6rem;
   }
 
-  .action-group {
-    gap: 1rem;
-    width: 100%;
+  .hero-fact strong {
+    font-size: 1.8rem;
+  }
+
+  .hero-actions {
     flex-direction: column;
   }
 
-  .btn-primary, .btn-ghost {
-    width: 100%;
-    height: 46px;
-    font-size: 0.85rem;
+  .selected-work,
+  .capabilities {
+    padding-top: 4rem;
   }
 
-  /* 统计区域：双列网格 */
-  .stats-section {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.8rem;
-    padding: 1.5rem 0;
-    margin-bottom: 3rem;
+  .work-row {
+    grid-template-columns: 28px minmax(0, 1fr) 24px;
+    padding: 1.25rem 0;
   }
 
-  .stat-item {
-    background: var(--bg-card);
-    padding: 1.2rem 0.5rem;
-    border-radius: 12px;
-    border: 1px solid var(--border-light);
+  .work-visual {
+    display: none;
   }
 
-  .stat-value {
-    font-size: 2rem;
+  .work-copy p {
+    -webkit-line-clamp: 3;
   }
 
-  .stat-label {
-    font-size: 0.65rem;
-  }
-
-  /* 技能区域 */
-  .section-header {
-    margin-bottom: 1.5rem;
-  }
-
-  .section-header h2 {
-    font-size: 1.5rem;
-  }
-
-  .text-gradient {
-    margin-left: 0.5rem;
-  }
-
-  .skills-layout {
-    gap: 1rem;
-  }
-
-  .skill-tab {
-    padding: 0.7rem 1rem;
-    font-size: 0.85rem;
-    gap: 0.5rem;
-  }
-
-  .skill-detail-card {
-    padding: 1.2rem;
-    border-radius: 12px;
-  }
-
-  .card-header {
-    gap: 0.8rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .header-icon {
-    width: 48px;
-    height: 48px;
-    font-size: 1.6rem;
-    border-radius: 10px;
-  }
-
-  .header-info h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .header-info p {
-    font-size: 0.8rem;
-    line-height: 1.4;
-  }
-
-  .skill-list {
+  .capability-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
   }
 
-  .skill-meta {
-    font-size: 0.82rem;
-  }
-}
-
-@media (max-width: 380px) {
-  .name-title {
-    font-size: 2rem;
+  .capability-card:not(:last-child) {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-line);
   }
 
-  .stats-section {
-    grid-template-columns: 1fr;
+  .contact-block {
+    margin-top: 4.5rem;
+    padding-top: 3rem;
+  }
+
+  .contact-block h2 {
+    font-size: clamp(2.2rem, 10vw, 4rem);
   }
 }
 </style>

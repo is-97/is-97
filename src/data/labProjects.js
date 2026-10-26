@@ -31,8 +31,8 @@ export const labToys = [
     icon: '🐍',
     category: 'Retro Games',
     badge: 'PLAYABLE',
-    repo: 'classic-retro/snake',
-    repoUrl: 'https://github.com',
+    repo: 'SZX / 自研实现',
+    repoUrl: null,
     desc: '经典怀旧贪吃蛇融入赛博霓虹流光与粒子吞噬爆发效果。支持速度调节、连击加分与实时粒子爆破特效。',
     tags: ['Arcade', 'Neon Glow', 'Particle FX', 'Canvas']
   },

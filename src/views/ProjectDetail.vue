@@ -1,11 +1,11 @@
 <template>
-  <div class="project-detail" v-if="project" ref="detailContainer">
+  <div class="project-detail" v-if="project">
     <!-- 顶部 Banner -->
-    <div class="hero-banner" :style="heroStyle" ref="heroBanner">
+    <div class="hero-banner">
+      <ProjectVisual :project="project" variant="hero" />
       <div class="hero-overlay"></div>
-      <div class="hero-scan-line"></div>
 
-      <button class="back-btn" @click="goBack" ref="backBtn">
+      <button type="button" class="back-btn" @click="goBack">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
@@ -14,7 +14,7 @@
 
       <div class="hero-content">
         <div class="hero-meta">
-          <span class="meta-id">PROJECT // {{ project.id.toUpperCase() }}</span>
+          <span class="meta-id">CASE STUDY / {{ project.id.toUpperCase() }}</span>
         </div>
         <h1 class="project-title">{{ project.name }}</h1>
         <div class="hero-info">
@@ -30,35 +30,93 @@
           <span class="info-sep">//</span>
           <span class="info-item tech-count">{{ project.techStack.length }} 项技术栈</span>
           <span class="info-sep">//</span>
-          <span class="info-item ach-count">{{ project.achievements.length }} 项核心成果</span>
+          <span class="info-item ach-count">{{ project.achievements.length }} 项核心交付</span>
         </div>
-      </div>
-
-      <div class="hero-corners">
-        <span class="corner tl"></span>
-        <span class="corner tr"></span>
-        <span class="corner bl"></span>
-        <span class="corner br"></span>
+        <div v-if="project.highlights?.length" class="hero-highlights">
+          <span v-for="highlight in project.highlights" :key="highlight" class="hero-highlight">
+            {{ highlight }}
+          </span>
+        </div>
       </div>
     </div>
 
     <!-- 主体内容 -->
     <div class="detail-body">
+      <div class="case-summary">
+        <div class="case-summary-item">
+          <span class="summary-label">ROLE</span>
+          <strong>{{ narrative.role }}</strong>
+        </div>
+        <div class="case-summary-item">
+          <span class="summary-label">SCOPE</span>
+          <strong>{{ narrative.scope }}</strong>
+        </div>
+        <div class="case-summary-item">
+          <span class="summary-label">OUTCOME</span>
+          <strong>{{ narrative.outcome }}</strong>
+        </div>
+      </div>
+
       <!-- 项目描述 -->
       <div class="detail-section">
         <div class="section-header">
           <span class="section-num">01</span>
-          <h2 class="section-title">项目概述</h2>
+          <h2 class="section-title">背景与挑战</h2>
           <div class="section-line"></div>
         </div>
         <p class="project-description">{{ project.description }}</p>
+        <div class="challenge-panel">
+          <span class="challenge-label">核心挑战 / WHY IT MATTERS</span>
+          <p>{{ narrative.challenge }}</p>
+        </div>
+      </div>
+
+      <!-- 关键决策 -->
+      <div class="detail-section">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-title">关键决策</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="decisions-grid">
+          <article
+            v-for="(decision, i) in narrative.decisions"
+            :key="decision.title"
+            class="decision-card"
+          >
+            <div class="decision-topline">
+              <span class="decision-index">{{ String(i + 1).padStart(2, '0') }}</span>
+              <span class="decision-outcome">{{ decision.outcome }}</span>
+            </div>
+            <h3>{{ decision.title }}</h3>
+            <p>{{ decision.detail }}</p>
+          </article>
+        </div>
+      </div>
+
+      <!-- 结果指标 -->
+      <div class="detail-section">
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-title">交付成果</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="results-grid">
+          <div v-for="result in narrative.results" :key="result.label" class="result-metric">
+            <div class="result-value" :class="{ 'is-text': result.value.length > 3 }">
+              {{ result.value }}<span v-if="result.unit">{{ result.unit }}</span>
+            </div>
+            <div class="result-label">{{ result.label }}</div>
+            <p v-if="result.detail">{{ result.detail }}</p>
+          </div>
+        </div>
       </div>
 
       <!-- 主要成就 -->
       <div class="detail-section">
         <div class="section-header">
-          <span class="section-num">02</span>
-          <h2 class="section-title">核心成果</h2>
+          <span class="section-num">04</span>
+          <h2 class="section-title">核心交付明细</h2>
           <div class="section-line"></div>
         </div>
         <div class="achievements-grid">
@@ -79,7 +137,7 @@
       <!-- 技术栈 -->
       <div class="detail-section">
         <div class="section-header">
-          <span class="section-num">03</span>
+          <span class="section-num">05</span>
           <h2 class="section-title">技术栈</h2>
           <div class="section-line"></div>
         </div>
@@ -94,7 +152,7 @@
       <!-- 相关链接 -->
       <div class="detail-section" v-if="hasLinks">
         <div class="section-header">
-          <span class="section-num">04</span>
+          <span class="section-num">06</span>
           <h2 class="section-title">相关链接</h2>
           <div class="section-line"></div>
         </div>
@@ -126,6 +184,18 @@
           <span>该项目为私有项目，暂未公开源码</span>
         </div>
       </div>
+
+      <router-link
+        v-if="nextProject"
+        class="next-case"
+        :to="{ name: 'project-detail', params: { id: nextProject.id } }"
+      >
+        <div>
+          <p class="eyebrow">Next Case</p>
+          <h2>{{ nextProject.name }}</h2>
+        </div>
+        <span class="next-arrow" aria-hidden="true">→</span>
+      </router-link>
     </div>
   </div>
 
@@ -139,178 +209,64 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { projects } from '../data/projects'
-import { gsap, isReducedMotion } from '../utils/gsap'
+import { getProjectNarrative } from '../data/projectNarratives'
+import ProjectVisual from '../components/ProjectVisual.vue'
 
 const route = useRoute()
 const router = useRouter()
 
-const detailContainer = ref(null)
-const heroBanner = ref(null)
-const backBtn = ref(null)
-
-let gsapCtx = null
-const brokenCovers = ref(new Set())
-
 const project = computed(() => {
-  return projects.find(p => p.id === route.params.id) || null
+  return projects.find(item => item.id === route.params.id) || null
 })
+
+const narrative = computed(() => getProjectNarrative(project.value))
 
 const hasLinks = computed(() => {
-  return project.value?.links?.demo || project.value?.links?.github
+  return Boolean(project.value?.links?.demo || project.value?.links?.github)
 })
 
-const heroStyle = computed(() => {
-  if (!project.value) return {}
-  const p = project.value
-  if (p.imageCover && !brokenCovers.value.has(p.id)) {
-    const img = new Image()
-    img.onerror = () => {
-      brokenCovers.value.add(p.id)
-      brokenCovers.value = new Set(brokenCovers.value)
-    }
-    img.src = p.imageCover
-    return {
-      backgroundImage: `linear-gradient(135deg, rgba(5,5,16,0.7), rgba(5,5,16,0.9)), url(${p.imageCover})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center'
-    }
-  }
-  return { background: p.imageColor || 'linear-gradient(135deg, #1a1a2e, #0f0f1a)' }
+const nextProject = computed(() => {
+  const index = projects.findIndex(item => item.id === project.value?.id)
+  if (index < 0) return null
+  return projects[(index + 1) % projects.length]
 })
 
 const goBack = () => {
-  router.push('/projects')
+  router.push({ name: 'projects' })
 }
-
-onMounted(() => {
-  if (isReducedMotion() || !project.value) return
-
-  nextTick(() => {
-    gsapCtx = gsap.context(() => {
-      // 1. 顶部 Banner 进场
-      if (heroBanner.value) {
-        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-        tl.fromTo(heroBanner.value,
-          { y: -20, opacity: 0, scale: 0.98 },
-          { y: 0, opacity: 1, scale: 1, duration: 0.7 }
-        )
-
-        const title = heroBanner.value.querySelector('.project-title')
-        const meta = heroBanner.value.querySelector('.hero-meta')
-        const info = heroBanner.value.querySelector('.hero-info')
-
-        if (meta) tl.fromTo(meta, { opacity: 0, x: -15 }, { opacity: 1, x: 0, duration: 0.4 }, '-=0.4')
-        if (title) tl.fromTo(title, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.3')
-        if (info) tl.fromTo(info, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 }, '-=0.2')
-      }
-
-      // 2. 详情各个 Section 滚动错落展开
-      const sections = document.querySelectorAll('.detail-section')
-      sections.forEach((sec) => {
-        const header = sec.querySelector('.section-header')
-        const cards = sec.querySelectorAll('.achievement-card')
-        const tags = sec.querySelectorAll('.tech-tag')
-        const linkBtns = sec.querySelectorAll('.link-btn')
-
-        const secTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sec,
-            start: 'top 85%',
-            toggleActions: 'play none none none'
-          }
-        })
-
-        if (header) {
-          secTl.fromTo(header,
-            { x: -20, opacity: 0 },
-            { x: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
-          )
-        }
-
-        if (cards.length > 0) {
-          secTl.fromTo(cards,
-            { x: -30, opacity: 0 },
-            { x: 0, opacity: 1, stagger: 0.08, duration: 0.5, ease: 'power3.out' },
-            '-=0.2'
-          )
-        }
-
-        if (tags.length > 0) {
-          secTl.fromTo(tags,
-            { scale: 0.7, opacity: 0 },
-            { scale: 1, opacity: 1, stagger: 0.04, duration: 0.4, ease: 'back.out(1.5)' },
-            '-=0.2'
-          )
-        }
-
-        if (linkBtns.length > 0) {
-          secTl.fromTo(linkBtns,
-            { y: 15, opacity: 0 },
-            { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: 'power2.out' },
-            '-=0.2'
-          )
-        }
-      })
-    }, detailContainer.value)
-  })
-})
-
-onBeforeUnmount(() => {
-  if (gsapCtx) {
-    gsapCtx.revert()
-  }
-})
 </script>
 
 <style scoped>
 .project-detail {
-  padding: 1.5rem 0 3rem;
-  max-width: 1000px;
+  width: min(calc(100% - 48px), 1120px);
   margin: 0 auto;
+  padding: 4rem 0 3rem;
 }
 
-/* ── Hero Banner ── */
 .hero-banner {
   position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  margin-bottom: 2.5rem;
-  padding: 2rem 2.5rem 2.5rem;
-  min-height: 240px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid var(--border-light);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  min-height: 360px;
+  padding: 2rem 2.4rem 2.4rem;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface);
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 30%, rgba(5, 5, 16, 0.85) 100%);
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(251, 250, 246, 0.98) 0%, rgba(251, 250, 246, 0.82) 46%, rgba(251, 250, 246, 0.08) 100%),
+    linear-gradient(180deg, transparent 45%, rgba(251, 250, 246, 0.58) 100%);
   pointer-events: none;
-}
-
-.hero-scan-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--primary);
-  box-shadow: 0 0 10px var(--primary);
-  opacity: 0.4;
-  animation: heroScan 5s infinite linear;
-}
-
-@keyframes heroScan {
-  0% { top: 0; opacity: 0; }
-  10% { opacity: 0.4; }
-  90% { opacity: 0.4; }
-  100% { top: 100%; opacity: 0; }
 }
 
 .back-btn {
@@ -318,194 +274,325 @@ onBeforeUnmount(() => {
   z-index: 2;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-light);
-  color: var(--text-muted);
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  font-size: 0.85rem;
+  gap: 0.45rem;
   align-self: flex-start;
+  min-height: 38px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  background: rgba(251, 250, 246, 0.72);
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  font-size: 0.72rem;
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .back-btn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  background: rgba(0, 0, 0, 0.6);
-  transform: translateX(-4px);
-  box-shadow: 0 0 15px var(--accent-glow);
+  border-color: var(--color-ink);
+  color: var(--color-ink);
 }
 
 .back-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
+  max-width: 720px;
+  margin-top: 3.5rem;
 }
 
 .hero-meta {
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.8rem;
 }
 
 .meta-id {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  color: var(--primary);
-  letter-spacing: 0.15em;
-  opacity: 0.85;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
 }
 
 .project-title {
+  margin: 0 0 1rem;
+  color: var(--color-ink);
   font-family: var(--font-display);
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin: 0 0 1rem 0;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
-  line-height: 1.2;
+  font-size: clamp(2.7rem, 5.4vw, 4.8rem);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 0.98;
 }
 
 .hero-info {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
 }
 
 .info-item {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.8);
+  gap: 0.35rem;
+  color: var(--color-ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
 }
 
 .info-sep {
-  color: var(--primary);
-  opacity: 0.5;
+  color: var(--color-line-strong);
 }
 
-/* Hero Corners */
-.hero-corners .corner {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--primary);
-  opacity: 0.5;
-  z-index: 3;
+.hero-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1.1rem;
 }
-.hero-corners .corner.tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
-.hero-corners .corner.tr { top: 12px; right: 12px; border-left: none; border-bottom: none; }
-.hero-corners .corner.bl { bottom: 12px; left: 12px; border-right: none; border-top: none; }
-.hero-corners .corner.br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
 
-/* ── Detail Body ── */
+.hero-highlight {
+  padding: 0.28rem 0.55rem;
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  background: rgba(251, 250, 246, 0.72);
+  color: var(--color-ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+}
+
 .detail-body {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 4rem;
+  margin-top: 4rem;
+}
+
+.case-summary {
+  display: grid;
+  grid-template-columns: 0.8fr 1fr 1.35fr;
+  border-top: 1px solid var(--color-ink);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.case-summary-item {
+  min-width: 0;
+  padding: 1.2rem 1.2rem 1.3rem 0;
+}
+
+.case-summary-item:not(:first-child) {
+  padding-left: 1.2rem;
+  border-left: 1px solid var(--color-line);
+}
+
+.summary-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+.case-summary-item strong {
+  color: var(--color-ink);
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.55;
 }
 
 .detail-section {
   position: relative;
 }
 
-/* Section Header */
 .section-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 0.85rem;
+  margin-bottom: 1.4rem;
 }
 
 .section-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--primary);
-  background: var(--chip-bg);
-  border: 1px solid var(--chip-border);
-  padding: 3px 8px;
-  border-radius: 6px;
-  letter-spacing: 0.05em;
+  color: var(--color-warm);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
 }
 
 .section-title {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-main);
   margin: 0;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 2.5vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
 .section-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, var(--border-light), transparent);
+  background: var(--color-line);
 }
 
-/* Project Description */
 .project-description {
-  color: var(--text-muted);
-  line-height: 1.8;
-  font-size: 1rem;
-  padding: 1.2rem 1.5rem;
-  background: var(--card-bg);
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
-  backdrop-filter: blur(10px);
+  margin: 0;
+  padding: 1.35rem 1.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  background: var(--color-surface);
+  color: var(--color-ink-soft);
+  font-size: 0.94rem;
+  line-height: 1.85;
 }
 
-/* ── Achievements Grid ── */
+.challenge-panel {
+  margin-top: 1rem;
+  padding: 1.35rem 1.5rem;
+  border: 1px solid var(--color-line);
+  border-left: 3px solid var(--color-accent);
+  background: rgba(251, 250, 246, 0.58);
+}
+
+.challenge-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.07em;
+}
+
+.challenge-panel p {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  line-height: 1.45;
+}
+
+.decisions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.9rem;
+}
+
+.decision-card {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  background: var(--color-surface);
+  transition: border-color 0.2s ease;
+}
+
+.decision-card:hover {
+  border-color: var(--color-line-strong);
+}
+
+.decision-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.decision-index {
+  color: var(--color-warm);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+}
+
+.decision-outcome {
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  text-align: right;
+}
+
+.decision-card h3 {
+  margin: 0 0 0.6rem;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.decision-card p {
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.9rem;
+}
+
+.result-metric {
+  padding: 1.2rem;
+  border-top: 1px solid var(--color-ink);
+  border-bottom: 1px solid var(--color-line);
+  background: rgba(251, 250, 246, 0.46);
+}
+
+.result-value {
+  color: var(--color-accent);
+  font-family: var(--font-display);
+  font-size: 2.9rem;
+  line-height: 1;
+}
+
+.result-value.is-text {
+  font-size: 1.85rem;
+  line-height: 1.2;
+}
+
+.result-value span {
+  margin-left: 0.18rem;
+  color: var(--color-ink-faint);
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+}
+
+.result-label {
+  margin-top: 0.7rem;
+  color: var(--color-ink);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.result-metric p {
+  margin: 0.28rem 0 0;
+  color: var(--color-ink-faint);
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
 .achievements-grid {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  border-top: 1px solid var(--color-ink);
 }
 
 .achievement-card {
   position: relative;
   display: flex;
   gap: 1.2rem;
-  padding: 1.2rem 1.5rem;
-  background: var(--card-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-.achievement-card:hover {
-  border-color: var(--border-hover);
-  background: var(--bg-card-hover);
-  transform: translateX(8px);
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--color-line);
 }
 
 .achievement-index {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--primary);
-  opacity: 0.4;
-  min-width: 40px;
-  line-height: 1;
-  padding-top: 2px;
-  transition: opacity 0.3s;
-}
-
-.achievement-card:hover .achievement-index {
-  opacity: 0.9;
+  min-width: 38px;
+  padding-top: 0.15rem;
+  color: var(--color-warm);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
 }
 
 .achievement-body {
@@ -513,277 +600,247 @@ onBeforeUnmount(() => {
 }
 
 .achievement-text {
-  color: var(--text-main);
-  line-height: 1.7;
-  font-size: 0.95rem;
+  color: var(--color-ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.75;
 }
 
 .achievement-glow {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--primary);
-  border-radius: 3px;
-  opacity: 0;
-  transition: opacity 0.3s;
+  display: none;
 }
 
-.achievement-card:hover .achievement-glow {
-  opacity: 1;
-  box-shadow: 0 0 12px var(--primary);
-}
-
-/* ── Tech Stack ── */
 .tech-stack {
   display: flex;
-  gap: 0.6rem;
   flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .tech-tag {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 0.45rem 0.9rem;
-  background: var(--chip-bg);
-  border: 1px solid var(--chip-border);
-  border-radius: 20px;
-  color: var(--primary);
-  font-size: 0.85rem;
-  font-family: 'JetBrains Mono', monospace;
-  transition: all 0.3s ease;
+  gap: 0.4rem;
+  padding: 0.34rem 0.62rem;
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  color: var(--color-ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
 }
 
 .tag-dot {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
-  background: var(--primary);
-  box-shadow: 0 0 6px var(--primary);
+  background: var(--color-accent);
 }
 
-.tech-tag:hover {
-  background: rgba(0, 240, 255, 0.15);
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 4px 12px var(--accent-glow);
-}
-
-/* ── Links ── */
 .links {
   display: flex;
-  gap: 1rem;
   flex-wrap: wrap;
+  gap: 0.7rem;
 }
 
 .link-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 10px;
+  gap: 0.45rem;
+  min-height: 42px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--color-ink);
+  border-radius: 2px;
+  color: var(--color-ink);
+  font-size: 0.76rem;
   text-decoration: none;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
 }
 
 .link-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
 }
 
 .link-btn.demo {
-  background: var(--primary);
-  color: var(--bg-deep);
-  font-weight: 600;
+  background: var(--color-ink);
+  color: var(--color-paper);
 }
 
-.link-btn.demo:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px var(--accent-glow);
+.link-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
-.link-btn.github {
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  color: var(--text-main);
-}
-
-.link-btn.github:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2);
-}
-
-/* ── Private Notice ── */
 .private-notice {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 1rem 1.5rem;
-  background: var(--card-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  color: var(--text-muted);
-  font-size: 0.9rem;
+  gap: 0.55rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-line);
+  color: var(--color-ink-faint);
+  font-size: 0.8rem;
 }
 
 .private-notice svg {
-  color: var(--warning, #ffaa00);
   flex-shrink: 0;
 }
 
-/* ── Not Found ── */
-.not-found {
+.next-case {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 60vh;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-ink);
+  text-decoration: none;
 }
 
-.not-found-content {
+.next-case h2 {
+  margin: 0.45rem 0 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.next-arrow {
+  flex: none;
+  color: var(--color-accent);
+  font-size: 1.7rem;
+  transition: transform 0.2s ease;
+}
+
+.next-case:hover .next-arrow {
+  transform: translateX(5px);
+}
+
+.not-found {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+  padding: 4rem 1rem;
   text-align: center;
 }
 
 .not-found-content h1 {
+  margin: 0 0 0.5rem;
   font-family: var(--font-display);
-  font-size: 6rem;
-  color: var(--primary);
-  margin-bottom: 1rem;
+  font-size: 7rem;
+  font-weight: 400;
 }
 
 .not-found-content p {
-  color: var(--text-muted);
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
+  margin: 0 0 1.5rem;
+  color: var(--color-ink-soft);
 }
 
-/* ── Responsive ── */
+@media (max-width: 900px) {
+  .project-detail {
+    width: min(calc(100% - 32px), 1120px);
+  }
+
+  .hero-content {
+    max-width: 82%;
+  }
+
+  .case-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .case-summary-item,
+  .case-summary-item:not(:first-child) {
+    padding: 0.9rem 0;
+    border-left: 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .case-summary-item:last-child {
+    border-bottom: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .project-detail {
-    padding: 0.5rem 0 2rem;
+    padding-top: 2rem;
   }
 
   .hero-banner {
+    min-height: 320px;
     padding: 1.2rem 1rem 1.5rem;
-    min-height: 180px;
-    border-radius: 14px;
-    margin-bottom: 1.5rem;
   }
 
-  .back-btn {
-    padding: 0.4rem 0.7rem;
-    font-size: 0.78rem;
-    border-radius: 6px;
+  .hero-overlay {
+    background: linear-gradient(180deg, rgba(251, 250, 246, 0.05) 0%, rgba(251, 250, 246, 0.96) 72%);
   }
 
-  .back-btn svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  .meta-id {
-    font-size: 0.68rem;
+  .hero-content {
+    max-width: 100%;
+    margin-top: 6.5rem;
   }
 
   .project-title {
-    font-size: 1.35rem;
-    margin: 0 0 0.6rem 0;
+    font-size: clamp(2.2rem, 12vw, 3.2rem);
   }
 
   .hero-info {
-    gap: 0.4rem;
-  }
-
-  .info-item {
-    font-size: 0.68rem;
-    gap: 4px;
-  }
-
-  .info-item svg {
-    width: 12px;
-    height: 12px;
+    gap: 0.45rem;
   }
 
   .info-sep {
     display: none;
   }
 
-  .hero-corners .corner {
-    width: 12px;
-    height: 12px;
-  }
-
-  .hero-corners .corner.tl { top: 8px; left: 8px; }
-  .hero-corners .corner.tr { top: 8px; right: 8px; }
-  .hero-corners .corner.bl { bottom: 8px; left: 8px; }
-  .hero-corners .corner.br { bottom: 8px; right: 8px; }
-
   .detail-body {
-    gap: 1.5rem;
+    gap: 3rem;
+    margin-top: 3rem;
   }
 
   .section-header {
     gap: 0.6rem;
-    margin-bottom: 1rem;
-  }
-
-  .section-num {
-    font-size: 0.7rem;
-    padding: 2px 6px;
   }
 
   .section-title {
-    font-size: 0.88rem;
+    font-size: 1.45rem;
   }
 
-  .project-description {
+  .project-description,
+  .challenge-panel {
     padding: 1rem;
-    font-size: 0.88rem;
-    line-height: 1.6;
-    border-radius: 10px;
+  }
+
+  .challenge-panel p {
+    font-size: 1.15rem;
+  }
+
+  .decisions-grid,
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .decision-card,
+  .result-metric {
+    padding: 1rem;
   }
 
   .achievement-card {
-    padding: 0.9rem 1rem;
-    gap: 0.7rem;
-    border-radius: 10px;
-  }
-
-  .achievement-card:hover {
-    transform: none;
-  }
-
-  .achievement-index {
-    font-size: 1rem;
-    min-width: 28px;
+    gap: 0.75rem;
+    padding: 1rem 0;
   }
 
   .achievement-text {
     font-size: 0.82rem;
-    line-height: 1.5;
-  }
-
-  .tech-tag {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.75rem;
-  }
-
-  .link-btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.82rem;
-    border-radius: 8px;
-  }
-
-  .private-notice {
-    padding: 0.8rem 1rem;
-    font-size: 0.82rem;
+    line-height: 1.65;
   }
 
   .not-found-content h1 {
-    font-size: 4rem;
+    font-size: 5rem;
+  }
+
+  .next-case {
+    gap: 1rem;
+    padding-top: 1.5rem;
+  }
+
+  .next-case h2 {
+    font-size: 1.8rem;
   }
 }
 </style>

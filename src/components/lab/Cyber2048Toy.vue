@@ -376,7 +376,7 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   background: rgba(10, 12, 24, 0.85);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.2);
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -424,7 +424,7 @@ onBeforeUnmount(() => {
 }
 
 .score-card.best {
-  border-color: rgba(0, 240, 255, 0.3);
+  border-color: rgba(var(--primary-rgb, 0, 240, 255), 0.3);
 }
 
 .score-label {
@@ -444,9 +444,9 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(255, 0, 85, 0.15);
-  border: 1px solid rgba(255, 0, 85, 0.4);
-  color: #ff0055;
+  background: rgba(var(--danger-rgb, 255, 0, 85), 0.15);
+  border: 1px solid rgba(var(--danger-rgb, 255, 0, 85), 0.4);
+  color: var(--danger, #ff0055);
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
@@ -456,8 +456,8 @@ onBeforeUnmount(() => {
 }
 
 .reset-btn:hover {
-  background: rgba(255, 0, 85, 0.3);
-  box-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
+  background: rgba(var(--danger-rgb, 255, 0, 85), 0.3);
+  box-shadow: 0 0 10px rgba(var(--danger-rgb, 255, 0, 85), 0.4);
 }
 
 .board-container {
@@ -465,7 +465,7 @@ onBeforeUnmount(() => {
   width: 100%;
   aspect-ratio: 1 / 1;
   background: rgba(5, 8, 18, 0.95);
-  border: 1px solid rgba(0, 240, 255, 0.25);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.25);
   border-radius: 12px;
   padding: 10px;
   overflow: hidden;
@@ -528,17 +528,17 @@ onBeforeUnmount(() => {
 }
 
 /* 科技进化色系 */
-.tile-2 { background: rgba(0, 240, 255, 0.15); border: 1px solid #00f0ff; color: #00f0ff; }
-.tile-4 { background: rgba(0, 255, 136, 0.2); border: 1px solid #00ff88; color: #00ff88; }
-.tile-8 { background: rgba(255, 170, 0, 0.25); border: 1px solid #ffaa00; color: #ffaa00; }
+.tile-2 { background: rgba(var(--primary-rgb, 0, 240, 255), 0.15); border: 1px solid var(--primary, #00f0ff); color: var(--primary, #00f0ff); }
+.tile-4 { background: rgba(var(--success-rgb, 0, 255, 136), 0.2); border: 1px solid var(--success, #00ff88); color: var(--success, #00ff88); }
+.tile-8 { background: rgba(var(--warning-rgb, 255, 170, 0), 0.25); border: 1px solid var(--warning, #ffaa00); color: var(--warning, #ffaa00); }
 .tile-16 { background: rgba(255, 77, 0, 0.3); border: 1px solid #ff4d00; color: #ff6a00; }
-.tile-32 { background: rgba(255, 0, 85, 0.35); border: 1px solid #ff0055; color: #ff0055; }
+.tile-32 { background: rgba(var(--danger-rgb, 255, 0, 85), 0.35); border: 1px solid var(--danger, #ff0055); color: var(--danger, #ff0055); }
 .tile-64 { background: rgba(192, 132, 252, 0.4); border: 1px solid #c084fc; color: #c084fc; box-shadow: 0 0 12px rgba(192, 132, 252, 0.4); }
-.tile-128 { background: rgba(112, 0, 255, 0.45); border: 1px solid #7000ff; color: #a855f7; box-shadow: 0 0 15px rgba(112, 0, 255, 0.5); }
-.tile-256 { background: rgba(0, 240, 255, 0.5); border: 1px solid #00f0ff; color: #ffffff; box-shadow: 0 0 18px rgba(0, 240, 255, 0.6); }
-.tile-512 { background: rgba(0, 255, 136, 0.6); border: 1px solid #00ff88; color: #000; box-shadow: 0 0 20px rgba(0, 255, 136, 0.7); }
+.tile-128 { background: rgba(var(--secondary-rgb, 112, 0, 255), 0.45); border: 1px solid var(--secondary, #7000ff); color: #a855f7; box-shadow: 0 0 15px rgba(var(--secondary-rgb, 112, 0, 255), 0.5); }
+.tile-256 { background: rgba(var(--primary-rgb, 0, 240, 255), 0.5); border: 1px solid var(--primary, #00f0ff); color: #ffffff; box-shadow: 0 0 18px rgba(var(--primary-rgb, 0, 240, 255), 0.6); }
+.tile-512 { background: rgba(var(--success-rgb, 0, 255, 136), 0.6); border: 1px solid var(--success, #00ff88); color: #000; box-shadow: 0 0 20px rgba(var(--success-rgb, 0, 255, 136), 0.7); }
 .tile-1024 { background: rgba(255, 215, 0, 0.7); border: 1px solid #ffd700; color: #000; box-shadow: 0 0 25px rgba(255, 215, 0, 0.8); }
-.tile-2048 { background: linear-gradient(135deg, #ff0055, #00f0ff); border: 2px solid #fff; color: #fff; box-shadow: 0 0 30px rgba(0, 240, 255, 0.9); animation: neonPulse 1s infinite alternate; }
+.tile-2048 { background: linear-gradient(135deg, var(--danger, #ff0055), var(--primary, #00f0ff)); border: 2px solid #fff; color: #fff; box-shadow: 0 0 30px rgba(var(--primary-rgb, 0, 240, 255), 0.9); animation: neonPulse 1s infinite alternate; }
 
 @keyframes neonPulse {
   0% { transform: scale(1); filter: brightness(1); }

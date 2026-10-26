@@ -7,22 +7,11 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
+      '@': path.resolve(import.meta.dirname, './src')
     }
   },
   build: {
-    chunkSizeWarningLimit: 600,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          three: ['three'],
-          vue: ['vue', 'vue-router', 'pinia'],
-          gsap: ['gsap'],
-          icons: ['@fortawesome/fontawesome-free'],
-          vendor: ['@vercel/analytics/vue']
-        }
-      }
-    }
+    chunkSizeWarningLimit: 600
   },
   server: {
     host: '0.0.0.0',

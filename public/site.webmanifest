@@ -1,0 +1,19 @@
+{
+  "name": "SZX Portfolio",
+  "short_name": "SZX",
+  "description": "SZX（史振兴）的前端工程师个人作品集",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f3f0e8",
+  "theme_color": "#f3f0e8",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

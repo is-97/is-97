@@ -78,9 +78,6 @@
 import { ref, onMounted, nextTick } from 'vue'
 import { profile } from '../../data/profile'
 import { labToys } from '../../data/labProjects'
-import { useAppStore } from '../../stores/app'
-
-const appStore = useAppStore()
 const inputRef = ref(null)
 const bodyRef = ref(null)
 
@@ -231,18 +228,11 @@ PORTFOLIO PROJECT MATRIX:
       break
 
     case 'theme':
-      const th = args[0]?.toLowerCase()
-      if (th && ['cyberpunk', 'abyss', 'terminal'].includes(th)) {
-        appStore.setTheme(th)
-        output = `主题已成功切换为: ${th}`
-        type = 'success'
-      } else {
-        output = '当前主题: ' + appStore.theme + '\n可用主题: theme cyberpunk | theme abyss | theme terminal'
-      }
+      output = 'Visual theme: Paper / Light\nTheme switching is no longer part of this portfolio.'
       break
 
     case 'whoami':
-      output = 'szx (Frontend Lead / Cyber Architect / GUEST_ACCESS_LEVEL_5)'
+      output = 'szx (Frontend Lead / Product-minded Engineer / Shanghai)'
       break
 
     case 'date':
@@ -334,10 +324,10 @@ onMounted(() => {
 <style scoped>
 .terminal-toy {
   background: rgba(8, 12, 20, 0.95);
-  border: 1px solid rgba(0, 240, 255, 0.25);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.25);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 240, 255, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(var(--primary-rgb, 0, 240, 255), 0.05);
   font-family: 'Fira Code', 'Courier New', monospace;
   display: flex;
   flex-direction: column;
@@ -388,8 +378,8 @@ onMounted(() => {
 }
 
 .action-btn:hover {
-  border-color: #00f0ff;
-  color: #00f0ff;
+  border-color: var(--primary, #00f0ff);
+  color: var(--primary, #00f0ff);
 }
 
 .terminal-body {
@@ -409,7 +399,7 @@ onMounted(() => {
   font-size: 0.6rem;
   line-height: 1.1;
   color: var(--primary, #00f0ff);
-  text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+  text-shadow: 0 0 8px rgba(var(--primary-rgb, 0, 240, 255), 0.4);
   margin-bottom: 8px;
 }
 
@@ -419,7 +409,7 @@ onMounted(() => {
 }
 
 .cmd-highlight {
-  color: #00ff88;
+  color: var(--success, #00ff88);
   font-weight: bold;
 }
 
@@ -436,7 +426,7 @@ onMounted(() => {
 }
 
 .prompt-user {
-  color: #00ff88;
+  color: var(--success, #00ff88);
   font-weight: bold;
 }
 
@@ -445,11 +435,11 @@ onMounted(() => {
 }
 
 .prompt-path {
-  color: #00f0ff;
+  color: var(--primary, #00f0ff);
 }
 
 .prompt-symbol {
-  color: #ffaa00;
+  color: var(--warning, #ffaa00);
   font-weight: bold;
 }
 
@@ -470,18 +460,18 @@ onMounted(() => {
 }
 
 .cmd-output.error {
-  color: #ff0055;
-  border-color: #ff0055;
+  color: var(--danger, #ff0055);
+  border-color: var(--danger, #ff0055);
 }
 
 .cmd-output.success {
-  color: #00ff88;
-  border-color: #00ff88;
+  color: var(--success, #00ff88);
+  border-color: var(--success, #00ff88);
 }
 
 .cmd-output.warning {
-  color: #ffaa00;
-  border-color: #ffaa00;
+  color: var(--warning, #ffaa00);
+  border-color: var(--warning, #ffaa00);
 }
 
 .input-wrap {

@@ -1,0 +1,244 @@
+/* Self-hosted Latin subsets. Chinese text uses the system CJK font stack. */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-latin-1.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/ibm-plex-mono-latin-2.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/instrument-serif-latin-3.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/instrument-serif-latin-4.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-5.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-5.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-5.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/manrope-latin-5.woff2') format('woff2');
+}
+
+:root {
+  --color-paper: #f3f0e8;
+  --color-surface: #fbfaf6;
+  --color-surface-muted: #ece7dd;
+  --color-ink: #181714;
+  --color-ink-soft: #5f5a52;
+  --color-ink-faint: #716a61;
+  --color-line: #d8d1c4;
+  --color-line-strong: #b8afa0;
+  --color-accent: #214dff;
+  --color-accent-soft: rgba(33, 77, 255, 0.08);
+  --color-warm: #b94327;
+  --color-warm-soft: rgba(185, 67, 39, 0.1);
+  --color-success: #28734c;
+  --color-warning: #9a671e;
+  --color-danger: #b23d2a;
+
+  --font-display: "Instrument Serif", "Songti SC", "STSong", Georgia, serif;
+  --font-body: "Manrope", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+
+  --page-width: 1220px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  /* Compatibility tokens used by older components kept in the lab. */
+  --bg-deep: var(--color-paper);
+  --bg-card: var(--color-surface);
+  --bg-card-hover: var(--color-surface-muted);
+  --card-bg: var(--color-surface);
+  --primary: var(--color-accent);
+  --primary-rgb: 33, 77, 255;
+  --secondary: var(--color-warm);
+  --secondary-rgb: 201, 80, 46;
+  --text-main: var(--color-ink);
+  --text-muted: var(--color-ink-soft);
+  --border-light: var(--color-line);
+  --border-hover: var(--color-line-strong);
+  --accent-glow: var(--color-accent-soft);
+  --success: var(--color-success);
+  --warning: var(--color-warning);
+  --danger: var(--color-danger);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+  background: var(--color-paper);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(33, 77, 255, 0.035), transparent 28rem),
+    var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-paper);
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid var(--color-paper);
+  border-radius: 999px;
+  background: var(--color-line-strong);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-faint);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 1.4;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.page-shell {
+  width: min(calc(100% - 48px), var(--page-width));
+  margin: 0 auto;
+}
+
+.display-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.display-title em {
+  color: var(--color-warm);
+  font-style: italic;
+  font-weight: 400;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+@media (max-width: 768px) {
+  .page-shell {
+    width: min(calc(100% - 32px), var(--page-width));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

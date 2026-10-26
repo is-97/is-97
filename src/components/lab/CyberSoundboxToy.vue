@@ -213,7 +213,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .soundbox-toy {
   background: rgba(10, 12, 24, 0.85);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.2);
   border-radius: 16px;
   padding: 18px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -262,7 +262,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 110px;
   background: #030611;
-  border: 1px solid rgba(0, 240, 255, 0.3);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.3);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -287,7 +287,7 @@ onBeforeUnmount(() => {
 }
 
 .scope-hz {
-  color: #00ff88;
+  color: var(--success, #00ff88);
 }
 
 .pads-grid {
@@ -301,7 +301,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 10px;
   background: rgba(20, 28, 50, 0.7);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.2);
   border-radius: 10px;
   padding: 10px 12px;
   cursor: pointer;
@@ -316,14 +316,14 @@ onBeforeUnmount(() => {
   background: rgba(30, 42, 75, 0.85);
   border-color: var(--primary, #00f0ff);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(var(--primary-rgb, 0, 240, 255), 0.2);
 }
 
 .sound-pad.active {
-  background: rgba(0, 240, 255, 0.3);
+  background: rgba(var(--primary-rgb, 0, 240, 255), 0.3);
   border-color: #fff;
   transform: scale(0.97);
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+  box-shadow: 0 0 20px rgba(var(--primary-rgb, 0, 240, 255), 0.6);
 }
 
 .pad-icon {

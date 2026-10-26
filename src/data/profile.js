@@ -17,7 +17,7 @@ export const skills = [
   {
     category: 'Frontend',
     icon: '⚡',
-    color: '#00f0ff',
+    color: '#214dff',
     description: 'Framework & UI Engineering',
     items: [
       { name: 'React 19 / React Router 7', level: 96 },
@@ -30,7 +30,7 @@ export const skills = [
   {
     category: 'Engineering',
     icon: '🛠',
-    color: '#7000ff',
+    color: '#b94327',
     description: 'Architecture & DevOps',
     items: [
       { name: 'Vite 8 / Webpack 5', level: 95 },
@@ -43,7 +43,7 @@ export const skills = [
   {
     category: 'Visualization',
     icon: '🔮',
-    color: '#ff0055',
+    color: '#6d4f9d',
     description: 'Data Viz & Editor Engineering',
     items: [
       { name: 'React Flow / D3.js', level: 92 },

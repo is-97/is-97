@@ -349,7 +349,7 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   background: rgba(10, 12, 24, 0.85);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.2);
   border-radius: 16px;
   padding: 16px;
   max-width: 520px;
@@ -395,7 +395,7 @@ onBeforeUnmount(() => {
 }
 
 .stat-pill.best {
-  border-color: rgba(0, 240, 255, 0.3);
+  border-color: rgba(var(--primary-rgb, 0, 240, 255), 0.3);
 }
 
 .stat-pill .lbl {
@@ -419,13 +419,13 @@ onBeforeUnmount(() => {
 }
 
 .ctrl-btn:hover {
-  background: rgba(0, 240, 255, 0.2);
+  background: rgba(var(--primary-rgb, 0, 240, 255), 0.2);
   border-color: var(--primary, #00f0ff);
 }
 
 .ctrl-btn.reset {
-  color: #ff0055;
-  border-color: rgba(255, 0, 85, 0.3);
+  color: var(--danger, #ff0055);
+  border-color: rgba(var(--danger-rgb, 255, 0, 85), 0.3);
 }
 
 .canvas-box {
@@ -435,7 +435,7 @@ onBeforeUnmount(() => {
   justify-content: center;
   align-items: center;
   background: #050814;
-  border: 1px solid rgba(0, 240, 255, 0.25);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.25);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -514,8 +514,8 @@ onBeforeUnmount(() => {
   width: 44px;
   height: 44px;
   background: rgba(20, 30, 50, 0.8);
-  border: 1px solid rgba(0, 240, 255, 0.4);
-  color: #00f0ff;
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.4);
+  color: var(--primary, #00f0ff);
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;

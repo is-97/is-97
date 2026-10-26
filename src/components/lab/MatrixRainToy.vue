@@ -273,10 +273,10 @@ watch([charsetKey, currentColor], () => {
   display: flex;
   flex-direction: column;
   background: rgba(10, 12, 24, 0.85);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.2);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 240, 255, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(var(--primary-rgb, 0, 240, 255), 0.05);
   position: relative;
 }
 
@@ -313,8 +313,8 @@ watch([charsetKey, currentColor], () => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #00ff88;
-  box-shadow: 0 0 8px #00ff88;
+  background: var(--success, #00ff88);
+  box-shadow: 0 0 8px var(--success, #00ff88);
   animation: pulse 1.5s infinite alternate;
 }
 
@@ -348,7 +348,7 @@ watch([charsetKey, currentColor], () => {
 
 .cyber-select {
   background: rgba(20, 30, 50, 0.8);
-  border: 1px solid rgba(0, 240, 255, 0.3);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.3);
   color: #fff;
   border-radius: 6px;
   padding: 4px 8px;
@@ -395,7 +395,7 @@ watch([charsetKey, currentColor], () => {
 }
 
 .tool-btn:hover {
-  background: rgba(0, 240, 255, 0.2);
+  background: rgba(var(--primary-rgb, 0, 240, 255), 0.2);
   border-color: var(--primary, #00f0ff);
   color: var(--primary, #00f0ff);
 }

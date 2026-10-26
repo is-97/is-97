@@ -222,7 +222,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .graviton-toy {
   background: rgba(10, 12, 24, 0.85);
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(var(--primary-rgb, 0, 240, 255), 0.2);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -276,15 +276,15 @@ onBeforeUnmount(() => {
 }
 
 .mode-btn:hover {
-  border-color: #00f0ff;
-  color: #00f0ff;
+  border-color: var(--primary, #00f0ff);
+  color: var(--primary, #00f0ff);
 }
 
 .mode-btn.active {
-  background: rgba(0, 240, 255, 0.2);
+  background: rgba(var(--primary-rgb, 0, 240, 255), 0.2);
   border-color: var(--primary, #00f0ff);
   color: var(--primary, #00f0ff);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 10px rgba(var(--primary-rgb, 0, 240, 255), 0.3);
 }
 
 .reset-btn {
@@ -318,7 +318,7 @@ onBeforeUnmount(() => {
   gap: 14px;
   font-family: monospace;
   font-size: 0.68rem;
-  color: rgba(0, 240, 255, 0.6);
+  color: rgba(var(--primary-rgb, 0, 240, 255), 0.6);
   pointer-events: none;
 }
 </style>

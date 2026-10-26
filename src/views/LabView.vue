@@ -1,183 +1,130 @@
 <template>
-  <div class="holo-lab" ref="labContainer">
-    <!-- 顶部科技标头 -->
-    <div class="page-header" ref="pageHeader">
-      <div class="header-content">
-        <div class="holo-badge">
-          <span class="badge-icon">&#9673;</span>
-          <span class="badge-text">PLAYGROUND // OPEN SOURCE MATRIX</span>
-        </div>
-        <h1 class="page-title">
-          <span class="glitch-text" data-text="CYBER_LAB">CYBER_LAB</span>
-        </h1>
-        <div class="header-meta">
-          <span class="meta-item">TOYS: 6 INTERACTIVE</span>
-          <span class="meta-sep">//</span>
-          <span class="meta-item">REPOS: 12+ CURATED</span>
-          <span class="meta-sep">//</span>
-          <span class="meta-item">STATUS: READY_TO_PLAY</span>
-        </div>
-      </div>
+  <div class="lab-page page-shell">
+    <header class="page-intro">
+      <p class="eyebrow">Playground / Experimental Interfaces</p>
+      <h1 class="display-title">
+        工作之外，<br>
+        <em>继续折腾。</em>
+      </h1>
+      <p>
+        一些关于 Canvas、Web Audio、物理模拟和终端交互的小实验，以及我持续关注的优质开源项目。
+      </p>
+    </header>
 
-      <!-- Tab 切换导航 -->
-      <div class="lab-tabs">
+    <section class="playground-section">
+      <aside class="toy-list">
+        <p class="list-label">Interactive Toys / {{ labToys.length }}</p>
         <button
-          class="tab-btn"
-          :class="{ active: activeTab === 'arcade' }"
-          @click="activeTab = 'arcade'"
-        >
-          <span class="tab-icon">🎮</span>
-          <span>在线极客游乐场</span>
-          <span class="tab-count">{{ labToys.length }}</span>
-        </button>
-        <button
-          class="tab-btn"
-          :class="{ active: activeTab === 'repos' }"
-          @click="activeTab = 'repos'"
-        >
-          <span class="tab-icon">⭐</span>
-          <span>GitHub 神级好玩项目宝库</span>
-          <span class="tab-count">{{ awesomeGithubProjects.length }}</span>
-        </button>
-      </div>
-
-      <div class="header-scanner"></div>
-    </div>
-
-    <!-- TAB 1: 在线极客游乐场 -->
-    <div v-if="activeTab === 'arcade'" class="arcade-container" ref="arcadeSection">
-      <!-- 玩具侧边栏选择列表 -->
-      <div class="toy-selector-list">
-        <button
-          v-for="toy in labToys"
+          v-for="(toy, index) in labToys"
           :key="toy.id"
-          class="toy-card-nav"
+          type="button"
+          class="toy-nav"
           :class="{ active: currentToyId === toy.id }"
           @click="currentToyId = toy.id"
         >
-          <div class="toy-nav-icon">{{ toy.icon }}</div>
-          <div class="toy-nav-meta">
-            <span class="toy-nav-badge">{{ toy.badge }}</span>
-            <h4 class="toy-nav-name">{{ toy.name }}</h4>
-            <span class="toy-nav-cat">{{ toy.category }}</span>
-          </div>
-          <div class="toy-nav-arrow">❯</div>
+          <span class="toy-index">{{ String(index + 1).padStart(2, '0') }}</span>
+          <span class="toy-nav-copy">
+            <strong>{{ toy.name.split(' (')[0] }}</strong>
+            <small>{{ toy.category }}</small>
+          </span>
+          <span class="toy-nav-arrow" aria-hidden="true">→</span>
         </button>
-      </div>
+      </aside>
 
-      <!-- 当前活动的游乐场舞台 -->
-      <div class="toy-stage">
-        <div class="stage-header" v-if="currentToyData">
-          <div class="stage-info">
-            <div class="stage-badge-wrap">
-              <span class="stage-icon">{{ currentToyData.icon }}</span>
-              <span class="stage-category">{{ currentToyData.category }}</span>
-            </div>
-            <h2 class="stage-title">{{ currentToyData.name }}</h2>
-            <p class="stage-desc">{{ currentToyData.desc }}</p>
+      <div class="toy-panel">
+        <header class="toy-panel-head">
+          <div>
+            <p class="eyebrow">Live Demo</p>
+            <h2>{{ currentToyData?.name }}</h2>
+            <p>{{ currentToyData?.desc }}</p>
           </div>
-
-          <div class="stage-actions">
+          <div class="panel-actions">
             <a
-              v-if="currentToyData.repoUrl"
+              v-if="currentToyData?.repoUrl"
               :href="currentToyData.repoUrl"
               target="_blank"
               rel="noopener noreferrer"
-              class="repo-link"
+              class="source-link"
             >
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-              <span>开源致敬: {{ currentToyData.repo }}</span>
+              Source ↗
             </a>
+            <button v-if="demoActive" type="button" class="close-demo" @click="demoActive = false">
+              关闭演示
+            </button>
           </div>
+        </header>
+
+        <div v-if="!demoActive" class="launch-panel">
+          <div class="launch-copy">
+            <p class="eyebrow">Interactive Playground</p>
+            <h3>进入交互模式</h3>
+            <button type="button" class="launch-button" @click="demoActive = true">
+              启动演示
+              <span aria-hidden="true">→</span>
+            </button>
+            <p class="launch-note">演示会保留独立的交互与视觉主题，启动后可在右上角关闭。</p>
+          </div>
+          <div class="launch-index" aria-hidden="true">0{{ labToys.findIndex(toy => toy.id === currentToyId) + 1 }}</div>
         </div>
 
-        <!-- 玩具动态渲染区域 -->
-        <div class="stage-component-wrap">
-          <transition name="stage-fade" mode="out-in">
+        <div v-else class="toy-frame">
+          <Transition name="toy-fade" mode="out-in">
             <component :is="currentToyComponent" :key="currentToyId" />
-          </transition>
+          </Transition>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- TAB 2: GitHub 神级好玩项目宝库 -->
-    <div v-else class="repos-container" ref="reposSection">
-      <!-- 类别筛选器 -->
-      <div class="filter-pills">
-        <button
-          v-for="cat in repoCategories"
-          :key="cat"
-          class="pill-btn"
-          :class="{ active: selectedCategory === cat }"
-          @click="selectedCategory = cat"
-        >
-          {{ cat }}
-        </button>
-      </div>
+    <section class="open-source-section">
+      <header class="repo-heading">
+        <div>
+          <p class="eyebrow">Open Source / {{ awesomeGithubProjects.length }} Curated</p>
+          <h2 class="display-title">值得一看的开源项目</h2>
+        </div>
+        <div class="repo-filters">
+          <button
+            v-for="category in repoCategories"
+            :key="category"
+            type="button"
+            :class="{ active: selectedCategory === category }"
+            @click="selectedCategory = category"
+          >
+            {{ category }}
+          </button>
+        </div>
+      </header>
 
-      <!-- 项目卡片网格 -->
-      <div class="repos-grid">
-        <div
+      <div class="repo-grid">
+        <a
           v-for="repo in filteredRepos"
           :key="repo.id"
+          :href="repo.githubUrl"
+          target="_blank"
+          rel="noopener noreferrer"
           class="repo-card"
-          ref="repoCardRefs"
         >
-          <div class="card-glass"></div>
-          <div class="card-border" :style="{ borderColor: repo.color }"></div>
-
-          <div class="card-header">
-            <div class="author-tag">{{ repo.author }} /</div>
-            <div class="stars-badge">
-              <svg viewBox="0 0 24 24" width="13" height="13" fill="#ffaa00"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <span>{{ repo.stars }}</span>
-            </div>
+          <div class="repo-topline">
+            <span>@{{ repo.author }}</span>
+            <span>{{ repo.stars }}</span>
           </div>
-
-          <h3 class="repo-name" :style="{ color: repo.color || '#00f0ff' }">
-            {{ repo.name }}
-          </h3>
-
-          <div class="repo-tag-pill">
-            <span class="cat-label">{{ repo.category }}</span>
-            <span class="sub-label">{{ repo.tag }}</span>
-          </div>
-
-          <p class="repo-desc">{{ repo.desc }}</p>
-
-          <div class="repo-highlights">
-            <div v-for="(h, idx) in repo.highlights" :key="idx" class="highlight-item">
-              <span class="h-bullet" :style="{ background: repo.color || '#00f0ff' }"></span>
-              <span>{{ h }}</span>
-            </div>
-          </div>
-
+          <h3>{{ repo.name }}</h3>
+          <p>{{ repo.desc }}</p>
+          <ul>
+            <li v-for="highlight in repo.highlights" :key="highlight">{{ highlight }}</li>
+          </ul>
           <div class="repo-footer">
-            <a
-              :href="repo.githubUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="visit-repo-btn"
-            >
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-              </svg>
-              <span>查看仓库与源码</span>
-              <span class="btn-arrow">↗</span>
-            </a>
+            <span>{{ repo.category }}</span>
+            <span aria-hidden="true">↗</span>
           </div>
-        </div>
+        </a>
       </div>
-    </div>
+    </section>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
-import { labToys, awesomeGithubProjects } from '../data/labProjects'
-import { gsap, bindCardTilt, isReducedMotion } from '../utils/gsap'
+import { computed, ref, watch } from 'vue'
+import { awesomeGithubProjects, labToys } from '../data/labProjects'
 
 import MatrixRainToy from '../components/lab/MatrixRainToy.vue'
 import Cyber2048Toy from '../components/lab/Cyber2048Toy.vue'
@@ -186,14 +133,9 @@ import WebTerminalToy from '../components/lab/WebTerminalToy.vue'
 import CyberSoundboxToy from '../components/lab/CyberSoundboxToy.vue'
 import GravitonSandboxToy from '../components/lab/GravitonSandboxToy.vue'
 
-const activeTab = ref('arcade') // 'arcade', 'repos'
 const currentToyId = ref('matrix-rain')
 const selectedCategory = ref('全部')
-
-const pageHeader = ref(null)
-const arcadeSection = ref(null)
-const reposSection = ref(null)
-const repoCardRefs = ref([])
+const demoActive = ref(false)
 
 const toyComponentMap = {
   'matrix-rain': MatrixRainToy,
@@ -205,559 +147,501 @@ const toyComponentMap = {
 }
 
 const currentToyComponent = computed(() => toyComponentMap[currentToyId.value] || MatrixRainToy)
-const currentToyData = computed(() => labToys.find(t => t.id === currentToyId.value))
+const currentToyData = computed(() => labToys.find(toy => toy.id === currentToyId.value))
 
 const repoCategories = computed(() => {
-  const cats = ['全部']
-  awesomeGithubProjects.forEach(p => {
-    if (!cats.includes(p.category)) cats.push(p.category)
+  const categories = ['全部']
+  awesomeGithubProjects.forEach(project => {
+    if (!categories.includes(project.category)) categories.push(project.category)
   })
-  return cats
+  return categories
 })
 
 const filteredRepos = computed(() => {
   if (selectedCategory.value === '全部') return awesomeGithubProjects
-  return awesomeGithubProjects.filter(p => p.category === selectedCategory.value)
+  return awesomeGithubProjects.filter(project => project.category === selectedCategory.value)
 })
 
-let tiltCleanups = []
-
-const bindTilts = () => {
-  tiltCleanups.forEach(c => c())
-  tiltCleanups = []
-
-  if (isReducedMotion()) return
-
-  nextTick(() => {
-    const cards = document.querySelectorAll('.repo-card')
-    cards.forEach(card => {
-      const cleanup = bindCardTilt(card, { maxTilt: 6, scale: 1.02 })
-      tiltCleanups.push(cleanup)
-    })
-  })
-}
-
-onMounted(() => {
-  nextTick(() => {
-    if (!isReducedMotion() && pageHeader.value) {
-      gsap.fromTo(pageHeader.value,
-        { y: -30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
-      )
-    }
-    bindTilts()
-  })
-})
-
-watch(activeTab, () => {
-  bindTilts()
-})
-
-watch(selectedCategory, () => {
-  bindTilts()
-})
-
-onBeforeUnmount(() => {
-  tiltCleanups.forEach(c => c())
+watch(currentToyId, () => {
+  demoActive.value = false
 })
 </script>
 
 <style scoped>
-.holo-lab {
-  width: 100%;
-  max-width: 1300px;
-  margin: 0 auto;
-  padding-bottom: 4rem;
+.lab-page {
+  padding-top: 5rem;
 }
 
-/* 顶部 Header */
-.page-header {
-  position: relative;
-  background: rgba(10, 15, 30, 0.6);
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  border-radius: 16px;
-  padding: 2rem 2.5rem;
-  margin-bottom: 2rem;
-  overflow: hidden;
-  backdrop-filter: blur(12px);
+.page-intro {
+  max-width: 920px;
+  padding-bottom: 4.5rem;
+  border-bottom: 1px solid var(--color-ink);
 }
 
-.holo-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.7rem;
-  color: var(--primary, #00f0ff);
-  letter-spacing: 0.1em;
-  margin-bottom: 1rem;
+.page-intro h1 {
+  margin: 1.2rem 0 2rem;
+  font-size: clamp(3.8rem, 7.3vw, 7rem);
 }
 
-.badge-icon {
-  animation: spinSlow 6s linear infinite;
+.page-intro > p:last-child {
+  max-width: 650px;
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-size: 1rem;
+  line-height: 1.85;
 }
 
-@keyframes spinSlow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.page-title {
-  font-family: var(--font-display, 'Syncopate', sans-serif);
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  font-weight: 900;
-  color: #fff;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.8rem;
-}
-
-.glitch-text {
-  position: relative;
-  display: inline-block;
-}
-
-.header-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.75rem;
-  color: var(--text-muted, rgba(255, 255, 255, 0.5));
-  letter-spacing: 0.1em;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.meta-sep {
-  color: rgba(255, 255, 255, 0.2);
-}
-
-.header-scanner {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--primary, #00f0ff), transparent);
-  animation: scanLoop 3s ease-in-out infinite;
-}
-
-@keyframes scanLoop {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-/* Tabs 切换 */
-.lab-tabs {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.tab-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(20, 25, 45, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--text-muted, rgba(255, 255, 255, 0.7));
-  padding: 10px 18px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.25s ease;
-}
-
-.tab-btn:hover {
-  background: rgba(30, 40, 70, 0.9);
-  border-color: rgba(0, 240, 255, 0.4);
-  color: #fff;
-}
-
-.tab-btn.active {
-  background: rgba(0, 240, 255, 0.15);
-  border-color: var(--primary, #00f0ff);
-  color: var(--primary, #00f0ff);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-}
-
-.tab-count {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 2px 6px;
-  border-radius: 12px;
-  font-size: 0.7rem;
-}
-
-/* ================= 游乐场布局 ================= */
-.arcade-container {
+.playground-section {
   display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 24px;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 2.5rem;
+  padding-top: 4rem;
 }
 
-.toy-selector-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.list-label {
+  margin: 0 0 1rem;
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.toy-card-nav {
-  display: flex;
+.toy-list {
+  align-self: start;
+  border-top: 1px solid var(--color-ink);
+}
+
+.toy-nav {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 16px;
+  gap: 0.7rem;
   align-items: center;
-  gap: 12px;
-  background: rgba(12, 18, 35, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 12px 16px;
+  width: 100%;
+  padding: 0.95rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-line);
+  background: transparent;
+  color: var(--color-ink-soft);
   cursor: pointer;
   text-align: left;
-  transition: all 0.25s ease;
-  backdrop-filter: blur(8px);
-  position: relative;
-  overflow: hidden;
+  transition: color 0.2s ease;
 }
 
-.toy-card-nav:hover {
-  background: rgba(20, 30, 60, 0.85);
-  border-color: rgba(0, 240, 255, 0.35);
-  transform: translateX(4px);
+.toy-nav:hover,
+.toy-nav.active {
+  color: var(--color-ink);
 }
 
-.toy-card-nav.active {
-  background: rgba(0, 240, 255, 0.12);
-  border-color: var(--primary, #00f0ff);
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+.toy-nav.active .toy-index {
+  color: var(--color-accent);
 }
 
-.toy-card-nav.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--primary, #00f0ff);
-  box-shadow: 0 0 8px var(--primary, #00f0ff);
+.toy-index {
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
 }
 
-.toy-nav-icon {
-  font-size: 1.5rem;
-}
-
-.toy-nav-meta {
-  flex: 1;
+.toy-nav-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
   min-width: 0;
 }
 
-.toy-nav-badge {
-  font-size: 0.58rem;
-  color: #00ff88;
-  letter-spacing: 0.05em;
-  font-weight: bold;
-  display: block;
-}
-
-.toy-nav-name {
-  font-size: 0.85rem;
-  color: #fff;
-  font-weight: 600;
-  margin: 2px 0;
-  white-space: nowrap;
+.toy-nav-copy strong {
   overflow: hidden;
+  font-size: 0.78rem;
+  font-weight: 500;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.toy-nav-cat {
-  font-size: 0.68rem;
-  color: var(--text-muted, rgba(255, 255, 255, 0.5));
+.toy-nav-copy small {
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
 }
 
 .toy-nav-arrow {
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 0.8rem;
-  transition: transform 0.2s;
-}
-
-.toy-card-nav.active .toy-nav-arrow {
-  color: var(--primary, #00f0ff);
-  transform: translateX(2px);
-}
-
-.toy-stage {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.stage-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background: rgba(12, 18, 35, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 16px 20px;
-  backdrop-filter: blur(10px);
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.stage-badge-wrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
-.stage-icon {
-  font-size: 1.1rem;
-}
-
-.stage-category {
-  font-size: 0.68rem;
-  color: var(--primary, #00f0ff);
-  font-weight: bold;
-  letter-spacing: 0.05em;
-}
-
-.stage-title {
-  font-family: var(--font-display, sans-serif);
-  font-size: 1.15rem;
-  color: #fff;
-  margin-bottom: 4px;
-}
-
-.stage-desc {
-  font-size: 0.8rem;
-  color: var(--text-muted, rgba(255, 255, 255, 0.65));
-  line-height: 1.5;
-  max-width: 650px;
-}
-
-.repo-link {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: var(--text-muted, rgba(255, 255, 255, 0.7));
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 0.72rem;
-  text-decoration: none;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.stage-component-wrap {
-  width: 100%;
-}
-
-.stage-fade-enter-active,
-.stage-fade-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.stage-fade-enter-from {
-  opacity: 0;
-  transform: translateY(6px);
-}
-
-.stage-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
-}
-
-/* ================= 仓库宝库布局 ================= */
-.repos-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.filter-pills {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.pill-btn {
-  background: rgba(15, 22, 40, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-muted, rgba(255, 255, 255, 0.6));
-  padding: 6px 14px;
-  border-radius: 20px;
+  color: var(--color-ink-faint);
   font-size: 0.75rem;
+}
+
+.toy-panel {
+  min-width: 0;
+}
+
+.toy-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.4rem;
+}
+
+.toy-panel-head h2 {
+  margin: 0.35rem 0 0.55rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.toy-panel-head > div > p:last-child {
+  max-width: 720px;
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-size: 0.84rem;
+  line-height: 1.7;
+}
+
+.source-link {
+  flex: none;
+  padding-bottom: 0.12rem;
+  border-bottom: 1px solid var(--color-line-strong);
+  color: var(--color-ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-decoration: none;
+}
+
+.source-link:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.panel-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.close-demo {
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--color-ink-soft);
   cursor: pointer;
-  transition: all 0.2s;
+  font-size: 0.7rem;
 }
 
-.pill-btn:hover {
-  border-color: rgba(0, 240, 255, 0.4);
-  color: #fff;
+.close-demo:hover {
+  border-color: var(--color-ink);
+  color: var(--color-ink);
 }
 
-.pill-btn.active {
-  background: var(--primary, #00f0ff);
-  color: #000;
-  font-weight: bold;
-  border-color: var(--primary, #00f0ff);
-  box-shadow: 0 0 12px var(--primary, rgba(0, 240, 255, 0.4));
+.launch-panel {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  min-height: 420px;
+  padding: 2.4rem;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background:
+    linear-gradient(rgba(24, 23, 20, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 23, 20, 0.04) 1px, transparent 1px),
+    var(--color-surface);
+  background-size: 32px 32px;
 }
 
-.repos-grid {
+.launch-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+}
+
+.launch-copy h3 {
+  margin: 0.6rem 0 0.7rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.4vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.launch-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--color-ink);
+  border-radius: 2px;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.launch-button:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+
+.launch-note {
+  margin: 0.8rem 0 0;
+  color: var(--color-ink-faint);
+  font-size: 0.65rem;
+}
+
+.launch-index {
+  position: absolute;
+  right: 2rem;
+  bottom: 1.5rem;
+  color: var(--color-line-strong);
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 13vw, 11rem);
+  line-height: 0.8;
+}
+
+.toy-frame {
+  min-height: 520px;
+  padding: 12px;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+
+.open-source-section {
+  padding-top: 7rem;
+}
+
+.repo-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-ink);
+}
+
+.repo-heading h2 {
+  margin-top: 0.55rem;
+  font-size: clamp(2.8rem, 5.5vw, 5rem);
+}
+
+.repo-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.repo-filters button {
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+}
+
+.repo-filters button:hover,
+.repo-filters button.active {
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+
+.repo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-left: 1px solid var(--color-line);
 }
 
 .repo-card {
-  position: relative;
-  background: rgba(12, 18, 35, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 22px;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(12px);
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  min-height: 290px;
+  padding: 1.35rem;
+  border-right: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+  background: rgba(251, 250, 246, 0.38);
+  color: var(--color-ink);
+  text-decoration: none;
+  transition: background 0.2s ease;
 }
 
 .repo-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(0, 240, 255, 0.4);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.1);
+  background: var(--color-surface);
 }
 
-.card-header {
+.repo-topline {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
 }
 
-.author-tag {
-  font-size: 0.75rem;
-  color: var(--text-muted, rgba(255, 255, 255, 0.5));
-  font-family: monospace;
+.repo-card h3 {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1.1;
 }
 
-.stars-badge {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(255, 170, 0, 0.12);
-  border: 1px solid rgba(255, 170, 0, 0.3);
-  color: #ffaa00;
-  font-size: 0.7rem;
-  font-weight: bold;
-  padding: 2px 8px;
-  border-radius: 12px;
-}
-
-.repo-name {
-  font-family: var(--font-display, 'Syncopate', sans-serif);
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-  letter-spacing: 0.02em;
-}
-
-.repo-tag-pill {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-
-.cat-label {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.65rem;
-  color: var(--text-muted, rgba(255, 255, 255, 0.6));
-}
-
-.sub-label {
-  background: rgba(0, 240, 255, 0.08);
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.65rem;
-  color: var(--primary, #00f0ff);
-}
-
-.repo-desc {
-  font-size: 0.82rem;
-  color: var(--text-muted, rgba(255, 255, 255, 0.75));
-  line-height: 1.6;
-  margin-bottom: 14px;
-  flex: 1;
-}
-
-.repo-highlights {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 18px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  padding: 10px 12px;
-  border-radius: 8px;
-}
-
-.highlight-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.h-bullet {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-}
-
-.visit-repo-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #fff;
-  text-decoration: none;
-  padding: 8px 14px;
-  border-radius: 8px;
+.repo-card > p {
+  margin: 0 0 1rem;
+  color: var(--color-ink-soft);
   font-size: 0.78rem;
-  font-weight: 500;
-  transition: all 0.2s;
+  line-height: 1.7;
 }
 
-.visit-repo-btn:hover {
-  background: rgba(0, 240, 255, 0.15);
-  border-color: var(--primary, #00f0ff);
-  color: var(--primary, #00f0ff);
+.repo-card ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 1.2rem;
+  padding: 0;
+  list-style: none;
 }
 
-.btn-arrow {
-  font-size: 0.85rem;
-  transition: transform 0.2s;
+.repo-card li {
+  padding-left: 0.8rem;
+  color: var(--color-ink-faint);
+  font-size: 0.68rem;
+  line-height: 1.55;
 }
 
-.visit-repo-btn:hover .btn-arrow {
-  transform: translate(2px, -2px);
+.repo-card li::before {
+  content: '·';
+  margin-left: -0.8rem;
+  margin-right: 0.45rem;
 }
 
-@media (max-width: 900px) {
-  .arcade-container {
+.repo-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-line);
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+}
+
+.toy-fade-enter-active,
+.toy-fade-leave-active {
+  transition: opacity 0.18s ease;
+}
+
+.toy-fade-enter-from,
+.toy-fade-leave-to {
+  opacity: 0;
+}
+
+@media (max-width: 1024px) {
+  .playground-section {
     grid-template-columns: 1fr;
+  }
+
+  .toy-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .list-label {
+    grid-column: 1 / -1;
+  }
+
+  .toy-nav:nth-child(odd) {
+    padding-right: 1rem;
+  }
+
+  .toy-nav:nth-child(even) {
+    padding-left: 1rem;
+    border-left: 1px solid var(--color-line);
+  }
+
+  .repo-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .repo-filters {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .lab-page {
+    padding-top: 3rem;
+  }
+
+  .page-intro {
+    padding-bottom: 3rem;
+  }
+
+  .page-intro h1 {
+    margin-bottom: 1.8rem;
+    font-size: clamp(2.3rem, 10.5vw, 3.8rem);
+  }
+
+  .playground-section {
+    gap: 2rem;
+    padding-top: 3rem;
+  }
+
+  .toy-list {
+    grid-template-columns: 1fr;
+  }
+
+  .toy-nav:nth-child(odd),
+  .toy-nav:nth-child(even) {
+    padding-right: 0;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .toy-panel-head {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .panel-actions {
+    justify-content: flex-start;
+  }
+
+  .launch-panel {
+    min-height: 420px;
+    padding: 1.5rem;
+  }
+
+  .launch-copy h3 {
+    font-size: clamp(1.9rem, 10vw, 2.8rem);
+  }
+
+  .launch-index {
+    right: 1rem;
+    bottom: 1rem;
+    font-size: 6rem;
+  }
+
+  .toy-frame {
+    min-height: 400px;
+    padding: 6px;
+  }
+
+  .open-source-section {
+    padding-top: 4.5rem;
+  }
+
+  .repo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .repo-card {
+    min-height: 0;
+    padding: 1.15rem;
   }
 }
 </style>

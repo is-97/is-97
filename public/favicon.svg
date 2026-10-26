@@ -1,38 +1,6 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <linearGradient id="cyber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00f0ff" />
-      <stop offset="100%" stop-color="#ff0055" />
-    </linearGradient>
-  </defs>
-
-  <!-- Outer Hexagon (Corrected Aspect Ratio for Regular Hexagon) -->
-  <path d="M256 30 L452 143 V369 L256 482 L60 369 V143 Z"
-        stroke="url(#cyber-grad)"
-        stroke-width="25"
-        fill="rgba(10, 20, 30, 0.95)"
-        filter="url(#neon-glow)"/>
-
-  <!-- SZX Text -->
-  <text x="256" y="370"
-        font-family="Arial, sans-serif"
-        font-weight="900"
-        font-size="320"
-        text-anchor="middle"
-        fill="#ffffff"
-        stroke="none"
-        style="text-shadow: 0 0 15px #00f0ff;">
-    Z
-  </text>
-
-  <!-- Glitch decoration -->
-  <rect x="340" y="140" width="40" height="12" fill="#ff0055" filter="url(#neon-glow)"/>
-  <rect x="130" y="360" width="40" height="12" fill="#00f0ff" filter="url(#neon-glow)"/>
+  <rect width="512" height="512" rx="112" fill="#F3F0E8"/>
+  <circle cx="256" cy="256" r="164" stroke="#181714" stroke-width="20"/>
+  <text x="256" y="310" text-anchor="middle" font-family="Georgia, serif" font-size="172" fill="#181714">SZ</text>
+  <circle cx="376" cy="136" r="18" fill="#C9502E"/>
 </svg>
