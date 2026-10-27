@@ -6,26 +6,30 @@
         <span>Shanghai, CN</span>
       </div>
 
-      <p class="eyebrow hero-eyebrow">Frontend Lead · 8 Years</p>
-      <h1 class="display-title hero-title">
-        复杂系统，<br>
-        <em>清晰交付。</em>
-      </h1>
+      <div class="hero-stage">
+        <div class="hero-copy">
+          <p class="eyebrow hero-eyebrow">Frontend Lead · 8 Years</p>
+          <h1 class="display-title hero-title">
+            复杂系统，<br>
+            <em>清晰交付。</em>
+          </h1>
 
-      <div class="hero-grid">
-        <p class="hero-lead">{{ profile.bio }}</p>
+          <p class="hero-lead">{{ profile.bio }}</p>
 
-        <div class="hero-facts">
-          <div v-for="(stat, index) in profile.stats" :key="stat.label" class="hero-fact">
-            <strong>{{ stat.value }}{{ stat.suffix }}</strong>
-            <span>{{ statLabels[index] }}</span>
+          <div class="hero-actions">
+            <router-link to="/projects" class="action primary">查看项目案例</router-link>
+            <a :href="`mailto:${profile.email}`" class="action secondary">联系我</a>
           </div>
         </div>
+
+        <SystemMap class="hero-system-map" />
       </div>
 
-      <div class="hero-actions">
-        <router-link to="/projects" class="action primary">查看项目案例</router-link>
-        <a :href="`mailto:${profile.email}`" class="action secondary">联系我</a>
+      <div class="hero-facts">
+        <div v-for="(stat, index) in profile.stats" :key="stat.label" class="hero-fact">
+          <strong>{{ stat.value }}{{ stat.suffix }}</strong>
+          <span>{{ statLabels[index] }}</span>
+        </div>
       </div>
     </section>
 
@@ -123,6 +127,7 @@
 
 <script setup>
 import ProjectVisual from '../components/ProjectVisual.vue'
+import SystemMap from '../components/SystemMap.vue'
 import { projects } from '../data/projects'
 import { profile, skills } from '../data/profile'
 
@@ -139,15 +144,50 @@ const statLabels = ['年经验', '项目交付', '技术栈']
   padding-top: 5.5rem;
 }
 
+.hero-copy > * {
+  animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-copy > :nth-child(2) {
+  animation-delay: 0.06s;
+}
+
+.hero-copy > :nth-child(3) {
+  animation-delay: 0.12s;
+}
+
+.hero-copy > :nth-child(4) {
+  animation-delay: 0.18s;
+}
+
+.hero-system-map {
+  animation: hero-rise 0.85s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-facts {
+  animation: hero-rise 0.75s 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .hero {
-  padding-bottom: 5rem;
+  padding-bottom: 4.5rem;
   border-bottom: 1px solid var(--color-line);
 }
 
 .hero-topline {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5.5rem;
+  margin-bottom: 3.75rem;
   color: var(--color-ink-faint);
   font-family: var(--font-mono);
   font-size: 0.62rem;
@@ -159,32 +199,39 @@ const statLabels = ['年经验', '项目交付', '技术栈']
   margin-bottom: 1.3rem;
 }
 
-.hero-title {
-  max-width: 930px;
-  font-size: clamp(4.2rem, 10vw, 8.6rem);
+.hero-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(400px, 0.7fr);
+  gap: clamp(2.5rem, 4vw, 4.5rem);
+  align-items: stretch;
 }
 
-.hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
-  gap: 4rem;
-  align-items: end;
-  margin-top: 3.2rem;
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.hero-title {
+  max-width: 760px;
+  font-size: clamp(4.2rem, 7.4vw, 7.2rem);
 }
 
 .hero-lead {
-  max-width: 670px;
-  margin: 0;
+  max-width: 610px;
+  margin: 2rem 0 0;
   color: var(--color-ink-soft);
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-size: clamp(1rem, 1.45vw, 1.16rem);
   line-height: 1.85;
   white-space: pre-line;
 }
 
 .hero-facts {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
+  margin-top: 3rem;
   padding-top: 1.4rem;
   border-top: 1px solid var(--color-line);
 }
@@ -197,7 +244,7 @@ const statLabels = ['年经验', '项目交付', '技术栈']
 
 .hero-fact strong {
   font-family: var(--font-display);
-  font-size: 2.25rem;
+  font-size: 2.5rem;
   font-weight: 400;
   line-height: 1;
 }
@@ -210,7 +257,7 @@ const statLabels = ['年经验', '项目交付', '技术栈']
 .hero-actions {
   display: flex;
   gap: 0.75rem;
-  margin-top: 2.4rem;
+  margin-top: 2rem;
 }
 
 .action {
@@ -552,8 +599,20 @@ const statLabels = ['年经验', '项目交付', '技术栈']
   color: var(--color-accent);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy > *,
+  .hero-system-map,
+  .hero-facts {
+    animation: none;
+  }
+}
+
 @media (max-width: 1024px) {
-  .hero-grid,
+  .hero-stage {
+    grid-template-columns: minmax(0, 1fr) minmax(330px, 0.68fr);
+    gap: 2rem;
+  }
+
   .section-heading {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -573,6 +632,22 @@ const statLabels = ['年经验', '项目交付', '技术栈']
   }
 }
 
+@media (max-width: 960px) {
+  .hero-stage {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .hero-copy {
+    display: block;
+  }
+
+  .hero-system-map {
+    width: min(100%, 560px);
+    margin-inline: auto;
+  }
+}
+
 @media (max-width: 768px) {
   .home-page {
     padding-top: 3rem;
@@ -583,19 +658,34 @@ const statLabels = ['年经验', '项目交付', '技术栈']
   }
 
   .hero-topline {
-    margin-bottom: 3.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .hero-stage {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .hero-copy {
+    display: block;
   }
 
   .hero-title {
     font-size: clamp(3.6rem, 16vw, 5.6rem);
   }
 
-  .hero-grid {
-    margin-top: 2.2rem;
+  .hero-system-map {
+    width: min(100%, 540px);
+    margin-inline: auto;
+  }
+
+  .hero-lead {
+    margin-top: 1.8rem;
   }
 
   .hero-facts {
     gap: 0.6rem;
+    margin-top: 2.5rem;
   }
 
   .hero-fact strong {
