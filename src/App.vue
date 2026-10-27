@@ -5,7 +5,7 @@
     <header class="site-header">
       <div class="site-header-inner">
         <router-link to="/" class="brand">
-          <span class="brand-mark">SZ</span>
+          <img class="brand-mark" src="/favicon-x-v2.svg" alt="" width="40" height="40" />
           <span class="brand-copy">
             <strong>SHI ZHENXING</strong>
             <small>Frontend Lead</small>
@@ -136,20 +136,15 @@ onBeforeUnmount(() => {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.85rem;
+  min-height: 44px;
   text-decoration: none;
 }
 
 .brand-mark {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--color-ink);
-  border-radius: 50%;
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  line-height: 1;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
 }
 
 .brand-copy {
@@ -215,8 +210,8 @@ onBeforeUnmount(() => {
 
 .menu-toggle {
   display: none;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: 1px solid var(--color-line);
   border-radius: 50%;
@@ -254,6 +249,9 @@ onBeforeUnmount(() => {
   top: 12px;
   left: 50%;
   z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: 0.65rem 1rem;
   border: 1px solid var(--color-ink);
   background: var(--color-surface);

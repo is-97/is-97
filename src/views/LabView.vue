@@ -298,18 +298,22 @@ watch(currentToyId, () => {
 }
 
 .source-link {
+  display: inline-flex;
   flex: none;
-  padding-bottom: 0.12rem;
-  border-bottom: 1px solid var(--color-line-strong);
+  align-items: center;
+  min-height: 44px;
   color: var(--color-ink-soft);
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  text-decoration: none;
+  font-size: 0.64rem;
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
 }
 
 .source-link:hover {
-  border-color: var(--color-accent);
   color: var(--color-accent);
+  text-decoration-color: currentColor;
 }
 
 .panel-actions {
@@ -320,7 +324,8 @@ watch(currentToyId, () => {
 }
 
 .close-demo {
-  padding: 0.35rem 0.55rem;
+  min-height: 44px;
+  padding: 0 0.75rem;
   border: 1px solid var(--color-line);
   border-radius: 2px;
   background: transparent;
@@ -432,14 +437,15 @@ watch(currentToyId, () => {
 }
 
 .repo-filters button {
-  padding: 0.3rem 0.55rem;
+  min-height: 44px;
+  padding: 0.45rem 0.7rem;
   border: 1px solid var(--color-line);
   border-radius: 2px;
   background: transparent;
   color: var(--color-ink-soft);
   cursor: pointer;
   font-family: var(--font-mono);
-  font-size: 0.55rem;
+  font-size: 0.64rem;
 }
 
 .repo-filters button:hover,

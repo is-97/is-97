@@ -276,8 +276,8 @@ const goBack = () => {
   align-items: center;
   gap: 0.45rem;
   align-self: flex-start;
-  min-height: 38px;
-  padding: 0 0.75rem;
+  min-height: 44px;
+  padding: 0 0.85rem;
   border: 1px solid var(--color-line);
   border-radius: 2px;
   background: rgba(251, 250, 246, 0.72);

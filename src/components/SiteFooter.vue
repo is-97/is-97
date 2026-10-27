@@ -2,7 +2,7 @@
   <footer class="site-footer">
     <div class="footer-inner page-shell">
       <div class="footer-brand">
-        <span class="footer-mark">SZ</span>
+        <img class="footer-mark" src="/favicon-x-v2.svg" alt="" width="40" height="40" />
         <div>
           <strong>{{ profile.name }}</strong>
           <p>{{ profile.title }} · Shanghai</p>
@@ -50,15 +50,9 @@ const currentYear = new Date().getFullYear()
 }
 
 .footer-mark {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--color-ink);
-  border-radius: 50%;
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  line-height: 1;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
 }
 
 .footer-brand strong {
@@ -82,6 +76,11 @@ const currentYear = new Date().getFullYear()
 }
 
 .footer-contact a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
   color: var(--color-ink-soft);
   font-family: var(--font-mono);
   font-size: 0.66rem;

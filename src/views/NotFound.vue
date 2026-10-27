@@ -27,7 +27,10 @@
 }
 
 .back-link {
+  display: inline-flex;
+  align-items: center;
   align-self: flex-start;
+  min-height: 44px;
   color: var(--color-accent);
   font-family: var(--font-mono);
   font-size: 0.7rem;

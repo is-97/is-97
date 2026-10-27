@@ -409,6 +409,7 @@ const statLabels = ['年经验', '项目交付', '技术栈']
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  min-height: 44px;
   margin-top: 1.4rem;
   color: var(--color-accent);
   font-family: var(--font-mono);
@@ -511,26 +512,35 @@ const statLabels = ['年经验', '项目交付', '技术栈']
 }
 
 .contact-email {
-  display: inline-block;
-  padding-bottom: 0.15rem;
-  border-bottom: 1px solid var(--color-line-strong);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: var(--color-ink);
   font-size: clamp(1rem, 2vw, 1.4rem);
-  text-decoration: none;
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
 }
 
 .contact-email:hover {
-  border-color: var(--color-accent);
   color: var(--color-accent);
+  text-decoration-color: currentColor;
 }
 
 .contact-links {
   display: flex;
+  align-items: center;
   gap: 1.4rem;
   margin-top: 1.5rem;
 }
 
 .contact-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
   color: var(--color-ink-soft);
   font-family: var(--font-mono);
   font-size: 0.65rem;
