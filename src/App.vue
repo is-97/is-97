@@ -5,7 +5,7 @@
     <header class="site-header">
       <div class="site-header-inner">
         <router-link to="/" class="brand">
-          <img class="brand-mark" src="/favicon-x-v2.svg" alt="" width="40" height="40" />
+          <img class="brand-mark" src="/brand-x-light.svg" alt="" width="40" height="40" />
           <span class="brand-copy">
             <strong>SHI ZHENXING</strong>
             <small>Frontend Lead</small>
@@ -120,7 +120,7 @@ onBeforeUnmount(() => {
   top: 0;
   z-index: 100;
   border-bottom: 1px solid var(--color-line);
-  background: rgba(243, 240, 232, 0.92);
+  background: rgba(15, 14, 12, 0.9);
   backdrop-filter: blur(18px);
 }
 

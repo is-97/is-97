@@ -94,7 +94,7 @@
       <div class="capability-grid">
         <article v-for="(skill, index) in skills" :key="skill.category" class="capability-card">
           <div class="capability-head">
-            <span :style="{ color: skill.color }">{{ String(index + 1).padStart(2, '0') }}</span>
+            <span>{{ String(index + 1).padStart(2, '0') }}</span>
             <h3>{{ skill.category }}</h3>
           </div>
           <p>{{ skill.description }}</p>
@@ -105,7 +105,7 @@
                 <small>{{ item.level }}</small>
               </div>
               <div class="skill-track">
-                <span :style="{ width: `${item.level}%`, background: skill.color }"></span>
+                <span :style="{ width: `${item.level}%` }"></span>
               </div>
             </li>
           </ul>
@@ -336,7 +336,7 @@ const statLabels = ['年经验', '项目交付', '技术栈']
 }
 
 .work-row:hover {
-  background: rgba(251, 250, 246, 0.5);
+  background: rgba(244, 240, 231, 0.04);
 }
 
 .work-hit {
@@ -495,6 +495,7 @@ const statLabels = ['年经验', '项目交付', '技术栈']
 }
 
 .capability-head span {
+  color: var(--color-warm);
   font-family: var(--font-mono);
   font-size: 0.62rem;
 }
@@ -544,6 +545,7 @@ const statLabels = ['年经验', '项目交付', '技术栈']
 .skill-track span {
   display: block;
   height: 100%;
+  background: var(--color-accent);
 }
 
 .contact-block {

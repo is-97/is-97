@@ -64,21 +64,21 @@
 }
 
 :root {
-  --color-paper: #f3f0e8;
-  --color-surface: #fbfaf6;
-  --color-surface-muted: #ece7dd;
-  --color-ink: #181714;
-  --color-ink-soft: #5f5a52;
-  --color-ink-faint: #716a61;
-  --color-line: #d8d1c4;
-  --color-line-strong: #b8afa0;
-  --color-accent: #214dff;
-  --color-accent-soft: rgba(33, 77, 255, 0.08);
-  --color-warm: #b94327;
-  --color-warm-soft: rgba(185, 67, 39, 0.1);
-  --color-success: #28734c;
-  --color-warning: #9a671e;
-  --color-danger: #b23d2a;
+  --color-paper: #0f0e0c;
+  --color-surface: #171512;
+  --color-surface-muted: #221f1a;
+  --color-ink: #f4f0e7;
+  --color-ink-soft: #b8b0a2;
+  --color-ink-faint: #8a8275;
+  --color-line: #332f29;
+  --color-line-strong: #5a5348;
+  --color-accent: #8da8ff;
+  --color-accent-soft: rgba(141, 168, 255, 0.12);
+  --color-warm: #e06f52;
+  --color-warm-soft: rgba(224, 111, 82, 0.12);
+  --color-success: #6ecf9a;
+  --color-warning: #e7b45e;
+  --color-danger: #f0806a;
 
   --font-display: "Instrument Serif", "Songti SC", "STSong", Georgia, serif;
   --font-body: "Manrope", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -95,9 +95,9 @@
   --bg-card-hover: var(--color-surface-muted);
   --card-bg: var(--color-surface);
   --primary: var(--color-accent);
-  --primary-rgb: 33, 77, 255;
+  --primary-rgb: 141, 168, 255;
   --secondary: var(--color-warm);
-  --secondary-rgb: 201, 80, 46;
+  --secondary-rgb: 224, 111, 82;
   --text-main: var(--color-ink);
   --text-muted: var(--color-ink-soft);
   --border-light: var(--color-line);
@@ -116,6 +116,7 @@
 
 html {
   min-width: 320px;
+  color-scheme: dark;
   scroll-behavior: smooth;
   background: var(--color-paper);
 }
@@ -126,7 +127,7 @@ body {
   margin: 0;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 12% 0%, rgba(33, 77, 255, 0.035), transparent 28rem),
+    radial-gradient(circle at 12% 0%, rgba(141, 168, 255, 0.055), transparent 30rem),
     var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -162,7 +163,7 @@ canvas {
 
 ::selection {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-paper);
 }
 
 :focus-visible {

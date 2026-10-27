@@ -183,10 +183,13 @@ const markText = computed(() => props.sequence
   : 'SYSTEM / LIVE'
 )
 
-const visualStyle = computed(() => ({
-  '--visual-a': visual.value.accent || '#00f0ff',
-  '--visual-b': visual.value.secondary || '#7000ff'
-}))
+const visualStyle = computed(() => {
+  const lighten = (color, fallback) => `color-mix(in srgb, ${color || fallback} 72%, #f4f0e7)`
+  return {
+    '--visual-a': lighten(visual.value.accent, '#214dff'),
+    '--visual-b': lighten(visual.value.secondary, '#b94327')
+  }
+})
 </script>
 
 <style scoped>
@@ -198,7 +201,7 @@ const visualStyle = computed(() => ({
   border-radius: inherit;
   background:
     radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--visual-b) 9%, transparent), transparent 38%),
-    linear-gradient(145deg, #f8f5ee, #eee8dc);
+    linear-gradient(145deg, #181714, #0f0e0c);
   color: var(--visual-a);
 }
 
@@ -210,7 +213,7 @@ const visualStyle = computed(() => ({
   top: -28%;
   border-radius: 50%;
   background: var(--visual-a);
-  opacity: 0.055;
+  opacity: 0.08;
   filter: blur(48px);
 }
 
@@ -218,8 +221,8 @@ const visualStyle = computed(() => ({
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(24, 23, 20, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(24, 23, 20, 0.055) 1px, transparent 1px);
+    linear-gradient(rgba(244, 240, 231, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 240, 231, 0.06) 1px, transparent 1px);
   background-size: 30px 30px;
   mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.82), transparent 96%);
 }
@@ -261,7 +264,7 @@ const visualStyle = computed(() => ({
 }
 
 .visual-axis {
-  stroke: rgba(24, 23, 20, 0.11);
+  stroke: rgba(244, 240, 231, 0.13);
   stroke-width: 1;
   stroke-dasharray: 2 7;
 }
@@ -315,7 +318,7 @@ const visualStyle = computed(() => ({
 }
 
 .node-core {
-  fill: rgba(251, 250, 246, 0.78);
+  fill: rgba(15, 14, 12, 0.78);
   stroke: var(--visual-a);
   stroke-width: 1.5;
 }
@@ -349,7 +352,7 @@ const visualStyle = computed(() => ({
 }
 
 .panel {
-  fill: rgba(251, 250, 246, 0.5);
+  fill: rgba(15, 14, 12, 0.38);
   stroke: var(--visual-a);
   stroke-width: 0.8;
   opacity: 0.62;
@@ -376,7 +379,7 @@ const visualStyle = computed(() => ({
 }
 
 .phone {
-  fill: rgba(251, 250, 246, 0.72);
+  fill: rgba(15, 14, 12, 0.68);
   stroke: var(--visual-a);
   stroke-width: 1.2;
 }

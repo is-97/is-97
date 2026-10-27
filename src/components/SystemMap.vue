@@ -135,7 +135,7 @@ const nodes = [
   border: 1px solid rgba(243, 240, 232, 0.16);
   border-radius: 2px;
   background: #12110f;
-  color: var(--color-paper);
+  color: var(--color-ink);
 }
 
 .system-map::after {
@@ -155,7 +155,7 @@ const nodes = [
   justify-content: space-between;
   gap: 1rem;
   padding: 0 1.35rem;
-  color: rgba(243, 240, 232, 0.52);
+  color: rgba(244, 240, 231, 0.64);
   font-family: var(--font-mono);
   font-size: 0.58rem;
   letter-spacing: 0.08em;
@@ -177,7 +177,7 @@ const nodes = [
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  color: rgba(243, 240, 232, 0.72);
+  color: rgba(244, 240, 231, 0.84);
 }
 
 .map-kicker i {
@@ -280,7 +280,7 @@ const nodes = [
 }
 
 .map-node small {
-  color: rgba(243, 240, 232, 0.5);
+  color: rgba(244, 240, 231, 0.64);
   font-family: var(--font-mono);
   font-size: 0.54rem;
   letter-spacing: 0.05em;
@@ -395,7 +395,7 @@ const nodes = [
   }
 
   .stack-index {
-    color: rgba(243, 240, 232, 0.4);
+    color: rgba(244, 240, 231, 0.58);
     font-family: var(--font-mono);
     font-size: 0.56rem;
   }
@@ -432,7 +432,7 @@ const nodes = [
   }
 
   .map-stack-item small {
-    color: rgba(243, 240, 232, 0.5);
+    color: rgba(244, 240, 231, 0.64);
     font-family: var(--font-mono);
     font-size: 0.52rem;
     letter-spacing: 0.04em;

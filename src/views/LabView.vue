@@ -348,8 +348,8 @@ watch(currentToyId, () => {
   overflow: hidden;
   border: 1px solid var(--color-line);
   background:
-    linear-gradient(rgba(24, 23, 20, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(24, 23, 20, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(244, 240, 231, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 240, 231, 0.055) 1px, transparent 1px),
     var(--color-surface);
   background-size: 32px 32px;
 }
@@ -467,7 +467,7 @@ watch(currentToyId, () => {
   padding: 1.35rem;
   border-right: 1px solid var(--color-line);
   border-bottom: 1px solid var(--color-line);
-  background: rgba(251, 250, 246, 0.38);
+  background: rgba(244, 240, 231, 0.035);
   color: var(--color-ink);
   text-decoration: none;
   transition: background 0.2s ease;

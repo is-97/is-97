@@ -69,10 +69,13 @@ const props = defineProps({
 
 const highlightLimit = computed(() => props.featured ? 3 : 2)
 const visibleHighlights = computed(() => (props.project.highlights || []).slice(0, highlightLimit.value))
-const cardStyle = computed(() => ({
-  '--case-a': props.project.visual?.accent || 'var(--primary)',
-  '--case-b': props.project.visual?.secondary || 'var(--secondary)'
-}))
+const cardStyle = computed(() => {
+  const lighten = (color, fallback) => `color-mix(in srgb, ${color || fallback} 72%, #f4f0e7)`
+  return {
+    '--case-a': lighten(props.project.visual?.accent, '#214dff'),
+    '--case-b': lighten(props.project.visual?.secondary, '#b94327')
+  }
+})
 </script>
 
 <style scoped>

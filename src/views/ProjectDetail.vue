@@ -264,8 +264,8 @@ const goBack = () => {
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(90deg, rgba(251, 250, 246, 0.98) 0%, rgba(251, 250, 246, 0.82) 46%, rgba(251, 250, 246, 0.08) 100%),
-    linear-gradient(180deg, transparent 45%, rgba(251, 250, 246, 0.58) 100%);
+    linear-gradient(90deg, rgba(15, 14, 12, 0.98) 0%, rgba(15, 14, 12, 0.82) 46%, rgba(15, 14, 12, 0.08) 100%),
+    linear-gradient(180deg, transparent 45%, rgba(15, 14, 12, 0.58) 100%);
   pointer-events: none;
 }
 
@@ -280,7 +280,7 @@ const goBack = () => {
   padding: 0 0.85rem;
   border: 1px solid var(--color-line);
   border-radius: 2px;
-  background: rgba(251, 250, 246, 0.72);
+  background: rgba(15, 14, 12, 0.72);
   color: var(--color-ink-soft);
   cursor: pointer;
   font-size: 0.72rem;
@@ -356,7 +356,7 @@ const goBack = () => {
   padding: 0.28rem 0.55rem;
   border: 1px solid var(--color-line);
   border-radius: 2px;
-  background: rgba(251, 250, 246, 0.72);
+  background: rgba(15, 14, 12, 0.72);
   color: var(--color-ink-soft);
   font-family: var(--font-mono);
   font-size: 0.62rem;
@@ -451,7 +451,7 @@ const goBack = () => {
   padding: 1.35rem 1.5rem;
   border: 1px solid var(--color-line);
   border-left: 3px solid var(--color-accent);
-  background: rgba(251, 250, 246, 0.58);
+  background: rgba(15, 14, 12, 0.58);
 }
 
 .challenge-label {
@@ -537,7 +537,7 @@ const goBack = () => {
   padding: 1.2rem;
   border-top: 1px solid var(--color-ink);
   border-bottom: 1px solid var(--color-line);
-  background: rgba(251, 250, 246, 0.46);
+  background: rgba(15, 14, 12, 0.46);
 }
 
 .result-value {
@@ -768,7 +768,7 @@ const goBack = () => {
   }
 
   .hero-overlay {
-    background: linear-gradient(180deg, rgba(251, 250, 246, 0.05) 0%, rgba(251, 250, 246, 0.96) 72%);
+    background: linear-gradient(180deg, rgba(15, 14, 12, 0.05) 0%, rgba(15, 14, 12, 0.96) 72%);
   }
 
   .hero-content {

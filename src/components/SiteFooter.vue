@@ -2,7 +2,7 @@
   <footer class="site-footer">
     <div class="footer-inner page-shell">
       <div class="footer-brand">
-        <img class="footer-mark" src="/favicon-x-v2.svg" alt="" width="40" height="40" />
+        <img class="footer-mark" src="/brand-x-light.svg" alt="" width="40" height="40" />
         <div>
           <strong>{{ profile.name }}</strong>
           <p>{{ profile.title }} · Shanghai</p>
