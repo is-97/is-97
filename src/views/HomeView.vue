@@ -611,7 +611,7 @@ const statLabels = ['年经验', '项目交付', '技术栈']
 
 @media (max-width: 1024px) {
   .hero-stage {
-    grid-template-columns: minmax(0, 1fr) minmax(330px, 0.68fr);
+    grid-template-columns: minmax(0, 1fr) minmax(410px, 0.82fr);
     gap: 2rem;
   }
 

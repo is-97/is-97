@@ -1,9 +1,9 @@
 <template>
-  <figure class="system-map" aria-label="交付系统示意图：从需求、架构、数据信号到验证交付">
+  <figure class="system-map" aria-label="交付系统动画：需求、架构、评审、发布与反馈组成的持续循环">
     <div class="map-topline">
       <span class="map-kicker">
         <i aria-hidden="true"></i>
-        System map / 01
+        Delivery loop / 01
       </span>
       <span>Shanghai / CN</span>
     </div>
@@ -12,7 +12,7 @@
       <svg class="map-blueprint" viewBox="0 0 520 460" fill="none" aria-hidden="true">
         <defs>
           <pattern id="system-map-grid" width="32" height="32" patternUnits="userSpaceOnUse">
-            <path d="M32 0H0V32" stroke="rgba(243, 240, 232, 0.055)" stroke-width="1" />
+            <path d="M32 0H0V32" stroke="rgba(244, 240, 231, 0.055)" stroke-width="1" />
           </pattern>
           <marker
             id="system-map-arrow"
@@ -23,81 +23,105 @@
             markerHeight="5"
             orient="auto"
           >
-            <path d="M0 0L10 5L0 10Z" fill="#214DFF" />
+            <path d="M0 0L10 5L0 10Z" fill="#8DA8FF" />
           </marker>
         </defs>
 
         <rect width="520" height="460" fill="url(#system-map-grid)" />
-        <circle cx="260" cy="230" r="92" stroke="rgba(243, 240, 232, 0.1)" stroke-dasharray="2 9" />
-        <circle cx="260" cy="230" r="134" stroke="rgba(243, 240, 232, 0.07)" />
-        <ellipse
-          class="map-orbit"
-          cx="260"
-          cy="230"
-          rx="174"
-          ry="108"
-          stroke="rgba(33, 77, 255, 0.34)"
-          stroke-dasharray="3 10"
-        />
 
-        <path
-          class="map-route"
-          d="M260 82C382 82 430 147 430 230C430 314 374 378 260 378C146 378 90 314 90 230C90 147 138 82 260 82Z"
-          stroke="rgba(33, 77, 255, 0.7)"
-          stroke-width="1.2"
-          marker-end="url(#system-map-arrow)"
-        />
+        <g transform="rotate(-12 260 230)">
+          <ellipse cx="260" cy="238" rx="194" ry="108" stroke="rgba(244, 240, 231, 0.08)" />
+          <ellipse cx="260" cy="230" rx="190" ry="105" stroke="rgba(244, 240, 231, 0.28)" stroke-width="1.3" />
+          <ellipse class="orbit-dashed" cx="260" cy="230" rx="158" ry="83" stroke="rgba(244, 240, 231, 0.2)" stroke-dasharray="2 8" />
+          <ellipse cx="260" cy="230" rx="112" ry="55" stroke="rgba(244, 240, 231, 0.12)" stroke-dasharray="2 9" />
 
-        <g stroke="rgba(243, 240, 232, 0.14)" stroke-width="1">
-          <line x1="260" y1="230" x2="260" y2="82" />
-          <line x1="260" y1="230" x2="430" y2="230" />
-          <line x1="260" y1="230" x2="260" y2="378" />
-          <line x1="260" y1="230" x2="90" y2="230" />
+          <path
+            class="orbit-flow"
+            d="M70 230A190 105 0 1 0 450 230A190 105 0 1 0 70 230"
+            stroke="#8DA8FF"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M88 250C130 296 207 319 298 309"
+            stroke="#8DA8FF"
+            stroke-width="2"
+            stroke-linecap="round"
+            marker-end="url(#system-map-arrow)"
+          />
+
+          <circle class="orbit-runner orbit-runner--a" r="2.7" fill="#8DA8FF">
+            <animateMotion dur="14s" repeatCount="indefinite" path="M70 230A190 105 0 1 0 450 230A190 105 0 1 0 70 230" />
+          </circle>
+          <circle class="orbit-runner orbit-runner--b" r="2" fill="#E06F52">
+            <animateMotion begin="-7s" dur="14s" repeatCount="indefinite" path="M70 230A190 105 0 1 0 450 230A190 105 0 1 0 70 230" />
+          </circle>
         </g>
 
-        <g class="map-points">
-          <circle class="map-point map-point--blue" cx="260" cy="82" r="4.5" />
-          <circle class="map-point map-point--blue" cx="430" cy="230" r="4.5" />
-          <circle class="map-point map-point--warm" cx="260" cy="378" r="4.5" />
-          <circle class="map-point map-point--warm" cx="90" cy="230" r="4.5" />
+        <g stroke="rgba(244, 240, 231, 0.13)" stroke-width="1">
+          <line x1="260" y1="230" x2="260" y2="106" />
+          <line x1="260" y1="230" x2="414" y2="184" />
+          <line x1="260" y1="230" x2="360" y2="326" />
+          <line x1="260" y1="230" x2="235" y2="358" />
+          <line x1="260" y1="230" x2="106" y2="245" />
         </g>
 
-        <g stroke="rgba(243, 240, 232, 0.22)">
-          <path d="M260 70V58M254 64H266" />
-          <path d="M442 230H454M448 224V236" />
-          <path d="M260 390V402M254 396H266" />
-          <path d="M78 230H66M72 224V236" />
+        <g>
+          <circle cx="260" cy="106" r="4" fill="#8DA8FF" />
+          <circle cx="414" cy="184" r="4" fill="#8DA8FF" />
+          <circle cx="360" cy="326" r="4" fill="#8DA8FF" />
+          <circle cx="235" cy="358" r="4" fill="#E06F52" />
+          <circle cx="106" cy="245" r="4" fill="#E06F52" />
+        </g>
+
+        <g stroke="rgba(244, 240, 231, 0.2)">
+          <path d="M260 94V82M254 88H266" />
+          <path d="M426 184H438M432 178V190" />
+          <path d="M372 326H384M378 320V332" />
+          <path d="M223 358H211M217 352V364" />
+          <path d="M94 245H82M88 239V251" />
         </g>
       </svg>
 
       <div class="map-core" aria-hidden="true">
+        <span class="core-sphere"></span>
         <span class="core-ring"></span>
-        <img src="/favicon-x-v2.svg" alt="" width="58" height="58" />
+        <img src="/brand-x-light.svg" alt="" width="55" height="55" />
       </div>
 
-      <div class="map-node map-node--intent">
-        <span>01</span>
-        <strong>Intent</strong>
-        <small>需求与范围</small>
-      </div>
-      <div class="map-node map-node--architecture">
-        <span>02</span>
-        <strong>Architecture</strong>
-        <small>架构与工程</small>
-      </div>
-      <div class="map-node map-node--signal">
-        <span>03</span>
-        <strong>Signal</strong>
-        <small>数据与可视化</small>
-      </div>
-      <div class="map-node map-node--delivery">
-        <span>04</span>
-        <strong>Delivery</strong>
-        <small>验证与交付</small>
+      <div
+        v-for="node in nodes"
+        :key="node.key"
+        class="map-node"
+        :class="`map-node--${node.key}`"
+      >
+        <span class="node-icon">
+          <svg v-if="node.key === 'intent'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="4" y="3" width="16" height="18" rx="2" />
+            <path d="M8 8h8M8 12h8M8 16h5" />
+          </svg>
+          <svg v-else-if="node.key === 'architecture'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="m8 7-4 5 4 5M16 7l4 5-4 5M13 5l-2 14" />
+          </svg>
+          <svg v-else-if="node.key === 'review'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M4 4h16v12H9l-5 4V4Z" />
+            <path d="m9 10 2 2 4-5" />
+          </svg>
+          <svg v-else-if="node.key === 'ship'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M12 19V5M6 11l6-6 6 6" />
+          </svg>
+          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M3 12h4l2-6 4 12 2-6h6" />
+          </svg>
+        </span>
+        <span class="node-copy">
+          <strong>{{ node.label }}</strong>
+          <small>{{ node.detail }}</small>
+        </span>
       </div>
 
       <div class="map-stack">
-        <div v-for="node in nodes" :key="node.key" class="map-stack-item">
+        <div v-for="node in nodes" :key="`stack-${node.key}`" class="map-stack-item">
           <span class="stack-index">{{ node.index }}</span>
           <span class="stack-dot" :class="`stack-dot--${node.tone}`" aria-hidden="true"></span>
           <div>
@@ -109,7 +133,7 @@
     </div>
 
     <figcaption class="map-footnote">
-      <span>Intent → Ship</span>
+      <span>Intent → Ship → Signal</span>
       <span>8Y / 15+</span>
     </figcaption>
   </figure>
@@ -117,10 +141,11 @@
 
 <script setup>
 const nodes = [
-  { key: 'intent', index: '01', label: 'Intent', detail: '需求与范围', tone: 'blue' },
-  { key: 'architecture', index: '02', label: 'Architecture', detail: '架构与工程', tone: 'blue' },
-  { key: 'signal', index: '03', label: 'Signal', detail: '数据与可视化', tone: 'warm' },
-  { key: 'delivery', index: '04', label: 'Delivery', detail: '验证与交付', tone: 'warm' }
+  { key: 'intent', index: '01', label: 'Intent', detail: 'Scope · Brief', tone: 'blue' },
+  { key: 'architecture', index: '02', label: 'Architecture', detail: 'Systems · Stack', tone: 'blue' },
+  { key: 'review', index: '03', label: 'Review', detail: 'Quality · Verify', tone: 'blue' },
+  { key: 'ship', index: '04', label: 'Ship', detail: 'Release · Deliver', tone: 'warm' },
+  { key: 'signal', index: '05', label: 'Signal', detail: 'Observe · Improve', tone: 'warm' }
 ]
 </script>
 
@@ -132,9 +157,9 @@ const nodes = [
   min-height: 510px;
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(243, 240, 232, 0.16);
+  border: 1px solid rgba(244, 240, 231, 0.15);
   border-radius: 2px;
-  background: #12110f;
+  background: #0b0a09;
   color: var(--color-ink);
 }
 
@@ -142,7 +167,7 @@ const nodes = [
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 48%, rgba(33, 77, 255, 0.08), transparent 48%);
+  background: radial-gradient(circle at 50% 46%, rgba(141, 168, 255, 0.1), transparent 46%);
   pointer-events: none;
 }
 
@@ -165,12 +190,12 @@ const nodes = [
 
 .map-topline {
   min-height: 48px;
-  border-bottom: 1px solid rgba(243, 240, 232, 0.12);
+  border-bottom: 1px solid rgba(244, 240, 231, 0.12);
 }
 
 .map-footnote {
   min-height: 48px;
-  border-top: 1px solid rgba(243, 240, 232, 0.12);
+  border-top: 1px solid rgba(244, 240, 231, 0.12);
 }
 
 .map-kicker {
@@ -185,7 +210,7 @@ const nodes = [
   height: 5px;
   border-radius: 50%;
   background: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(33, 77, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(141, 168, 255, 0.14);
   animation: signal-pulse 3.2s ease-in-out infinite;
 }
 
@@ -204,30 +229,29 @@ const nodes = [
   height: 96%;
 }
 
-.map-orbit {
-  transform: rotate(-18deg);
+.orbit-dashed {
   transform-box: fill-box;
   transform-origin: center;
-  animation: orbit-turn 42s linear infinite;
+  animation: orbit-turn 34s linear infinite;
 }
 
-.map-route {
-  stroke-dasharray: 8 11;
-  animation: route-flow 18s linear infinite;
+.orbit-flow {
+  stroke-dasharray: 56 920;
+  animation: orbit-flow 11s linear infinite;
 }
 
-.map-point {
+.orbit-runner {
   filter: drop-shadow(0 0 5px currentColor);
 }
 
-.map-point--blue {
-  color: var(--color-accent);
-  fill: var(--color-accent);
-}
-
-.map-point--warm {
-  color: var(--color-warm);
-  fill: var(--color-warm);
+.core-sphere {
+  position: absolute;
+  inset: -13px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(244, 240, 231, 0.78) 0deg 5deg, transparent 5deg 15deg);
+  mask: radial-gradient(circle, transparent 0 45%, #000 46% 100%);
+  opacity: 0.42;
+  animation: core-turn 16s linear infinite;
 }
 
 .map-core {
@@ -238,83 +262,142 @@ const nodes = [
   place-items: center;
   width: 96px;
   height: 96px;
-  border: 1px solid rgba(243, 240, 232, 0.2);
+  border: 1px solid rgba(244, 240, 231, 0.22);
   border-radius: 50%;
-  background: rgba(18, 17, 15, 0.86);
+  background: rgba(11, 10, 9, 0.9);
   transform: translate(-50%, -50%);
 }
 
 .map-core img {
-  width: 58px;
-  height: 58px;
+  position: relative;
+  z-index: 1;
+  width: 55px;
+  height: 55px;
 }
 
 .core-ring {
   position: absolute;
   inset: 12px;
-  border: 1px solid rgba(243, 240, 232, 0.1);
+  border: 1px solid rgba(244, 240, 231, 0.1);
   border-radius: 50%;
 }
 
 .map-node {
   position: absolute;
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 170px;
+}
+
+.node-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(244, 240, 231, 0.2);
+  border-radius: 7px;
+  background: rgba(23, 21, 18, 0.84);
+  color: var(--color-ink);
+}
+
+.node-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.node-copy {
+  display: flex;
   flex-direction: column;
-  gap: 0.12rem;
-  min-width: 110px;
-  pointer-events: none;
+  gap: 0.15rem;
 }
 
-.map-node span {
-  color: var(--color-warm);
-  font-family: var(--font-mono);
-  font-size: 0.52rem;
-  letter-spacing: 0.08em;
-}
-
-.map-node strong {
+.node-copy strong {
   font-family: var(--font-display);
-  font-size: 1.28rem;
+  font-size: 1.16rem;
   font-weight: 400;
   line-height: 1;
+  white-space: nowrap;
 }
 
-.map-node small {
-  color: rgba(244, 240, 231, 0.64);
+.node-copy small {
+  color: var(--color-accent);
   font-family: var(--font-mono);
-  font-size: 0.54rem;
+  font-size: 0.5rem;
   letter-spacing: 0.05em;
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
 .map-node--intent {
-  top: 0.65rem;
+  top: 0.5rem;
   left: 50%;
+  flex-direction: column;
   align-items: center;
   text-align: center;
   transform: translateX(-50%);
+}
+
+.map-node--intent .node-icon {
+  order: 2;
+}
+
+.map-node--intent .node-copy {
+  order: 1;
+  align-items: center;
+}
+
+.map-node--intent .node-icon::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 1px;
+  height: 18px;
+  background: rgba(244, 240, 231, 0.16);
 }
 
 .map-node--architecture {
-  top: 50%;
+  top: 19%;
   right: 0;
-  align-items: flex-start;
-  transform: translateY(-50%);
 }
 
-.map-node--signal {
-  bottom: 0.5rem;
+.map-node--review {
+  right: 4%;
+  bottom: 15%;
+}
+
+.map-node--ship {
+  bottom: 0.35rem;
   left: 50%;
+  flex-direction: column;
   align-items: center;
   text-align: center;
   transform: translateX(-50%);
 }
 
-.map-node--delivery {
-  top: 50%;
+.map-node--ship .node-copy {
+  align-items: center;
+}
+
+.map-node--ship .node-copy small {
+  color: var(--color-warm);
+}
+
+.map-node--signal {
+  top: 47%;
   left: 0;
-  align-items: flex-end;
+  flex-direction: row-reverse;
   text-align: right;
-  transform: translateY(-50%);
+}
+
+.map-node--signal .node-copy {
+  align-items: flex-end;
+}
+
+.map-node--signal .node-copy small {
+  color: var(--color-warm);
 }
 
 .map-stack {
@@ -333,18 +416,21 @@ const nodes = [
   }
 }
 
-@keyframes orbit-turn {
-  from {
-    transform: rotate(-18deg);
-  }
+@keyframes core-turn {
   to {
-    transform: rotate(342deg);
+    transform: rotate(360deg);
   }
 }
 
-@keyframes route-flow {
+@keyframes orbit-turn {
   to {
-    stroke-dashoffset: -190;
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-flow {
+  to {
+    stroke-dashoffset: -976;
   }
 }
 
@@ -377,7 +463,7 @@ const nodes = [
     gap: 0.7rem;
     align-items: center;
     min-height: 58px;
-    border-bottom: 1px solid rgba(243, 240, 232, 0.12);
+    border-bottom: 1px solid rgba(244, 240, 231, 0.12);
   }
 
   .map-stack-item:last-child {
@@ -391,7 +477,7 @@ const nodes = [
     bottom: 0;
     left: 2.65rem;
     width: 1px;
-    background: rgba(243, 240, 232, 0.12);
+    background: rgba(244, 240, 231, 0.12);
   }
 
   .stack-index {
@@ -410,12 +496,12 @@ const nodes = [
 
   .stack-dot--blue {
     background: var(--color-accent);
-    box-shadow: 0 0 0 4px rgba(33, 77, 255, 0.12);
+    box-shadow: 0 0 0 4px rgba(141, 168, 255, 0.13);
   }
 
   .stack-dot--warm {
     background: var(--color-warm);
-    box-shadow: 0 0 0 4px rgba(185, 67, 39, 0.12);
+    box-shadow: 0 0 0 4px rgba(224, 111, 82, 0.13);
   }
 
   .map-stack-item div {
@@ -445,9 +531,14 @@ const nodes = [
 
 @media (prefers-reduced-motion: reduce) {
   .map-kicker i,
-  .map-orbit,
-  .map-route {
+  .orbit-dashed,
+  .orbit-flow,
+  .core-sphere {
     animation: none;
+  }
+
+  .orbit-runner {
+    display: none;
   }
 }
 </style>
