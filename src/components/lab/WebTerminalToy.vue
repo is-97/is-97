@@ -43,7 +43,6 @@
         <div v-if="entry.output" class="cmd-output" :class="entry.type">
           <!-- 纯文本或格式化输出 -->
           <pre v-if="entry.isPre">{{ entry.output }}</pre>
-          <div v-else-if="entry.html" v-html="entry.html"></div>
           <div v-else>{{ entry.output }}</div>
         </div>
       </div>
@@ -133,7 +132,6 @@ const executeCmd = () => {
 
   let output = ''
   let isPre = false
-  let html = null
   let type = 'normal'
 
   switch (lowerCmd) {
@@ -241,7 +239,7 @@ PORTFOLIO PROJECT MATRIX:
 
     case 'repo':
       output = 'Opening GitHub: https://github.com/is-97 ...'
-      window.open('https://github.com/is-97', '_blank')
+      window.open('https://github.com/is-97', '_blank', 'noopener,noreferrer')
       break
 
     case 'echo':
@@ -272,7 +270,6 @@ PORTFOLIO PROJECT MATRIX:
     cmd: raw,
     output,
     isPre,
-    html,
     type
   })
 

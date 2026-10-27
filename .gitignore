@@ -38,16 +38,17 @@ ENV/
 *.sqlite3
 db.sqlite3
 
+# Local verification artifacts
+output/
+.playwright-cli/
+
 # Local development settings
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env
+.env.*
+!.env.example
 
 # Dependencies
 node_modules/
-package-lock.json
-yarn.lock
 
 # Distribution / packaging
 .Python
