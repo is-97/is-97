@@ -1,6 +1,0 @@
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" rx="112" fill="#F3F0E8"/>
-  <circle cx="256" cy="256" r="164" stroke="#181714" stroke-width="20"/>
-  <text x="256" y="310" text-anchor="middle" font-family="Georgia, serif" font-size="172" fill="#181714">SZ</text>
-  <circle cx="376" cy="136" r="18" fill="#C9502E"/>
-</svg>
